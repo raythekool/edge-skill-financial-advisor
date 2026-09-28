@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simulatore Skill — Financial Advisor (Google AI Edge Gallery)</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f0f2f5;
+      color: #1a1a1a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      max-width: 540px;
+      width: 100%;
+    }
+    .panel {
+      background: #fff;
+      padding: 18px;
+      border-radius: 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 19px;
+      margin-top: 0;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .row {
+      display: flex;
+      gap: 8px;
+    }
+    input, select, button {
+      font-size: 14px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    input { flex: 1; }
+    button {
+      background: #0066cc;
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: #0052a3; }
+    button.secondary { background: #555; }
+    button.secondary:hover { background: #333; }
+    button.danger { background: #c1121f; }
+    button.danger:hover { background: #9b0f19; }
+    button:disabled { background: #aaa; cursor: not-allowed; }
+
+    .preview-frame {
+      width: 100%;
+      height: 640px;
+      border: none;
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      background: #fff;
+    }
+    .log-box {
+      font-family: Consolas, monospace;
+      font-size: 11px;
+      background: #222;
+      color: #eee;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+      max-height: 120px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="panel">
+    <h1>
+      <img src="skills/financial-advisor/assets/icon.svg" width="28" height="28" alt="Icona">
+      <span>Simulatore AI Edge Gallery</span>
+    </h1>
+    <p style="margin: 0 0 12px; font-size: 13px; color: #666;">
+      Testa la logica del <strong>Brain</strong> (memoria persistente) e della <strong>Dashboard</strong> della skill <em>financial-advisor</em>.
+    </p>
+
+    <div class="controls">
+      <div class="row">
+        <select id="actionSelect" onchange="toggleInputs()">
+          <option value="load_memory">1. load_memory (Carica Profilo)</option>
+          <option value="update_memory">2. update_memory (Aggiungi Concetti/Note)</option>
+          <option value="view_hub" selected>3. view_hub (Mostra Dashboard)</option>
+          <option value="reset_memory">4. reset_memory (Azzera Memoria)</option>
+        </select>
+        <button id="runBtn" onclick="runSimulation()">Esegui</button>
+      </div>
+
+      <div id="updateInputs" style="display:none; flex-direction:column; gap:8px;">
+        <div class="row">
+          <select id="newLevel" style="width:140px;">
+            <option value="beginner">Beginner</option>
+            <option value="intermediate" selected>Intermediate</option>
+            <option value="advanced">Advanced</option>
+          </select>
+          <input type="text" id="conceptInput" placeholder="Nuovi concetti (es. PAC, TER, ETF azionario)">
+        </div>
+        <input type="text" id="noteInput" placeholder="Nuova nota utente (es. Obiettivo: fondo emergenza)">
+        <input type="text" id="summaryInput" placeholder="Sintesi sessione (es. Discussa la differenza tra azioni e bond)">
+      </div>
+
+      <div id="log" class="log-box" style="display:none;"></div>
+    </div>
+  </div>
+
+  <iframe id="phoneView" class="preview-frame" src="skills/financial-advisor/assets/webview.html"></iframe>
+</div>
+
+<!-- Headless sandbox della skill -->
+<iframe id="skillSandbox" src="skills/financial-advisor/scripts/index.html" style="display:none;" onload="onSandboxReady()"></iframe>
+
+<script>
+  let sandboxReady = false;
+  function onSandboxReady() {
+    sandboxReady = true;
+    const log = document.getElementById('log');
+    log.style.display = 'block';
+    log.textContent = 'Brain inizializzato. Pronto all\'uso.';
+    // Esegui visualizzazione iniziale
+    runSimulation();
+  }
+
+  function toggleInputs() {
+    const action = document.getElementById('actionSelect').value;
+    document.getElementById('updateInputs').style.display = (action === 'update_memory') ? 'flex' : 'none';
+  }
+
+  async function runSimulation() {
+    const action = document.getElementById('actionSelect').value;
+    const btn = document.getElementById('runBtn');
+    const log = document.getElementById('log');
+    const iframe = document.getElementById('phoneView');
+
+    log.style.display = 'block';
+    log.textContent = `Esecuzione azione "${action}" nel Brain...`;
+    btn.disabled = true;
+
+    try {
+      const sandbox = document.getElementById('skillSandbox').contentWindow;
+      if (!sandbox || !sandbox.ai_edge_gallery_get_result) {
+        throw new Error('Runtime della skill non ancora inizializzato.');
+      }
+
+      let payload = { action: action };
+
+      if (action === 'update_memory') {
+        payload.new_level = document.getElementById('newLevel').value;
+        const concepts = document.getElementById('conceptInput').value.split(',').map(s => s.trim()).filter(Boolean);
+        if (concepts.length > 0) payload.add_concepts = concepts;
+        const note = document.getElementById('noteInput').value.trim();
+        if (note) payload.add_note = note;
+        const summary = document.getElementById('summaryInput').value.trim();
+        if (summary) payload.summary = summary;
+      }
+
+      const rawResponse = await sandbox.ai_edge_gallery_get_result(JSON.stringify(payload));
+      const parsed = JSON.parse(rawResponse);
+
+      if (parsed.error) {
+        log.textContent = `Errore: ${parsed.error}`;
+      } else {
+        log.textContent = `✅ Risultato Brain:\n${parsed.result}`;
+        
+        if (parsed.webview && parsed.webview.url) {
+          // Risolvi il path relativo rispetto alla cartella scripts
+          const webviewUrl = 'skills/financial-advisor/assets/' + parsed.webview.url.replace(/^..\//, '').replace(/^assets\//, '');
+          iframe.src = webviewUrl;
+        } else if (action === 'update_memory' || action === 'reset_memory') {
+          // Ricarica la vista dopo l'aggiornamento
+          const viewRaw = await sandbox.ai_edge_gallery_get_result(JSON.stringify({ action: 'view_hub' }));
+          const viewParsed = JSON.parse(viewRaw);
+          if (viewParsed.webview) {
+            const webviewUrl = 'skills/financial-advisor/assets/' + viewParsed.webview.url.replace(/^..\//, '').replace(/^assets\//, '');
+            iframe.src = webviewUrl;
+          }
+        }
+      }
+    } catch (err) {
+      log.textContent = `Errore durante il test: ${err.message}`;
+    } finally {
+      btn.disabled = false;
+    }
+  }
+</script>
+
+</body>
+</html>

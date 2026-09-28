@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0066cc"/>
+      <stop offset="100%" stop-color="#00b4d8"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#grad)"/>
+  <!-- Graduation cap & chart combined -->
+  <path d="M24 10 L8 18 L24 26 L40 18 Z" fill="#ffffff" opacity="0.95"/>
+  <path d="M14 21.5 L14 29 C14 34.5 24 38 24 38 C24 38 34 34.5 34 29 L34 21.5 L24 26.5 Z" fill="#ffffff" opacity="0.85"/>
+  <path d="M39 20 L39 30" stroke="#ffd166" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="39" cy="31" r="2" fill="#ffd166"/>
+</svg>

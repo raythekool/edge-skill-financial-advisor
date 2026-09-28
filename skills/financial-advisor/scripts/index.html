@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Financial Advisor Brain Runner</title>
+</head>
+<body>
+<script>
+  const STORAGE_KEY = "financial_advisor_brain_state_v1";
+  const DEMO_FIXTURE_URL = "../assets/demo-profile.json";
+
+  const DEFAULT_STATE = {
+    level: "beginner", // beginner | intermediate | advanced
+    concepts_learned: [],
+    user_notes: [],
+    history_summaries: [],
+    goals: [],
+    bias_guardrails: [
+      { id: "fomo", name: "FOMO (Fear Of Missing Out)", alert: "Ricorda: rendimenti passati elevati non garantiscono guadagni futuri." },
+      { id: "panic", name: "Panico da Crollo di Mercato", alert: "La volatilità a breve termine è il prezzo pagato per il rendimento a lungo termine." },
+      { id: "overconfidence", name: "Overconfidence & Concentrazione", alert: "Non scommettere su singoli titoli: diversifica ampiamente." }
+    ],
+    last_updated: null
+  };
+
+  function getStoredState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) {
+      console.warn("Lettura localStorage fallita:", e);
+    }
+    return null;
+  }
+
+  function saveStoredState(state) {
+    state.last_updated = new Date().toISOString();
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      console.error("Salvataggio localStorage fallito:", e);
+    }
+  }
+
+  async function initializeOrGetState() {
+    let state = getStoredState();
+    if (!state) {
+      // Se non esiste ancora uno stato salvato, prova a caricare i valori base dal fixture o da default
+      try {
+        const res = await fetch(DEMO_FIXTURE_URL, { cache: "no-store" });
+        if (res.ok) {
+          const fixture = await res.json();
+          state = { ...DEFAULT_STATE, ...fixture };
+        }
+      } catch (_) {
+        // Fallback su stato vuoto predefinito
+        state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+      }
+      if (!state) state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+      saveStoredState(state);
+    }
+    return state;
+  }
+
+  window["ai_edge_gallery_get_result"] = async (data) => {
+    try {
+      const request = typeof data === "string" ? JSON.parse(data || "{}") : (data || {});
+      const action = request.action || "load_memory";
+      let state = await initializeOrGetState();
+
+      if (action === "load_memory") {
+        const payload = {
+          status: "ready",
+          current_level: state.level || "beginner",
+          concepts_already_learned: state.concepts_learned || [],
+          concepts_count: (state.concepts_learned || []).length,
+          user_notes: (state.user_notes || []).slice(-5),
+          recent_topics: (state.history_summaries || []).slice(-3),
+          bias_guardrails: state.bias_guardrails || [],
+          last_updated: state.last_updated
+        };
+
+        return JSON.stringify({
+          result: JSON.stringify(payload)
+        });
+      }
+
+      if (action === "update_memory") {
+        if (request.new_level && ["beginner", "intermediate", "advanced"].includes(request.new_level)) {
+          state.level = request.new_level;
+        }
+
+        if (Array.isArray(request.add_concepts)) {
+          if (!state.concepts_learned) state.concepts_learned = [];
+          for (const c of request.add_concepts) {
+            const clean = String(c).trim().toLowerCase();
+            if (clean && !state.concepts_learned.includes(clean)) {
+              state.concepts_learned.push(clean);
+            }
+          }
+        }
+
+        if (request.add_note && typeof request.add_note === "string") {
+          if (!state.user_notes) state.user_notes = [];
+          state.user_notes.push(request.add_note.trim());
+          if (state.user_notes.length > 25) state.user_notes.shift();
+        }
+
+        if (request.summary && typeof request.summary === "string") {
+          if (!state.history_summaries) state.history_summaries = [];
+          state.history_summaries.push({
+            date: new Date().toISOString().split("T")[0],
+            summary: request.summary.trim()
+          });
+          if (state.history_summaries.length > 15) state.history_summaries.shift();
+        }
+
+        saveStoredState(state);
+
+        return JSON.stringify({
+          result: `Memoria aggiornata. Livello attuale: ${state.level}. Concetti padroneggiati: ${state.concepts_learned.length}.`
+        });
+      }
+
+      if (action === "view_hub") {
+        const webviewPayload = {
+          level: state.level || "beginner",
+          concepts: state.concepts_learned || [],
+          notes: (state.user_notes || []).slice(-4),
+          summaries: (state.history_summaries || []).slice(-4),
+          guardrails: state.bias_guardrails || [],
+          updatedAt: state.last_updated || new Date().toISOString()
+        };
+
+        const webviewUrl = `../assets/webview.html?payload=${encodeURIComponent(JSON.stringify(webviewPayload))}`;
+
+        return JSON.stringify({
+          result: `Ecco la mappa dei tuoi progressi finanziari (Livello: ${state.level.toUpperCase()}, ${state.concepts_learned.length} concetti assimilati).`,
+          webview: {
+            url: webviewUrl,
+            aspectRatio: 1.15
+          }
+        });
+      }
+
+      if (action === "reset_memory") {
+        localStorage.removeItem(STORAGE_KEY);
+        state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+        saveStoredState(state);
+        return JSON.stringify({
+          result: "Memoria del mentore azzerata con successo. Pronto per un nuovo percorso."
+        });
+      }
+
+      throw new Error(`Azione non riconosciuta: ${action}`);
+
+    } catch (err) {
+      console.error("Errore nel Brain:", err);
+      return JSON.stringify({
+        error: `Financial Advisor Brain Error: ${err.message}`
+      });
+    }
+  };
+</script>
+</body>
+</html>

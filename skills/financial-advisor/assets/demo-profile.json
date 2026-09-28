@@ -1,0 +1,26 @@
+{
+  "level": "intermediate",
+  "concepts_learned": [
+    "interesse composto",
+    "inflazione",
+    "fondo di emergenza",
+    "differenza tra azioni e obbligazioni",
+    "etf indicizzati"
+  ],
+  "user_notes": [
+    "Obiettivo: comprendere l'efficienza fiscale dei fondi pensione",
+    "Orizzonte temporale dichiarato: lungo termine (> 10 anni)",
+    "Preferisce analogie grafiche ed esempi pratici"
+  ],
+  "history_summaries": [
+    {
+      "date": "2026-09-25",
+      "summary": "Spiegata l'analogia della palla di neve per l'interesse composto e calcolato l'impatto dell'inflazione sul potere d'acquisto."
+    },
+    {
+      "date": "2026-09-27",
+      "summary": "Confronto tra costi dei fondi a gestione attiva e ETF passivi (impatto del TER a 20 anni)."
+    }
+  ],
+  "last_updated": "2026-09-28T16:00:00.000Z"
+}
