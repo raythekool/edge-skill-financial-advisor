@@ -182,12 +182,95 @@
   }
 
 
+  function buildWebview(state, globalState, lang, targetTab = "pill") {
+    const path = calculateLearningPath(state.concepts_learned || [], lang);
+    const pill = getDailyPillData(state, {}, lang);
+    const badgesStatus = getBadgesStatus(state, lang);
+
+    const webviewPayload = {
+      mentor: "Leo",
+      level: state.level || "beginner",
+      profile: state.user_profile || {},
+      concepts: state.concepts_learned || [],
+      modules: path,
+      daily_pill: pill,
+      badges: badgesStatus,
+      notes: (state.user_notes || []).slice(-4),
+      summaries: (state.history_summaries || []).slice(-4),
+      updatedAt: state.last_updated,
+      streak: state.streak || 0,
+      activeProfile: globalState.activeId
+    };
+
+    const webviewUrl = `../assets/webview.html?payload=${encodeURIComponent(JSON.stringify(webviewPayload))}&lang=${lang}&tab=${targetTab}`;
+
+    return {
+      url: webviewUrl,
+      aspectRatio: 1.05
+    };
+  }
+
   window["ai_edge_gallery_get_result"] = async (data) => {
     try {
       const request = typeof data === "string" ? JSON.parse(data || "{}") : (data || {});
-      const action = request.action || "load_memory";
+      const action = request.action || "interact";
       const lang = request.lang || "en";
       let { globalState, state } = initializeOrGetState();
+
+      // 1. General interaction (Default for all questions & concepts)
+      if (action === "interact") {
+        const conceptsToAdd = [];
+        if (request.concept) conceptsToAdd.push(request.concept);
+        if (Array.isArray(request.concepts)) conceptsToAdd.push(...request.concepts);
+        if (Array.isArray(request.add_concepts)) conceptsToAdd.push(...request.add_concepts);
+
+        for (const c of conceptsToAdd) {
+          const clean = String(c).trim().toLowerCase();
+          if (clean && !state.concepts_learned.includes(clean)) {
+            state.concepts_learned.push(clean);
+          }
+        }
+
+        if (request.profile_update && typeof request.profile_update === "object") {
+          state.user_profile = { ...state.user_profile, ...request.profile_update };
+        }
+
+        const context = {
+          fomo_triggered: Boolean(request.fomo_triggered),
+          volatility_discussed: Boolean(request.volatility_discussed),
+          goal_set: Boolean(request.profile_update && (request.profile_update.goals || request.profile_update.time_horizon)),
+          daily_pill_called: Boolean(request.daily_pill_called),
+          roadmap_viewed: Boolean(request.roadmap_viewed)
+        };
+        const newlyUnlocked = evaluateBadges(state, context);
+        saveStoredState(globalState);
+
+        let targetTab = "pill";
+        if (newlyUnlocked.length > 0) {
+          targetTab = "badges";
+        } else if (conceptsToAdd.length > 0) {
+          targetTab = "path";
+        }
+
+        const path = calculateLearningPath(state.concepts_learned || [], lang);
+        const completed = path.filter(p => p.status === "mastered").length;
+
+        return JSON.stringify({
+          result: JSON.stringify({
+            mentor: "Leo",
+            level: state.level,
+            concepts_learned: state.concepts_learned,
+            newly_unlocked_badges: newlyUnlocked,
+            total_badges_earned: state.badges_earned.length,
+            streak: state.streak,
+            progress_percent: Math.round((completed / path.length) * 100),
+            summary: newlyUnlocked.length > 0
+              ? (lang === "en" ? `Awarded ${newlyUnlocked.length} badge(s)!` : `Sbloccati ${newlyUnlocked.length} nuovo/i badge!`)
+              : (lang === "en" ? `Recorded concept in Leo's memory.` : `Concetto registrato nella memoria di Leo.`)
+          }),
+          webview: buildWebview(state, globalState, lang, targetTab)
+        });
+      }
 
       if (action === "load_memory") {
         const path = calculateLearningPath(state.concepts_learned, lang);
@@ -208,7 +291,10 @@
           last_updated: state.last_updated
         };
 
-        return JSON.stringify({ result: JSON.stringify(payload) });
+        return JSON.stringify({
+          result: JSON.stringify(payload),
+          webview: buildWebview(state, globalState, lang, "pill")
+        });
       }
 
       if (action === "update_memory") {
@@ -242,7 +328,6 @@
           if (state.history_summaries.length > 20) state.history_summaries.shift();
         }
 
-        // Evaluate newly unlocked badges
         const context = {
           fomo_triggered: request.fomo_triggered || false,
           volatility_discussed: request.volatility_discussed || false,
@@ -251,7 +336,6 @@
           roadmap_viewed: request.roadmap_viewed || false
         };
         const newlyUnlocked = evaluateBadges(state, context);
-
         saveStoredState(globalState);
 
         return JSON.stringify({
@@ -259,14 +343,16 @@
             message: lang === "en" ? `Leo Brain updated: level=${state.level}, concepts=${state.concepts_learned.length}.` : `Memoria di Leo aggiornata: livello=${state.level}, concetti=${state.concepts_learned.length}.`,
             newly_unlocked_badges: newlyUnlocked,
             total_badges_earned: state.badges_earned.length
-          })
+          }),
+          webview: buildWebview(state, globalState, lang, newlyUnlocked.length ? "badges" : "path")
         });
       }
 
       if (action === "get_badges") {
         const badgesStatus = getBadgesStatus(state, lang);
         return JSON.stringify({
-          result: JSON.stringify(badgesStatus)
+          result: JSON.stringify(badgesStatus),
+          webview: buildWebview(state, globalState, lang, "badges")
         });
       }
 
@@ -286,7 +372,8 @@
             total_modules: path.length,
             current_level: state.level,
             modules: path
-          })
+          }),
+          webview: buildWebview(state, globalState, lang, "path")
         });
       }
 
@@ -299,38 +386,15 @@
           result: JSON.stringify({
             ...pillData,
             newly_unlocked_badges: newlyUnlocked
-          })
+          }),
+          webview: buildWebview(state, globalState, lang, "pill")
         });
       }
 
       if (action === "view_hub") {
-        const path = calculateLearningPath(state.concepts_learned || [], lang);
-        const pill = getDailyPillData(state, request, lang);
-        const badgesStatus = getBadgesStatus(state, lang);
-
-        const webviewPayload = {
-          mentor: "Leo",
-          level: state.level || "beginner",
-          profile: state.user_profile || {},
-          concepts: state.concepts_learned || [],
-          modules: path,
-          daily_pill: pill,
-          badges: badgesStatus,
-          notes: (state.user_notes || []).slice(-4),
-          summaries: (state.history_summaries || []).slice(-4),
-          updatedAt: state.last_updated,
-          streak: state.streak || 0,
-          activeProfile: globalState.activeId
-        };
-
-        const webviewUrl = `../assets/webview.html?payload=${encodeURIComponent(JSON.stringify(webviewPayload))}&lang=${lang}`;
-
         return JSON.stringify({
           result: lang === "en" ? `Here is Leo full dashboard: daily pill, pathway, badge showcase, and profile.` : `Ecco la dashboard completa di Leo: pillola odierna, percorso, bacheca dei badge e profilo.`,
-          webview: {
-            url: webviewUrl,
-            aspectRatio: 1.25
-          }
+          webview: buildWebview(state, globalState, lang, "pill")
         });
       }
 
@@ -341,7 +405,10 @@
         }
         globalState.activeId = newProfileId;
         saveStoredState(globalState);
-        return JSON.stringify({ result: `Switched profile to ${newProfileId}` });
+        return JSON.stringify({
+          result: `Switched profile to ${newProfileId}`,
+          webview: buildWebview(state, globalState, lang, "profile")
+        });
       }
 
       if (action === "reset_memory") {
@@ -349,11 +416,16 @@
         state = JSON.parse(JSON.stringify(DEFAULT_STATE));
         saveStoredState(globalState);
         return JSON.stringify({
-          result: lang === "en" ? "Memory and trophies reset. Leo is ready to begin a new learning journey with you!" : "Memoria e trofei ripristinati. Leo è pronto per iniziare un nuovo viaggio didattico con te!"
+          result: lang === "en" ? "Memory and trophies reset. Leo is ready to begin a new learning journey with you!" : "Memoria e trofei ripristinati. Leo è pronto per iniziare un nuovo viaggio didattico con te!",
+          webview: buildWebview(state, globalState, lang, "pill")
         });
       }
 
-      throw new Error(`Unrecognized action: ${action}`);
+      // Default fallback
+      return JSON.stringify({
+        result: JSON.stringify({ status: "ok", action }),
+        webview: buildWebview(state, globalState, lang, "pill")
+      });
 
     } catch (err) {
       console.error("Error in Leo Brain:", err);

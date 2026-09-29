@@ -13,16 +13,20 @@ try {
   console.warn("Payload invalid or missing:", e);
 }
 
-function switchTab(tabId) {
+function switchTab(tabId, targetEl) {
   document.querySelectorAll('.tab').forEach(b => {
     b.classList.remove('active');
     b.setAttribute('aria-selected', 'false');
   });
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
   
-  event.currentTarget.classList.add('active');
-  event.currentTarget.setAttribute('aria-selected', 'true');
-  document.getElementById('tab-' + tabId).classList.add('active');
+  const btn = targetEl || (typeof event !== 'undefined' && event && event.currentTarget) || document.querySelector(`button[onclick*="'${tabId}'"]`) || document.querySelector(`[aria-controls="tab-${tabId}"]`);
+  if (btn) {
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+  }
+  const content = document.getElementById('tab-' + tabId);
+  if (content) content.classList.add('active');
 }
 
 function applyTranslations(lang) {
@@ -189,6 +193,16 @@ function render() {
         🎯 ${g}
       </div>
     `).join('');
+  }
+
+  // Activate initial tab if specified in URL query params
+  try {
+    const initTab = (new URLSearchParams(location.search)).get("tab");
+    if (initTab && ['pill', 'path', 'badges', 'profile', 'mindset'].includes(initTab)) {
+      switchTab(initTab);
+    }
+  } catch (e) {
+    console.warn("Could not set initial tab:", e);
   }
 }
 
