@@ -894,26 +894,33 @@
       <img src="skills/financial-advisor/assets/icon.svg" width="36" height="36" style="border-radius:10px;" alt="Leo">
       <div>
         <h3 style="margin:0; font-size:16px;">Add Leo to Edge Gallery</h3>
-        <span style="font-size:11px; color:#16a34a; font-weight:600;">Android & iOS Supported</span>
+        <span style="font-size:11px; color:#16a34a; font-weight:600;" id="modalPlatformBadge">Android & iOS Supported</span>
       </div>
     </div>
     
-    <p style="font-size:12.5px; color:#475569; margin:6px 0;">
+    <p style="font-size:12.5px; color:#475569; margin:6px 0;" id="modalInstructionText">
       Paste this skill link into <strong>Google AI Edge Gallery</strong> > <strong>Agent Skills</strong> > <strong>Add Skill from URL</strong>:
     </p>
 
     <div class="url-box">
       <span id="skillUrlText">https://raythekool.github.io/edge-skill-financial-advisor/skills/financial-advisor/</span>
-      <button class="copy-url-btn" onclick="copySkillUrl()">📋 Copy</button>
+      <button class="copy-url-btn" id="modalCopyBtn" onclick="copyModalSkillUrl(this)">📋 Copy</button>
     </div>
 
-    <a href="com.google.ai.edge.gallery://llm_agent_chat/" class="app-open-link" onclick="handleDeepLinkLaunch()">
-      🚀 Open Google AI Edge Gallery
-    </a>
+    <!-- Dynamic Actions per OS (no broken deep links on iOS Safari or Desktop) -->
+    <div id="modalActions">
+      <!-- Injected dynamically in openInstallModal() -->
+    </div>
 
-    <div style="margin-top:14px; text-align:center;">
-      <div style="font-size:11px; color:#64748b; margin-bottom:6px;">On Desktop? Scan with your phone camera:</div>
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&margin=4&data=https://raythekool.github.io/edge-skill-financial-advisor/skills/financial-advisor/" width="110" height="110" style="border-radius:10px; border:1px solid #e2e8f0;" alt="Skill QR Code">
+    <!-- QR Section (prominently shown on Desktop, hidden on mobile) -->
+    <div id="modalQrContainer" style="margin-top:14px; text-align:center;">
+      <!-- Injected dynamically based on OS -->
+    </div>
+
+    <div style="margin-top:14px; text-align:center; border-top:1px solid #f1f5f9; padding-top:10px;">
+      <a href="skills/financial-advisor/index.html" style="font-size:12px; color:#0284c7; text-decoration:none; font-weight:600;">
+        🔗 Pagina di installazione 1-Click dedicata →
+      </a>
     </div>
   </div>
 </div>
@@ -922,37 +929,145 @@
 <div class="toast" id="toastMessage">📋 Skill URL copied to clipboard!</div>
 
 <script>
-  const SKILL_URL = "https://raythekool.github.io/edge-skill-financial-advisor/skills/financial-advisor/";
+  const CANONICAL_SKILL_URL = "https://raythekool.github.io/edge-skill-financial-advisor/skills/financial-advisor/";
+  const SKILL_URL = (window.location.protocol.startsWith('http') && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1')
+    ? (window.location.origin + window.location.pathname.replace(/\/index\.html$/, '') + '/skills/financial-advisor/')
+    : CANONICAL_SKILL_URL;
+
+  function detectSimulatorPlatform() {
+    const ua = navigator.userAgent || '';
+    const platform = navigator.platform || '';
+    const maxTouch = navigator.maxTouchPoints || 0;
+
+    const isIOS = /iPad|iPhone|iPod/.test(ua) ||
+      (platform === 'MacIntel' && maxTouch > 1) ||
+      (/Macintosh/.test(ua) && maxTouch > 1);
+
+    const isAndroid = /Android/i.test(ua);
+    const isDesktop = !isIOS && !isAndroid;
+
+    return { isIOS, isAndroid, isDesktop };
+  }
 
   function showToast(msg) {
     const toast = document.getElementById('toastMessage');
     toast.textContent = msg;
     toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2600);
+    if (window._simToastTimer) clearTimeout(window._simToastTimer);
+    window._simToastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
   }
 
-  function copySkillUrl() {
-    navigator.clipboard.writeText(SKILL_URL).then(() => {
-      showToast("📋 Skill URL copied to clipboard!");
+  function copyModalSkillUrl(btnElement) {
+    const textToCopy = SKILL_URL;
+    let promise;
+    if (navigator.clipboard && window.isSecureContext) {
+      promise = navigator.clipboard.writeText(textToCopy);
+    } else {
+      promise = new Promise((resolve, reject) => {
+        try {
+          const ta = document.createElement("textarea");
+          ta.value = textToCopy;
+          ta.style.position = "fixed";
+          ta.style.left = "-9999px";
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          const ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          if (ok) resolve(); else reject();
+        } catch (e) { reject(e); }
+      });
+    }
+
+    promise.then(() => {
+      showToast("URL copiato negli appunti! Ora apri Edge Gallery > Agent Skills > Add Skill from URL");
+      if (btnElement) {
+        const origText = btnElement.innerHTML;
+        btnElement.classList.add('copied');
+        btnElement.innerHTML = "✓ URL Copiato negli Appunti!";
+        setTimeout(() => {
+          btnElement.classList.remove('copied');
+          btnElement.innerHTML = origText;
+        }, 3200);
+      }
     }).catch(() => {
-      showToast("URL: " + SKILL_URL);
+      showToast("Skill URL: " + textToCopy);
     });
   }
 
+  function handleAndroidModalLaunch() {
+    copyModalSkillUrl();
+    showToast("📋 URL copiato! Avvio Edge Gallery...");
+  }
+
   function openInstallModal() {
-    copySkillUrl();
+    const { isIOS, isAndroid, isDesktop } = detectSimulatorPlatform();
+    const actions = document.getElementById('modalActions');
+    const qrContainer = document.getElementById('modalQrContainer');
+    const badge = document.getElementById('modalPlatformBadge');
+    const urlSpan = document.getElementById('skillUrlText');
+    if (urlSpan) urlSpan.textContent = SKILL_URL;
+
+    if (isIOS) {
+      badge.textContent = "iPhone & iPad";
+      badge.style.color = "#0284c7";
+      // Never trigger com.google.ai.edge.gallery:// on iOS Safari
+      actions.innerHTML = `
+        <button class="app-open-link" style="background: linear-gradient(135deg, #0284c7, #0369a1); border:none; width:100%; cursor:pointer; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="copyModalSkillUrl(this)">
+          <span>📋</span> <span>Copia URL Skill per Edge Gallery</span>
+        </button>
+        <a href="https://apps.apple.com/app/google-ai-edge-gallery/id6749645337" target="_blank" rel="noopener" class="app-open-link" style="background:#1e293b; color:#ffffff; margin-top:8px; display:flex; align-items:center; justify-content:center; gap:8px; text-decoration:none; font-size:12.5px;">
+          <span>📲</span> <span>Scarica / Apri Edge Gallery su App Store</span>
+        </a>
+        <p style="font-size:11.5px; color:#64748b; margin-top:8px; line-height:1.4; text-align:center;">
+          Su iPhone: tocca <strong>Copia</strong>, apri <strong>Edge Gallery</strong> > <strong>Agent Skills</strong> > <strong>Add Skill from URL</strong> e incolla.
+        </p>
+      `;
+      qrContainer.innerHTML = '';
+      qrContainer.style.display = 'none';
+
+    } else if (isAndroid) {
+      badge.textContent = "Android Ready";
+      badge.style.color = "#16a34a";
+      actions.innerHTML = `
+        <a href="com.google.ai.edge.gallery://llm_agent_chat/" class="app-open-link" style="background: #16a34a;" onclick="handleAndroidModalLaunch()">
+          🚀 Apri in Google AI Edge Gallery
+        </a>
+        <button class="app-open-link" style="background: #f1f5f9; color:#334155; border:1px solid #cbd5e1; margin-top:8px; width:100%; cursor:pointer;" onclick="copyModalSkillUrl(this)">
+          📋 Copia URL Skill negli Appunti
+        </button>
+      `;
+      qrContainer.innerHTML = '';
+      qrContainer.style.display = 'none';
+
+    } else {
+      // Desktop
+      badge.textContent = "Desktop & Mobile";
+      badge.style.color = "#0284c7";
+      actions.innerHTML = `
+        <button class="app-open-link" style="background: linear-gradient(135deg, #0284c7, #0369a1); border:none; width:100%; cursor:pointer; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="copyModalSkillUrl(this)">
+          <span>📋</span> <span>Copia URL Skill per Edge Gallery</span>
+        </button>
+      `;
+      qrContainer.style.display = 'block';
+      qrContainer.innerHTML = `
+        <div style="background: #f0f9ff; border: 1.5px solid #bae6fd; border-radius: 12px; padding: 12px; margin-top: 10px;">
+          <div style="font-size: 11px; font-weight: 800; color: #0284c7; text-transform: uppercase; margin-bottom: 6px;">
+            📱 Scansiona con lo Smartphone
+          </div>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=3&data=${encodeURIComponent(SKILL_URL)}" width="112" height="112" style="border-radius:10px; background:#fff; padding:4px; box-shadow:0 2px 6px rgba(0,0,0,0.08);" alt="Skill QR Code">
+          <div style="font-size: 11.5px; color: #475569; margin-top: 6px; line-height: 1.4;">
+            Inquadra il codice per aprire la pagina e installare la skill su Edge Gallery.
+          </div>
+        </div>
+      `;
+    }
+
     document.getElementById('installModal').classList.add('active');
   }
 
   function closeInstallModal() {
     document.getElementById('installModal').classList.remove('active');
-  }
-
-  function handleDeepLinkLaunch() {
-    setTimeout(() => {
-      // If still here on iOS/Android without app installed, prompt nicely
-      showToast("Opening app or paste in Edge Gallery!");
-    }, 1200);
   }
 </script>
 

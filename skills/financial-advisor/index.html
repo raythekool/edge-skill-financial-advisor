@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Leo — Financial Mentor | Google AI Edge Skill</title>
   <meta name="description" content="Add Leo (On-Device Financial Advisor) to Google AI Edge Gallery on Android & iOS.">
   <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
@@ -15,18 +15,19 @@
       --primary-dark: #0369a1;
       --primary-light: #e0f2fe;
       --bg: #0b0f19;
-      --card: rgba(17, 24, 39, 0.85);
+      --card: rgba(17, 24, 39, 0.88);
       --card-border: rgba(255, 255, 255, 0.1);
       --text: #f8fafc;
       --text-muted: #94a3b8;
       --accent: #10b981;
+      --accent-dark: #059669;
       --border-radius: 20px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
@@ -48,7 +49,7 @@
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--card-border);
       border-radius: var(--border-radius);
-      padding: 36px 28px;
+      padding: 34px 26px;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
       text-align: center;
       animation: fadeIn 0.4s ease-out;
@@ -72,17 +73,26 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      padding: 4px 12px;
+      padding: 5px 12px;
       border-radius: 9999px;
       background: rgba(2, 132, 199, 0.15);
       color: #38bdf8;
       border: 1px solid rgba(56, 189, 248, 0.25);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .pill.green {
       background: rgba(16, 185, 129, 0.15);
       color: #34d399;
       border-color: rgba(52, 211, 153, 0.25);
+    }
+
+    .pill.apple {
+      background: rgba(255, 255, 255, 0.08);
+      color: #f1f5f9;
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
     .icon-wrapper {
@@ -109,6 +119,7 @@
       letter-spacing: -0.02em;
       margin-bottom: 8px;
       color: #ffffff;
+      line-height: 1.25;
     }
 
     p.subtitle {
@@ -122,7 +133,7 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
     .btn {
@@ -131,14 +142,18 @@
       justify-content: center;
       gap: 10px;
       width: 100%;
+      min-height: 50px;
       padding: 14px 20px;
       border-radius: 14px;
       font-size: 15px;
       font-weight: 700;
       text-decoration: none;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
       border: none;
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .btn-primary {
@@ -162,6 +177,30 @@
     .btn-secondary:hover {
       background: rgba(255, 255, 255, 0.12);
       transform: translateY(-1px);
+    }
+
+    /* Animated Checkmark and Success Feedback */
+    .btn.copied {
+      background: linear-gradient(135deg, #10b981, #059669) !important;
+      color: #ffffff !important;
+      border-color: #10b981 !important;
+      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.45) !important;
+      transform: scale(1.02);
+    }
+
+    .check-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      animation: checkmarkPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      font-weight: 800;
+      font-size: 17px;
+    }
+
+    @keyframes checkmarkPop {
+      0% { transform: scale(0.3); opacity: 0; }
+      70% { transform: scale(1.3); }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     .url-box {
@@ -198,11 +237,18 @@
       cursor: pointer;
       transition: all 0.15s ease;
       white-space: nowrap;
+      user-select: none;
     }
 
     .copy-chip:hover {
       background: #38bdf8;
       color: #0b0f19;
+    }
+
+    .copy-chip.copied {
+      background: #10b981;
+      color: #ffffff;
+      border-color: #10b981;
     }
 
     .steps-card {
@@ -215,11 +261,14 @@
     }
 
     .steps-card h3 {
-      font-size: 13px;
+      font-size: 12.5px;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       color: #94a3b8;
       margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .step-item {
@@ -249,30 +298,63 @@
       margin-top: 1px;
     }
 
+    /* Highlighted QR Card for Desktop */
     .qr-section {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 16px;
-      padding: 14px;
+      padding: 16px;
       background: rgba(255, 255, 255, 0.02);
-      border-radius: 12px;
+      border-radius: 14px;
       margin-bottom: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: all 0.2s ease;
+    }
+
+    .qr-section.desktop-highlight {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.12), rgba(16, 185, 129, 0.08));
+      border: 1.5px solid rgba(56, 189, 248, 0.45);
+      box-shadow: 0 10px 28px -6px rgba(2, 132, 199, 0.25);
+      padding: 20px;
+      gap: 18px;
     }
 
     .qr-section img {
-      width: 84px;
-      height: 84px;
-      border-radius: 8px;
+      width: 90px;
+      height: 90px;
+      border-radius: 10px;
       background: #ffffff;
-      padding: 4px;
+      padding: 5px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .qr-section.desktop-highlight img {
+      width: 108px;
+      height: 108px;
+      border-radius: 12px;
     }
 
     .qr-desc {
       text-align: left;
-      font-size: 12px;
+      font-size: 12.5px;
       color: var(--text-muted);
-      line-height: 1.4;
+      line-height: 1.45;
+    }
+
+    .qr-badge {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.16);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin-bottom: 6px;
     }
 
     .links-footer {
@@ -280,6 +362,7 @@
       justify-content: center;
       gap: 18px;
       font-size: 13px;
+      flex-wrap: wrap;
     }
 
     .links-footer a {
@@ -292,6 +375,7 @@
       color: #38bdf8;
     }
 
+    /* Floating Toast Guidance Notification */
     .toast {
       position: fixed;
       bottom: 24px;
@@ -299,30 +383,52 @@
       transform: translateX(-50%) translateY(30px);
       background: #10b981;
       color: #ffffff;
-      padding: 12px 24px;
-      border-radius: 12px;
+      padding: 14px 22px;
+      border-radius: 14px;
       font-size: 13.5px;
       font-weight: 600;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.5);
       opacity: 0;
       pointer-events: none;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      z-index: 100;
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 9999;
+      max-width: 90%;
+      width: auto;
+      text-align: center;
+      line-height: 1.45;
     }
 
     .toast.show {
       transform: translateX(-50%) translateY(0);
       opacity: 1;
     }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 26px 18px;
+        border-radius: 16px;
+      }
+      h1 {
+        font-size: 21px;
+      }
+      p.subtitle {
+        font-size: 13.5px;
+        margin-bottom: 20px;
+      }
+      .btn {
+        font-size: 14px;
+        padding: 13px 16px;
+      }
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <div class="badge-bar">
+    <div class="badge-bar" id="badgeBar">
       <span class="pill">Google AI Edge Gallery</span>
       <span class="pill green">100% On-Device</span>
-      <span class="pill">Android & iOS</span>
+      <span class="pill" id="platformPill">Android & iOS</span>
     </div>
 
     <div class="icon-wrapper">
@@ -331,56 +437,60 @@
 
     <h1>Leo — Financial Literacy Mentor</h1>
     <p class="subtitle">
-      Install Leo into Google AI Edge Gallery to get an educational, non-speculative financial tutor powered by your on-device LLM.
+      Installa Leo in Google AI Edge Gallery per avere un mentore finanziario educativo ed etico, alimentato dal modello LLM eseguito localmente sul tuo dispositivo.
     </p>
 
-    <!-- Prominent Action Buttons -->
-    <div class="actions">
-      <a href="com.google.ai.edge.gallery://llm_agent_chat/" class="btn btn-primary" id="openAppBtn" onclick="handleDeepLink(event)">
-        <span>📲</span>
-        <span>Open in Google AI Edge Gallery</span>
-      </a>
-      <button class="btn btn-secondary" onclick="copySkillUrl()">
+    <!-- Prominent Action Buttons (Configured dynamically per OS) -->
+    <div class="actions" id="actionsContainer">
+      <!-- Fallback static buttons for no-JS environments -->
+      <button class="btn btn-primary" id="primaryActionBtn" onclick="triggerCopySkillUrl(this)">
         <span>📋</span>
-        <span id="copyBtnLabel">Copy Skill URL to Clipboard</span>
+        <span class="btn-label">Copia URL Skill per Edge Gallery</span>
+      </button>
+      <button class="btn btn-secondary" id="secondaryActionBtn" onclick="triggerCopySkillUrl(this)">
+        <span>📋</span>
+        <span>Copia URL Skill</span>
       </button>
     </div>
 
     <!-- Official Skill URL Code Box -->
     <div class="url-box">
       <span class="url-text" id="skillUrl">https://raythekool.github.io/edge-skill-financial-advisor/skills/financial-advisor/</span>
-      <button class="copy-chip" onclick="copySkillUrl()">Copy</button>
+      <button class="copy-chip" id="copyChipBtn" onclick="triggerCopySkillUrl(this)">Copia</button>
     </div>
 
     <!-- Step-by-Step Instructions -->
-    <div class="steps-card">
-      <h3>Quick Installation Steps</h3>
-      <div class="step-item">
-        <span class="step-num">1</span>
-        <span>Open <strong>Google AI Edge Gallery</strong> on your phone (Android or iPhone).</span>
-      </div>
-      <div class="step-item">
-        <span class="step-num">2</span>
-        <span>Navigate to <strong>Agent Skills</strong> > tap <strong>Add Skill</strong> > choose <strong>From URL</strong>.</span>
-      </div>
-      <div class="step-item">
-        <span class="step-num">3</span>
-        <span>Paste the Skill URL copied above and confirm. Leo is ready in your chat!</span>
+    <div class="steps-card" id="stepsCard">
+      <h3>Istruzioni di Installazione</h3>
+      <div id="stepsList">
+        <div class="step-item">
+          <span class="step-num">1</span>
+          <span>Apri <strong>Google AI Edge Gallery</strong> sul tuo smartphone.</span>
+        </div>
+        <div class="step-item">
+          <span class="step-num">2</span>
+          <span>Vai su <strong>Agent Skills</strong> > tocca <strong>Add Skill</strong> (+) > scegli <strong>From URL</strong>.</span>
+        </div>
+        <div class="step-item">
+          <span class="step-num">3</span>
+          <span>Incolla l'URL della Skill copiato sopra e conferma. Leo sarà subito pronto nella chat!</span>
+        </div>
       </div>
     </div>
 
-    <!-- QR Code for Desktop Users -->
-    <div class="qr-section">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=168x168&margin=2&data=https://raythekool.github.io/edge-skill-financial-advisor/skills/financial-advisor/" alt="QR Code">
-      <div class="qr-desc">
-        <strong>Viewing on Desktop?</strong><br>
-        Scan this QR code with your phone camera to open this installation link directly on your mobile device.
+    <!-- QR Code for Mobile Scanning -->
+    <div class="qr-section" id="qrSection">
+      <img id="qrCodeImg" src="https://api.qrserver.com/v1/create-qr-code/?size=216x216&margin=3&data=https://raythekool.github.io/edge-skill-financial-advisor/skills/financial-advisor/" alt="QR Code">
+      <div class="qr-desc" id="qrDesc">
+        <span class="qr-badge">📱 Scansiona con lo Smartphone</span><br>
+        <strong>Stai visualizzando da Computer?</strong><br>
+        Inquadra il codice QR con la fotocamera del tuo iPhone o Android per aprire questa pagina e aggiungere Leo in 1 tap.
       </div>
     </div>
 
     <!-- Footer Navigation -->
     <div class="links-footer">
-      <a href="../../index.html">🎮 Try Web Simulator</a>
+      <a href="../../index.html">🎮 Avvia Simulatore Web</a>
       <span>•</span>
       <a href="SKILL.md">📄 SKILL.md</a>
       <span>•</span>
@@ -388,41 +498,226 @@
     </div>
   </div>
 
-  <div class="toast" id="toast">📋 Skill URL copied to clipboard!</div>
+  <div class="toast" id="toast">📋 Skill URL copiato negli appunti!</div>
 
   <script>
-    const SKILL_URL = window.location.origin + window.location.pathname;
+    // Canonical production URL for the skill
+    const CANONICAL_URL = "https://raythekool.github.io/edge-skill-financial-advisor/skills/financial-advisor/";
+    const SKILL_URL = (window.location.protocol.startsWith('http') && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1')
+      ? (window.location.origin + window.location.pathname)
+      : CANONICAL_URL;
 
     document.getElementById('skillUrl').textContent = SKILL_URL;
+    document.getElementById('qrCodeImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=216x216&margin=3&data=' + encodeURIComponent(SKILL_URL);
+
+    // Client-side OS and Browser Detection
+    function detectPlatform() {
+      const ua = navigator.userAgent || '';
+      const platform = navigator.platform || '';
+      const maxTouch = navigator.maxTouchPoints || 0;
+
+      const isIOS = /iPad|iPhone|iPod/.test(ua) ||
+        (platform === 'MacIntel' && maxTouch > 1) ||
+        (/Macintosh/.test(ua) && maxTouch > 1);
+
+      const isAndroid = /Android/i.test(ua);
+      const isDesktop = !isIOS && !isAndroid;
+
+      return { isIOS, isAndroid, isDesktop, ua };
+    }
+
+    const { isIOS, isAndroid, isDesktop } = detectPlatform();
 
     function showToast(msg) {
       const toast = document.getElementById('toast');
       toast.textContent = msg;
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2600);
+      if (window._toastTimer) clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
     }
 
-    function copySkillUrl() {
-      navigator.clipboard.writeText(SKILL_URL).then(() => {
-        showToast("📋 Skill URL copied to clipboard!");
-        document.getElementById('copyBtnLabel').textContent = "✓ Copied to Clipboard!";
+    // Robust Clipboard Copy with fallback for non-secure / restricted environments
+    async function copyTextToClipboard(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (err) {
+          // Fallback to execCommand if clipboard API fails (e.g. document not focused)
+        }
+      }
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        return successful;
+      } catch (err) {
+        return false;
+      }
+    }
+
+    async function triggerCopySkillUrl(btnElement) {
+      await copyTextToClipboard(SKILL_URL);
+
+      // Guidance Toast specified in instructions
+      showToast("URL copiato negli appunti! Ora apri Edge Gallery > Agent Skills > Add Skill from URL");
+
+      // Visual feedback on the button
+      if (btnElement) {
+        const originalContent = btnElement.innerHTML;
+        btnElement.classList.add('copied');
+        btnElement.innerHTML = '<span class="check-icon">✓</span> <span>URL Copiato negli Appunti!</span>';
         setTimeout(() => {
-          document.getElementById('copyBtnLabel').textContent = "Copy Skill URL to Clipboard";
-        }, 3000);
-      }).catch(() => {
-        showToast("Skill URL: " + SKILL_URL);
-      });
+          btnElement.classList.remove('copied');
+          btnElement.innerHTML = originalContent;
+        }, 3200);
+      }
+
+      const chip = document.getElementById('copyChipBtn');
+      if (chip && chip !== btnElement) {
+        chip.textContent = "✓ Copiato";
+        chip.classList.add('copied');
+        setTimeout(() => {
+          chip.textContent = "Copia";
+          chip.classList.remove('copied');
+        }, 3200);
+      }
     }
 
-    function handleDeepLink(e) {
-      // First copy the URL automatically so it's in the clipboard when Edge Gallery opens
-      navigator.clipboard.writeText(SKILL_URL).catch(() => {});
-      showToast("📋 URL copied! Launching Edge Gallery...");
+    function handleAndroidLaunch(e) {
+      // First copy URL automatically so it is available in clipboard
+      copyTextToClipboard(SKILL_URL).catch(() => {});
+      showToast("📋 URL copiato negli appunti! Avvio Edge Gallery...");
+      // Let the deep link intent execute on Android
     }
 
-    // Auto-copy if requested via query param
+    // Initialize UI based on OS
+    function setupPlatformUI() {
+      const actionsContainer = document.getElementById('actionsContainer');
+      const platformPill = document.getElementById('platformPill');
+      const stepsList = document.getElementById('stepsList');
+      const qrSection = document.getElementById('qrSection');
+
+      if (isIOS) {
+        // iOS: iPhone / iPad
+        // Avoid com.google.ai.edge.gallery:// scheme to prevent Safari's invalid address popup
+        platformPill.textContent = "iPhone & iPad Ready";
+        platformPill.className = "pill apple";
+
+        actionsContainer.innerHTML = `
+          <button class="btn btn-primary" id="openAppBtn" onclick="triggerCopySkillUrl(this)">
+            <span class="btn-icon">📋</span>
+            <span class="btn-label">Copia URL Skill per Edge Gallery</span>
+          </button>
+          <a href="https://apps.apple.com/app/google-ai-edge-gallery/id6749645337" target="_blank" rel="noopener" class="btn btn-secondary" id="appStoreBtn">
+            <span class="btn-icon">📲</span>
+            <span>Scarica / Apri Edge Gallery su App Store</span>
+          </a>
+        `;
+
+        stepsList.innerHTML = `
+          <div class="step-item">
+            <span class="step-num">1</span>
+            <span>Tocca <strong>"Copia URL Skill per Edge Gallery"</strong> in alto (URL copiato con 1 tap).</span>
+          </div>
+          <div class="step-item">
+            <span class="step-num">2</span>
+            <span>Apri <strong>Google AI Edge Gallery</strong> (o scaricalo dall'App Store con il tasto sopra).</span>
+          </div>
+          <div class="step-item">
+            <span class="step-num">3</span>
+            <span>Vai su <strong>Agent Skills</strong> > tocca <strong>Add Skill</strong> (+) > scegli <strong>From URL</strong> e incolla il link.</span>
+          </div>
+        `;
+
+        // On mobile phone, user is already holding the device; keep QR available but clean
+        qrSection.style.display = 'none';
+
+      } else if (isAndroid) {
+        // Android: Android Chrome / Samsung Internet
+        // Keep com.google.ai.edge.gallery:// deep link as primary, copy URL as secondary
+        platformPill.textContent = "Android Ready";
+        platformPill.className = "pill green";
+
+        actionsContainer.innerHTML = `
+          <a href="com.google.ai.edge.gallery://llm_agent_chat/" class="btn btn-primary" id="openAppBtn" onclick="handleAndroidLaunch(event)">
+            <span class="btn-icon">📲</span>
+            <span class="btn-label">Apri in Google AI Edge Gallery</span>
+          </a>
+          <button class="btn btn-secondary" id="copySecondaryBtn" onclick="triggerCopySkillUrl(this)">
+            <span class="btn-icon">📋</span>
+            <span>Copia URL Skill negli Appunti</span>
+          </button>
+        `;
+
+        stepsList.innerHTML = `
+          <div class="step-item">
+            <span class="step-num">1</span>
+            <span>Tocca <strong>"Apri in Google AI Edge Gallery"</strong> (l'URL viene copiato in automatico negli appunti).</span>
+          </div>
+          <div class="step-item">
+            <span class="step-num">2</span>
+            <span>Nell'app, vai su <strong>Agent Skills</strong> > tocca <strong>Add Skill</strong> > <strong>From URL</strong>.</span>
+          </div>
+          <div class="step-item">
+            <span class="step-num">3</span>
+            <span>Incolla l'URL copiato e conferma. Leo sarà pronto nella chat!</span>
+          </div>
+        `;
+
+        qrSection.style.display = 'none';
+
+      } else {
+        // Desktop: macOS / Windows / Linux
+        platformPill.textContent = "Desktop & Mobile";
+        platformPill.className = "pill green";
+
+        actionsContainer.innerHTML = `
+          <button class="btn btn-primary" id="openAppBtn" onclick="triggerCopySkillUrl(this)">
+            <span class="btn-icon">📋</span>
+            <span class="btn-label">Copia URL Skill per Edge Gallery</span>
+          </button>
+          <a href="../../index.html" class="btn btn-secondary" id="launchSimulatorBtn">
+            <span class="btn-icon">🎮</span>
+            <span>Launch Web Simulator</span>
+          </a>
+        `;
+
+        stepsList.innerHTML = `
+          <div class="step-item">
+            <span class="step-num">1</span>
+            <span>Inquadra il <strong>QR Code</strong> qui sotto con la fotocamera del tuo telefono (iPhone o Android).</span>
+          </div>
+          <div class="step-item">
+            <span class="step-num">2</span>
+            <span>Oppure clicca <strong>"Copia URL Skill"</strong> per aggiungerlo manualmente in Edge Gallery.</span>
+          </div>
+          <div class="step-item">
+            <span class="step-num">3</span>
+            <span>Vuoi provarlo subito sul computer? Clicca su <strong>"Launch Web Simulator"</strong>!</span>
+          </div>
+        `;
+
+        // Prominently highlight the QR Code on Desktop
+        qrSection.classList.add('desktop-highlight');
+        qrSection.style.display = 'flex';
+      }
+    }
+
+    setupPlatformUI();
+
+    // Auto-copy if requested via query param ?copy=1
     if (new URLSearchParams(window.location.search).get('copy') === '1') {
-      copySkillUrl();
+      triggerCopySkillUrl(document.getElementById('openAppBtn'));
     }
   </script>
 </body>
