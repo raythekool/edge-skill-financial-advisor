@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 440" width="100%" height="100%" style="background:#0b1120; border-radius:16px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,sans-serif;">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="880" height="440" rx="16" fill="url(#bgGrad)" stroke="#1e293b" stroke-width="1.5"/>
+
+  <!-- Top Bar -->
+  <text x="40" y="36" fill="#38bdf8" font-size="12" font-weight="700" letter-spacing="1">LIVE PREVIEW • SPLIT VIEW EXPERIENCE</text>
+  <text x="40" y="58" fill="#f8fafc" font-size="18" font-weight="700">Conversazione Empatica + Webview Dashboard Reattiva</text>
+
+  <!-- Left Screen: Chat -->
+  <g transform="translate(40, 75)">
+    <!-- Device Frame -->
+    <rect width="380" height="330" rx="16" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+    <!-- App Header -->
+    <rect width="380" height="45" rx="16" fill="#1e293b"/>
+    <circle cx="25" cy="22" r="14" fill="#0284c7"/>
+    <text x="25" y="27" fill="#fff" font-size="14" text-anchor="middle">🦁</text>
+    <text x="48" y="23" fill="#f8fafc" font-size="13" font-weight="600">Leo — Mentore On-Device</text>
+    <circle cx="345" cy="22" r="4" fill="#10b981"/>
+    <text x="330" y="25" fill="#10b981" font-size="10" font-weight="600" text-anchor="end">LIVE</text>
+
+    <!-- Chat Messages -->
+    <!-- User Bubble -->
+    <rect x="130" y="60" width="235" height="42" rx="12" fill="#0284c7"/>
+    <text x="145" y="80" fill="#ffffff" font-size="11" font-weight="500">Come spiego l'interesse composto</text>
+    <text x="145" y="94" fill="#ffffff" font-size="11" font-weight="500">a chi parte completamente da zero?</text>
+
+    <!-- Leo Bubble -->
+    <rect x="15" y="112" width="310" height="98" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="28" y="132" fill="#38bdf8" font-size="11" font-weight="700">Leo</text>
+    <text x="28" y="150" fill="#cbd5e1" font-size="11">Pensa a una palla di neve che rotola:</text>
+    <text x="28" y="166" fill="#cbd5e1" font-size="11">all'inizio cresce piano, poi la neve accumulata</text>
+    <text x="28" y="182" fill="#cbd5e1" font-size="11">attira altra neve. Il tempo fa la magia! ⛄</text>
+    <text x="28" y="198" fill="#94a3b8" font-size="10">Nessuna formula complessa: basta la costanza.</text>
+
+    <!-- Badge Notification Popup -->
+    <rect x="15" y="222" width="350" height="52" rx="10" fill="#d97706" fill-opacity="0.15" stroke="#f59e0b" stroke-width="1.5"/>
+    <circle cx="42" cy="248" r="15" fill="url(#gold)"/>
+    <text x="42" y="253" fill="#fff" font-size="14" text-anchor="middle">🏆</text>
+    <text x="68" y="242" fill="#fde68a" font-size="12" font-weight="700">Traguardo Sbloccato: "Palla di Neve"</text>
+    <text x="68" y="258" fill="#cbd5e1" font-size="10">Hai compreso il principio cardine dell'accumulo nel tempo!</text>
+
+    <!-- Input bar mockup -->
+    <rect x="15" y="286" width="350" height="32" rx="16" fill="#1e293b" stroke="#334155"/>
+    <text x="32" y="306" fill="#64748b" font-size="11">Fai una domanda a Leo...</text>
+  </g>
+
+  <!-- Right Screen: Dashboard -->
+  <g transform="translate(460, 75)">
+    <!-- Device Frame -->
+    <rect width="380" height="330" rx="16" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+    <!-- App Header -->
+    <rect width="380" height="45" rx="16" fill="#1e293b"/>
+    <text x="20" y="27" fill="#f8fafc" font-size="13" font-weight="700">Dashboard &amp; Progressi</text>
+    <rect x="250" y="12" width="115" height="22" rx="11" fill="#0284c7" fill-opacity="0.2"/>
+    <text x="307" y="27" fill="#38bdf8" font-size="10" font-weight="700" text-anchor="middle">LIVELLO 2: APPRENDISTA</text>
+
+    <!-- Progress Card -->
+    <rect x="15" y="58" width="350" height="64" rx="10" fill="#1e293b"/>
+    <text x="30" y="78" fill="#e2e8f0" font-size="12" font-weight="600">Percorso di Alfabetizzazione (4/13 Moduli)</text>
+    <!-- Progress Bar Track -->
+    <rect x="30" y="90" width="320" height="8" rx="4" fill="#334155"/>
+    <rect x="30" y="90" width="110" height="8" rx="4" fill="#38bdf8"/>
+    <text x="30" y="112" fill="#94a3b8" font-size="10">Prossimo obiettivo: Diversificazione &amp; ETF</text>
+
+    <!-- Badges Showcase Grid -->
+    <text x="18" y="142" fill="#94a3b8" font-size="11" font-weight="700">BACHECA DEI BADGE (3 SBLOCCATI)</text>
+
+    <!-- Badge 1 -->
+    <rect x="15" y="152" width="110" height="80" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="1"/>
+    <circle cx="70" cy="178" r="14" fill="url(#gold)"/>
+    <text x="70" y="183" fill="#fff" font-size="14" text-anchor="middle">🎯</text>
+    <text x="70" y="206" fill="#f8fafc" font-size="10" font-weight="600" text-anchor="middle">Primo Passo</text>
+    <text x="70" y="220" fill="#10b981" font-size="9" text-anchor="middle">✓ Sbloccato</text>
+
+    <!-- Badge 2 -->
+    <rect x="135" y="152" width="110" height="80" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="1"/>
+    <circle cx="190" cy="178" r="14" fill="url(#gold)"/>
+    <text x="190" y="183" fill="#fff" font-size="14" text-anchor="middle">🛡️</text>
+    <text x="190" y="206" fill="#f8fafc" font-size="10" font-weight="600" text-anchor="middle">Fondo Sicuro</text>
+    <text x="190" y="220" fill="#10b981" font-size="9" text-anchor="middle">✓ Sbloccato</text>
+
+    <!-- Badge 3 -->
+    <rect x="255" y="152" width="110" height="80" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="1"/>
+    <circle cx="310" cy="178" r="14" fill="url(#gold)"/>
+    <text x="310" y="183" fill="#fff" font-size="14" text-anchor="middle">⛄</text>
+    <text x="310" y="206" fill="#f8fafc" font-size="10" font-weight="600" text-anchor="middle">Palla di Neve</text>
+    <text x="310" y="220" fill="#10b981" font-size="9" text-anchor="middle">✓ Sbloccato</text>
+
+    <!-- Daily Pill Card -->
+    <rect x="15" y="244" width="350" height="74" rx="10" fill="#0284c7" fill-opacity="0.1" stroke="#0284c7" stroke-width="1"/>
+    <text x="28" y="264" fill="#38bdf8" font-size="11" font-weight="700">☀️ PILLOLA DEL GIORNO (LLM ON-DEVICE)</text>
+    <text x="28" y="282" fill="#cbd5e1" font-size="10">"Il costo più invisibile negli investimenti è il TER dei fondi attivi.</text>
+    <text x="28" y="296" fill="#cbd5e1" font-size="10">Anche un 1.5% in meno all'anno può raddoppiare il capitale a 25 anni."</text>
+  </g>
+</svg>
+
