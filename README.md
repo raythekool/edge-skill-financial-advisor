@@ -42,6 +42,20 @@ You can add Leo directly into the **Google AI Edge Gallery** app in under 30 sec
 
 ## 📖 Reference: Prompts, Badges & Roadmap
 
+### How the Skill is Structured
+Every skill in Google AI Edge Gallery is composed of three decoupled building blocks:
+
+```text
+skills/financial-advisor/
+├── SKILL.md             # The Soul: AI persona, instructions, and tool calling schemas
+├── scripts/             # The Brain: Headless background runner managing localStorage state & badges
+└── assets/              # The UI: Interactive mobile webview rendered directly in chat
+```
+
+- **`SKILL.md` (The Soul)**: Gives the local LLM its voice, pedagogical analogies, and enforces the strict "Rule Zero" (No-Advice policy).
+- **`scripts/` (The Brain)**: Runs invisibly in the background on the phone. It handles deterministic state management, tracks what you learn across sessions, and calculates streak counts.
+- **`assets/` (The Visual Hub)**: The inline touch-friendly webview that displays your learning roadmap progress, unlocked badge grid, and daily economic pills right in the chat stream.
+
 ### What You Can Ask Leo (Prompt Ideas)
 Leo is programmed to answer everyday personal finance questions in plain, welcoming language:
 

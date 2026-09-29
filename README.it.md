@@ -42,6 +42,20 @@ Puoi aggiungere Leo all'app **Google AI Edge Gallery** in meno di 30 secondi:
 
 ## 📖 Reference: Domande, Badge & Percorso Formativo
 
+### Come è Strutturata la Skill
+Ogni skill in Google AI Edge Gallery si basa su tre componenti disaccoppiati:
+
+```text
+skills/financial-advisor/
+├── SKILL.md             # L'Anima (Soul): Personalità dell'AI, istruzioni e schemi per i tool
+├── scripts/             # Il Cervello (Brain): Runner invisibile che gestisce la memoria su telefono
+└── assets/              # L'Interfaccia (UI): Dashboard visiva touch integrata direttamente nella chat
+```
+
+- **`SKILL.md` (L'Anima)**: Fornisce all'LLM locale la sua personalità accogliente, le metafore didattiche e applica la rigorosa "Regola Zero" (nessun consiglio speculativo).
+- **`scripts/` (Il Cervello)**: Viene eseguito in background sul telefono. Gestisce la memoria persistente tra le sessioni, traccia i concetti appresi e calcola i giorni consecutivi (streak).
+- **`assets/` (Il Cruscotto Grafico)**: La webview mobile touch-friendly che visualizza l'avanzamento dei moduli, la bacheca dei badge conquistati e le pillole quotidiane direttamente dentro la conversazione.
+
 ### Cosa puoi chiedere a Leo (Esempi di Domande)
 Leo è programmato per rispondere a domande pratiche con un linguaggio accessibile e incoraggiante:
 
