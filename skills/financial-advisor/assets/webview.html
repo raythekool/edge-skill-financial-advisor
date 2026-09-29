@@ -1,29 +1,403 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Leo — Financial Advisor Dashboard</title>
-<link rel="stylesheet" href="style.css">
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --line: #e2e8f0;
+  --accent: #0284c7;
+  --accent-light: #e0f2fe;
+  --success: #16a34a;
+  --success-bg: #dcfce7;
+  --gold: #d97706;
+  --gold-bg: #fef3c7;
+  --badge-border: #fde68a;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --line: #334155;
+    --accent: #38bdf8;
+    --accent-light: #082f49;
+    --success: #4ade80;
+    --success-bg: #052e16;
+    --gold: #fbbf24;
+    --gold-bg: #451a03;
+    --badge-border: #78350f;
+  }
+}
+* { box-sizing: border-box; }
+html, body { scrollbar-width: none; -ms-overflow-style: none; }
+::-webkit-scrollbar { display: none; }
+body {
+  margin: 0;
+  padding: 12px;
+  background: var(--bg);
+  color: var(--text);
+  font: 13.5px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+main { max-width: 620px; margin: auto; }
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+h1 { margin: 0; font-size: 16px; font-weight: 700; }
+.subtitle { margin: 2px 0 0; font-size: 11px; color: var(--muted); }
+
+.badge-level {
+  border-radius: 12px;
+  padding: 4px 9px;
+  font-weight: 700;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.badge-level::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.badge-level.beginner { background: #dbeafe; color: #1d4ed8; }
+.badge-level.intermediate { background: #fef3c7; color: #b45309; }
+.badge-level.advanced { background: #dcfce7; color: #15803d; }
+
+.tabs {
+  display: flex;
+  background: var(--bg);
+  padding: 3px;
+  border-radius: 12px;
+  gap: 2px;
+  margin: 12px 0 10px;
+  border: 1px solid var(--line);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 1;
+  padding: 7px 6px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 11.5px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.tab.active {
+  background: var(--card);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  color: var(--accent);
+}
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Progress bar */
+.progress-container { margin: 10px 0 14px; }
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.progress-bar-bg {
+  background: var(--line);
+  height: 7px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  background: linear-gradient(90deg, #0284c7, #38bdf8);
+  height: 100%;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+/* Daily Pill Card */
+.pill-card {
+  background: linear-gradient(135deg, #f0fdf4, #e0f2fe);
+  border: 1px solid #bae6fd;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  color: #0369a1;
+}
+@media (prefers-color-scheme: dark) {
+  .pill-card {
+    background: linear-gradient(135deg, #064e3b22, #07598533);
+    border-color: #0369a1;
+    color: #bae6fd;
+  }
+}
+.pill-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.pill-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+@media (prefers-color-scheme: dark) {
+  .pill-title { color: #f8fafc; }
+}
+.pill-desc {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #334155;
+}
+@media (prefers-color-scheme: dark) {
+  .pill-desc { color: #cbd5e1; }
+}
+
+/* News Scenario Card */
+.news-card {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 10px;
+}
+.news-topic {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+.news-headline {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 3px 0 6px;
+}
+.news-impact {
+  background: var(--card);
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+
+/* Stepper / Timeline */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid transparent;
+}
+.step-item.current {
+  background: var(--card);
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(2,132,199,0.12);
+}
+.step-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-item.mastered .step-dot { background: var(--success-bg); color: var(--success); }
+.step-item.current .step-dot { background: var(--accent-light); color: var(--accent); border: 1.5px solid var(--accent); }
+.step-item.upcoming .step-dot { background: var(--line); color: var(--muted); }
+
+.step-content { flex: 1; }
+.step-title { font-size: 12.5px; font-weight: 700; }
+.step-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* BADGES SHOWCASE GRID */
+.badges-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.badges-count {
+  font-size: 11.5px;
+  font-weight: 700;
+  background: var(--gold-bg);
+  color: var(--gold);
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+.badges-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.badge-card {
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  transition: transform 0.15s;
+}
+.badge-card.unlocked {
+  background: var(--card);
+  border: 1.5px solid var(--badge-border);
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.08);
+}
+.badge-card.locked {
+  background: var(--bg);
+  border: 1px dashed var(--line);
+  opacity: 0.65;
+}
+.badge-icon {
+  font-size: 24px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.badge-card.locked .badge-icon {
+  filter: grayscale(1);
+}
+.badge-info { flex: 1; min-width: 0; }
+.badge-name {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.badge-status-tag {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--success);
+}
+.badge-card.locked .badge-status-tag {
+  color: var(--muted);
+}
+.badge-desc {
+  font-size: 10.5px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+/* Profile Grid */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+.profile-box {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+.profile-box-label { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 600; }
+.profile-box-val { font-size: 12px; font-weight: 600; margin-top: 2px; }
+
+.disclaimer {
+  font-size: 10.5px;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 12px;
+  line-height: 1.35;
+}
+</style>
 </head>
 <body>
 <main id="app">
   <div class="card">
     <div class="header">
       <div class="title-group">
-        <img src="icon.svg" class="icon" alt="Icona">
+        <svg class="icon" viewBox="0 0 48 48" width="36" height="36" style="border-radius:10px;">
+          <defs>
+            <linearGradient id="leoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0066cc"/>
+              <stop offset="100%" stop-color="#00b4d8"/>
+            </linearGradient>
+          </defs>
+          <rect width="48" height="48" rx="12" fill="url(#leoGrad)"/>
+          <path d="M24 10 L8 18 L24 26 L40 18 Z" fill="#ffffff" opacity="0.95"/>
+          <path d="M14 21.5 L14 29 C14 34.5 24 38 24 38 C24 38 34 34.5 34 29 L34 21.5 L24 26.5 Z" fill="#ffffff" opacity="0.85"/>
+          <path d="M39 20 L39 30" stroke="#ffd166" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="39" cy="31" r="2" fill="#ffd166"/>
+        </svg>
         <div>
           <h1>Leo — Financial Mentor</h1>
-          <div class="subtitle" id="lastSyncLabel">Your Personal Financial Literacy Mentor</div>
+          <div class="subtitle" id="lastSyncLabel">Il tuo mentore per l'alfabetizzazione finanziaria</div>
         </div>
       </div>
-      <div style="display:flex; gap:8px; align-items:center;"><div id="streakBadge" style="font-size:12px; font-weight:bold; color:var(--gold);">🔥 <span id="streakCount">0</span></div><div id="levelBadge" class="badge-level beginner">Beginner</div></div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <div id="streakBadge" style="font-size:12px; font-weight:bold; color:var(--gold);">🔥 <span id="streakCount">1</span></div>
+        <div id="levelBadge" class="badge-level beginner">Beginner</div>
+      </div>
     </div>
 
     <!-- Progress bar -->
     <div class="progress-container">
       <div class="progress-label">
-        <span>Learning Roadmap Progress</span>
+        <span>Avanzamento Percorso Didattico</span>
         <span id="progressPercent">0%</span>
       </div>
       <div class="progress-bar-bg">
@@ -33,10 +407,10 @@
 
     <!-- Tabs -->
     <div class="tabs" role="tablist" aria-label="Sezioni Dashboard">
-      <button class="tab active" role="tab" aria-selected="true" aria-controls="tab-pill" onclick="switchTab('pill')">☀️ Daily Pill</button>
-      <button class="tab" role="tab" aria-selected="false" onclick="switchTab('path')">🗺️ Pathway</button>
-      <button class="tab" role="tab" aria-selected="false" onclick="switchTab('badges')">🏆 Badges (<span id="tabBadgeCount">0</span>)</button>
-      <button class="tab" role="tab" aria-selected="false" onclick="switchTab('profile')">👤 Profile</button>
+      <button class="tab active" role="tab" aria-selected="true" aria-controls="tab-pill" onclick="switchTab('pill')">☀️ Pillola Oggi</button>
+      <button class="tab" role="tab" aria-selected="false" onclick="switchTab('path')">🗺️ Percorso</button>
+      <button class="tab" role="tab" aria-selected="false" onclick="switchTab('badges')">🏆 Badge (<span id="tabBadgeCount">0</span>)</button>
+      <button class="tab" role="tab" aria-selected="false" onclick="switchTab('profile')">👤 Profilo</button>
       <button class="tab" role="tab" aria-selected="false" onclick="switchTab('mindset')">🧠 Mindset</button>
     </div>
 
@@ -44,15 +418,15 @@
     <div id="tab-pill" role="tabpanel" class="tab-content active">
       <div class="pill-card">
         <div class="pill-header">
-          <span>💡 Concept of the Day with Leo</span>
+          <span>💡 Concetto del Giorno con Leo</span>
           <span id="pillLevelTag" style="font-weight:700;">LIVELLO</span>
         </div>
-        <div class="pill-title" id="pillTitle">Loading...</div>
+        <div class="pill-title" id="pillTitle">Caricamento...</div>
         <div class="pill-desc" id="pillDesc">...</div>
       </div>
 
       <div class="news-card">
-        <div class="news-topic" id="newsTopic">ECONOMIC CONTEXT</div>
+        <div class="news-topic" id="newsTopic">ATTUALITÀ ECONOMICA</div>
         <div class="news-headline" id="newsHeadline">...</div>
         <div class="news-impact" id="newsImpact">...</div>
       </div>
@@ -61,7 +435,7 @@
     <!-- Tab 2: Percorso di Apprendimento -->
     <div id="tab-path" role="tabpanel" class="tab-content">
       <div style="font-size: 11.5px; color: var(--muted); margin-bottom: 6px;">
-        13-module learning roadmap with Leo:
+        Roadmap formativa a 13 moduli con Leo:
       </div>
       <div class="timeline" id="timelineList"></div>
     </div>
@@ -69,8 +443,8 @@
     <!-- Tab 3: Badge & Trofei -->
     <div id="tab-badges" role="tabpanel" class="tab-content">
       <div class="badges-header">
-        <span style="font-size: 11.5px; color: var(--muted);">Trophies unlocked chatting with Leo:</span>
-        <span class="badges-count" id="badgesRatio">0 / 10 Unlocked</span>
+        <span style="font-size: 11.5px; color: var(--muted);">Trofei sbloccati dialogando con Leo:</span>
+        <span class="badges-count" id="badgesRatio">0 / 10 Sbloccati</span>
       </div>
       <div class="badges-grid" id="badgesGrid"></div>
     </div>
@@ -78,29 +452,29 @@
     <!-- Tab 4: Profilo Utente -->
     <div id="tab-profile" role="tabpanel" class="tab-content">
       <div style="font-size: 11.5px; color: var(--muted); margin-bottom: 6px;">
-        Profile memorized by Leo based on your conversations:
+        Profilo memorizzato da Leo in base alle tue conversazioni:
       </div>
       <div class="profile-grid">
         <div class="profile-box">
-          <div class="profile-box-label">Current Level</div>
+          <div class="profile-box-label">Livello Attuale</div>
           <div class="profile-box-val" id="profLevel">Beginner</div>
         </div>
         <div class="profile-box">
-          <div class="profile-box-label">Time Horizon</div>
-          <div class="profile-box-val" id="profHorizon">Medium-Long Term (> 5 years)</div>
+          <div class="profile-box-label">Orizzonte Temporale</div>
+          <div class="profile-box-val" id="profHorizon">Medio-Lungo Termine (> 5 anni)</div>
         </div>
         <div class="profile-box">
-          <div class="profile-box-label">Risk Attitude</div>
-          <div class="profile-box-val" id="profRisk">Prudent / Balanced</div>
+          <div class="profile-box-label">Attitudine al Rischio</div>
+          <div class="profile-box-val" id="profRisk">Prudente / Bilanciata</div>
         </div>
         <div class="profile-box">
-          <div class="profile-box-label">Communication Style</div>
-          <div class="profile-box-val" id="profTone">Everyday analogies and empathy</div>
+          <div class="profile-box-label">Stile Comunicativo</div>
+          <div class="profile-box-val" id="profTone">Analogie ed empatia</div>
         </div>
       </div>
 
       <div style="margin-top: 10px;">
-        <div style="font-size: 11px; font-weight:700; color:var(--muted); text-transform:uppercase;">Declared Goals</div>
+        <div style="font-size: 11px; font-weight:700; color:var(--muted); text-transform:uppercase;">Obiettivi Dichiarati</div>
         <div id="goalsList" style="margin-top:4px;"></div>
       </div>
     </div>
@@ -108,26 +482,350 @@
     <!-- Tab 5: Mindset & Bias -->
     <div id="tab-mindset" role="tabpanel" class="tab-content">
       <div style="font-size: 11.5px; color: var(--muted); margin-bottom: 6px;">
-        Mental clarity & cognitive bias protection with Leo:
+        Chiarezza mentale e protezione dai bias cognitivi con Leo:
       </div>
       <div style="background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:9px 12px; margin-top:6px; font-size:12px;">
-        <strong>🛡️ Rule Zero:</strong> Leo educates and guides, never advising on speculative investments.
+        <strong>🛡️ Regola Zero:</strong> Leo educa e orienta, non consiglia mai investimenti speculativi.
       </div>
       <div style="background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:9px 12px; margin-top:6px; font-size:12px;">
-        <strong>🌊 Volatility vs Risk:</strong> Temporary fluctuations are the toll for long-term real growth.
+        <strong>🌊 Volatilità vs Rischio:</strong> Le oscillazioni temporanee sono il pedaggio per la crescita reale nel lungo termine.
       </div>
       <div style="background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:9px 12px; margin-top:6px; font-size:12px;">
-        <strong>🚫 No FOMO:</strong> Time always beats timing, and calmness always beats rush.
+        <strong>🚫 No FOMO:</strong> Il tempo batte sempre il tempismo, e la calma batte la fretta.
       </div>
     </div>
 
     <div class="disclaimer">
-      ⚠️ Leo is a digital financial educator. He does not provide personalized investment advice.
+      ⚠️ Leo è un educatore finanziario digitale. Non fornisce consulenza finanziaria personalizzata.
     </div>
   </div>
 </main>
 
-<script src="../scripts/i18n.js"></script>
-<script src="app.js"></script>
+<script>
+const BADGES_CATALOG = [
+  { id: "first_step", icon: "🌱", title: "Primo Passo", title_en: "First Step", desc: "Hai iniziato a dialogare con Leo per prendere in mano il tuo futuro economico.", desc_en: "You started chatting with Leo to take charge of your financial future.", criteria: "Poni la tua prima domanda a Leo", criteria_en: "Ask your first question to Leo" },
+  { id: "safety_belt", icon: "🦺", title: "Cintura Allacciata", title_en: "Safety Belt", desc: "Hai compreso e pianificato la sicurezza del Fondo di Emergenza (3-6 mesi).", desc_en: "You planned and understood the security of an Emergency Fund (3-6 months).", criteria: "Affronta il tema del fondo di emergenza o della liquidità", criteria_en: "Discuss emergency funds or cash buffers" },
+  { id: "snowball", icon: "⛄", title: "Effetto Valanga", title_en: "Snowball Effect", desc: "Hai compreso il potere esponenziale dell'Interesse Composto nel tempo.", desc_en: "You grasped the exponential power of Compound Interest over time.", criteria: "Esplora il concetto di interesse composto", criteria_en: "Explore the compound interest concept" },
+  { id: "smart_cart", icon: "🛒", title: "Carrello Globale", title_en: "Global Cart", desc: "Hai compreso la diversificazione e la forza degli ETF a basso costo.", desc_en: "You understood diversification and the power of low-cost index ETFs.", criteria: "Approfondisci come funzionano gli ETF indicizzati", criteria_en: "Learn how index ETFs work" },
+  { id: "anti_fomo", icon: "🛡️", title: "Scudo Anti-FOMO", title_en: "Anti-FOMO Shield", desc: "Hai riconosciuto la trappola del guadagno facile e le regole etiche del no-advice.", desc_en: "You recognized get-rich-quick traps and the ethical Rule Zero.", criteria: "Discuti di mode speculative o ricevi la spiegazione della Regola Zero", criteria_en: "Discuss speculative fads or learn Rule Zero" },
+  { id: "zen_mind", icon: "🧘", title: "Mente Zen", title_en: "Zen Mind", desc: "Hai imparato a non farti spaventare dalla volatilità fisiologica dei mercati.", desc_en: "You learned not to panic during natural market volatility and dips.", criteria: "Esplora come gestire il panico e i crolli di borsa", criteria_en: "Learn how to manage anxiety and market drops" },
+  { id: "goal_setter", icon: "🎯", title: "Bussola Accesa", title_en: "Compass Activated", desc: "Hai definito nel tuo profilo un obiettivo concreto e un orizzonte temporale.", desc_en: "You set a clear goal and time horizon in your profile.", criteria: "Condividi la tua età, un orizzonte temporale o un obiettivo (es. casa)", criteria_en: "Share your age, a time horizon, or a goal (e.g. buying a house)" },
+  { id: "daily_learner", icon: "☀️", title: "Costanza Quotidiana", title_en: "Daily Consistency", desc: "Hai consultato la Pillola del Giorno e l'impatto delle notizie economiche.", desc_en: "You checked the Daily Pill and practical economic news impact.", criteria: "Richiedi la pillola del giorno a Leo", criteria_en: "Request today's daily pill from Leo" },
+  { id: "tax_smart", icon: "⚖️", title: "Occhio ai Costi & Fisco", title_en: "Fees & Taxes Savvy", desc: "Hai compreso l'impatto devastante del TER e la deducibilità della previdenza.", desc_en: "You understood the compounding drag of TER fees and pension deductions.", criteria: "Approfondisci i costi dei fondi o la previdenza integrativa", criteria_en: "Explore fund fees or supplementary pension deductions" },
+  { id: "roadmap_explorer", icon: "🧭", title: "Esploratore della Roadmap", title_en: "Roadmap Explorer", desc: "Hai esaminato il tuo percorso formativo completo a 13 moduli.", desc_en: "You reviewed your full 13-module learning curriculum.", criteria: "Esamina la roadmap del tuo percorso didattico", criteria_en: "Examine the learning path roadmap" }
+];
+
+const CURRICULUM = [
+  { id: "mod_1", pillar: "Fondamenta", pillar_en: "Foundations", level: "beginner", title: "Budgeting & Regola 50/30/20", title_en: "Budgeting & The 50/30/20 Rule", concept: "budgeting", desc: "Gestire entrate e uscite separando necessità (50%), desideri (30%) e risparmio (20%).", desc_en: "Manage income and expenses: needs (50%), wants (30%), and savings (20%)." },
+  { id: "mod_2", pillar: "Fondamenta", pillar_en: "Foundations", level: "beginner", title: "L'Inflazione & Potere d'Acquisto", title_en: "Inflation & Purchasing Power", concept: "inflazione", desc: "Capire perché lasciare tutti i soldi fermi sul conto corrente li svaluta nel tempo.", desc_en: "Understand why leaving all money idle in checking accounts erodes wealth over time." },
+  { id: "mod_3", pillar: "Fondamenta", pillar_en: "Foundations", level: "beginner", title: "Fondo di Emergenza", title_en: "Emergency Fund", concept: "fondo di emergenza", desc: "La cintura di sicurezza: 3-6 mesi di spese vive liquide prima di qualsiasi investimento.", desc_en: "The financial seatbelt: 3-6 months of liquid expenses before investing." },
+  { id: "mod_4", pillar: "Fondamenta", pillar_en: "Foundations", level: "beginner", title: "Conto Corrente vs Conto Deposito", title_en: "Checking vs Savings Account", concept: "conto deposito", desc: "Distinguere lo strumento per le spese quotidiane da quello per remunerare la liquidità.", desc_en: "Differentiate daily expense checking accounts from liquidity-remunerating savings." },
+  { id: "mod_5", pillar: "Investimenti", pillar_en: "Investments", level: "intermediate", title: "Interesse Composto & Tempo", title_en: "Compound Interest & Time", concept: "interesse composto", desc: "L'effetto valanga: generare rendimenti sui rendimenti passati grazie alla leva degli anni.", desc_en: "The snowball effect: generating returns on previous returns using the leverage of time." },
+  { id: "mod_6", pillar: "Investimenti", pillar_en: "Investments", level: "intermediate", title: "Azioni vs Obbligazioni", title_en: "Stocks vs Bonds", concept: "differenza tra azioni e obbligazioni", desc: "La differenza tra diventare socio di un'azienda (azioni) o prestarle del denaro (obbligazioni/bond).", desc_en: "The difference between becoming a business shareholder (stocks) vs lending money (bonds)." },
+  { id: "mod_7", pillar: "Investimenti", pillar_en: "Investments", level: "intermediate", title: "ETF & Diversificazione Globale", title_en: "ETFs & Global Diversification", concept: "etf", desc: "Il carrello della spesa: comprare migliaia di titoli mondiali con un'unica quota a bassissimo costo.", desc_en: "The grocery cart: owning thousands of global companies in one low-cost basket." },
+  { id: "mod_8", pillar: "Investimenti", pillar_en: "Investments", level: "intermediate", title: "Il PAC (Piano di Accumulo)", title_en: "DCA (Dollar-Cost Averaging)", concept: "pac", desc: "Investire una somma fissa ogni mese per non farsi condizionare dall'ansia del market timing.", desc_en: "Investing fixed monthly amounts to neutralize market timing anxiety." },
+  { id: "mod_9", pillar: "Investimenti", pillar_en: "Investments", level: "intermediate", title: "Costi e Fisco (TER e Tassazione)", title_en: "Costs & Taxes (TER & Taxation)", concept: "costi e ter", desc: "Impatto devastante dei costi di gestione attivi a 20 anni e tassazione sulle rendite (26% vs 12.5%).", desc_en: "The massive long-term drag of active management fees (TER) and capital gains taxation." },
+  { id: "mod_10", pillar: "Previdenza & Strategia", pillar_en: "Retirement & Strategy", level: "advanced", title: "Previdenza Integrativa & Vantaggi Fiscali", title_en: "Supplementary Pension & Tax Relief", concept: "fondo pensione", desc: "Costruire il secondo pilastro pensionistico sfruttando la deduzione fiscale annuale.", desc_en: "Building a secondary retirement pillar leveraging annual tax deductions." },
+  { id: "mod_11", pillar: "Previdenza & Strategia", pillar_en: "Retirement & Strategy", level: "advanced", title: "Volatilità, Rischio & Drawdown", title_en: "Volatility, Risk & Drawdown", concept: "volatilita e rischio", desc: "Capire che le oscillazioni di breve periodo sono il prezzo pagato per il rendimento a lungo termine.", desc_en: "Understanding that short-term fluctuations are the toll for long-term real growth." },
+  { id: "mod_12", pillar: "Previdenza & Strategia", pillar_en: "Retirement & Strategy", level: "advanced", title: "Asset Allocation & Ribilanciamento", title_en: "Asset Allocation & Rebalancing", concept: "asset allocation", desc: "Calibrare pesi tra azioni e bond nel ciclo di vita e ripristinarli una volta all'anno.", desc_en: "Calibrating stock/bond weights across life cycles and restoring them periodically." },
+  { id: "mod_13", pillar: "Previdenza & Strategia", pillar_en: "Retirement & Strategy", level: "advanced", title: "Finanza Comportamentale & Bias", title_en: "Behavioral Finance & Biases", concept: "finanza comportamentale", desc: "Difendersi da FOMO, overconfidence e dalla paura paralizzante dei crolli di borsa.", desc_en: "Defending yourself against FOMO, overconfidence, and panic during market downturns." }
+];
+
+let payload = {};
+let lang = "it";
+
+try {
+  const params = new URLSearchParams(location.search);
+  lang = params.get("lang") || "it";
+  const raw = params.get("payload");
+  if (raw) {
+    payload = JSON.parse(decodeURIComponent(raw));
+    if (payload.lang) lang = payload.lang;
+  } else {
+    const stored = localStorage.getItem("financial_advisor_leo_brain_v3");
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      const activeState = (parsed.profiles && parsed.activeId) ? parsed.profiles[parsed.activeId] : parsed;
+      if (activeState) {
+        payload = {
+          level: activeState.level || "beginner",
+          streak: activeState.streak || 1,
+          concepts: activeState.concepts_learned || [],
+          badges: (activeState.badges_earned || []).map(b => (typeof b === "string" ? b : b.id)),
+          profile: activeState.user_profile || {}
+        };
+      }
+    }
+  }
+} catch (e) {
+  console.warn("Payload invalid or missing:", e);
+}
+
+function switchTab(tabId, targetEl) {
+  document.querySelectorAll('.tab').forEach(b => {
+    b.classList.remove('active');
+    b.setAttribute('aria-selected', 'false');
+  });
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  
+  const btn = targetEl || (typeof event !== 'undefined' && event && event.currentTarget) || document.querySelector(`button[onclick*="'${tabId}'"]`) || document.querySelector(`[aria-controls="tab-${tabId}"]`);
+  if (btn) {
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+  }
+  const content = document.getElementById('tab-' + tabId);
+  if (content) content.classList.add('active');
+}
+
+function deriveModules(concepts, lang) {
+  const list = (concepts || []).map(c => String(c).toLowerCase().trim());
+  let currentFound = false;
+  return CURRICULUM.map(mod => {
+    const isMastered = list.includes(mod.concept.toLowerCase());
+    let status = "upcoming";
+    if (isMastered) {
+      status = "mastered";
+    } else if (!currentFound) {
+      status = "current";
+      currentFound = true;
+    }
+    const title = (lang === "en" && mod.title_en) ? mod.title_en : mod.title;
+    const desc = (lang === "en" && mod.desc_en) ? mod.desc_en : mod.desc;
+    const pillar = (lang === "en" && mod.pillar_en) ? mod.pillar_en : mod.pillar;
+    return { ...mod, title, desc, pillar, status };
+  });
+}
+
+function deriveBadges(earnedBadgeIds, lang) {
+  const earnedSet = new Set((earnedBadgeIds || []).map(b => (typeof b === "string" ? b : b.id)));
+  const allBadges = BADGES_CATALOG.map(b => {
+    const isUnlocked = earnedSet.has(b.id);
+    const title = (lang === "en" && b.title_en) ? b.title_en : b.title;
+    const desc = (lang === "en" && b.desc_en) ? b.desc_en : b.desc;
+    const criteria = (lang === "en" && b.criteria_en) ? b.criteria_en : b.criteria;
+    return {
+      ...b,
+      title,
+      desc,
+      criteria,
+      unlocked: isUnlocked
+    };
+  });
+  return {
+    total: BADGES_CATALOG.length,
+    earned_count: earnedSet.size,
+    badges: allBadges
+  };
+}
+
+function deriveDailyPill(modules, lang) {
+  const nextMod = (modules || []).find(m => m.status === "current") || CURRICULUM[0];
+  const isEn = lang === "en";
+  return {
+    concept_pill: {
+      title: nextMod.title,
+      concept: nextMod.concept,
+      pillar: nextMod.pillar,
+      level: nextMod.level,
+      explanation: nextMod.desc
+    },
+    market_news_context: {
+      topic: isEn ? "Central Bank Rates (ECB/Fed)" : "Tassi delle Banche Centrali (BCE)",
+      headline: isEn ? "Central banks review economic trends and interest rates" : "La BCE valuta l'andamento dei tassi guida",
+      tailored_impact: isEn ? "Lower interest rates reduce borrowing costs for mortgages, but lower yields on basic savings accounts." : "Se i tassi scendono, i nuovi mutui costano meno ma i conti deposito renderanno leggermente meno.",
+      for_profile: isEn ? "Calibrated for personal financial literacy" : "Calibrato per la tua educazione finanziaria"
+    }
+  };
+}
+
+function applyTranslations(lang) {
+  if (lang === "en") {
+    const subtitle = document.getElementById('lastSyncLabel');
+    if (subtitle) subtitle.textContent = "Your Personal Financial Literacy Mentor";
+
+    const progLabel = document.querySelector('.progress-label span:first-child');
+    if (progLabel) progLabel.textContent = "Learning Roadmap Progress";
+
+    const tabs = document.querySelectorAll('.tab');
+    if (tabs.length >= 5) {
+      tabs[0].childNodes[0].textContent = "☀️ Daily Pill ";
+      tabs[1].childNodes[0].textContent = "🗺️ Pathway ";
+      tabs[2].childNodes[0].textContent = "🏆 Badges ";
+      tabs[3].childNodes[0].textContent = "👤 Profile ";
+      tabs[4].childNodes[0].textContent = "🧠 Mindset ";
+    }
+
+    const pillHeader = document.querySelector('.pill-header span:first-child');
+    if (pillHeader) pillHeader.textContent = "💡 Concept of the Day with Leo";
+
+    const timelineInfo = document.querySelector('#tab-path > div:first-child');
+    if (timelineInfo) timelineInfo.textContent = "13-module learning roadmap with Leo:";
+
+    const badgesInfo = document.querySelector('.badges-header span:first-child');
+    if (badgesInfo) badgesInfo.textContent = "Trophies unlocked chatting with Leo:";
+
+    const profInfo = document.querySelector('#tab-profile > div:first-child');
+    if (profInfo) profInfo.textContent = "Profile memorized by Leo based on your conversations:";
+
+    const profLabels = document.querySelectorAll('.profile-box-label');
+    if (profLabels.length >= 4) {
+      profLabels[0].textContent = "Current Level";
+      profLabels[1].textContent = "Time Horizon";
+      profLabels[2].textContent = "Risk Attitude";
+      profLabels[3].textContent = "Communication Style";
+    }
+
+    const goalsTitle = document.querySelector('#tab-profile div[style*="uppercase"]');
+    if (goalsTitle) goalsTitle.textContent = "Declared Goals";
+
+    const mindsetInfo = document.querySelector('#tab-mindset > div:first-child');
+    if (mindsetInfo) mindsetInfo.textContent = "Mental clarity & cognitive bias protection with Leo:";
+
+    const mindsetBoxes = document.querySelectorAll('#tab-mindset > div');
+    if (mindsetBoxes.length >= 4) {
+      mindsetBoxes[1].innerHTML = "<strong>🛡️ Rule Zero:</strong> Leo educates and guides, never advising on speculative investments.";
+      mindsetBoxes[2].innerHTML = "<strong>🌊 Volatility vs Risk:</strong> Temporary fluctuations are the toll for long-term growth.";
+      mindsetBoxes[3].innerHTML = "<strong>🚫 No FOMO:</strong> Time always beats timing, and calmness always beats rush.";
+    }
+
+    const disclaimer = document.querySelector('.disclaimer');
+    if (disclaimer) disclaimer.innerHTML = "⚠️ Leo is a digital financial educator. He does not provide personalized investment advice.";
+  }
+}
+
+function render() {
+  const isEn = lang === "en";
+  applyTranslations(lang);
+
+  const level = payload.level || "beginner";
+  const streak = payload.streak || 1;
+  const profile = payload.profile || {};
+
+  const streakEl = document.getElementById("streakCount");
+  if (streakEl) streakEl.textContent = streak;
+
+  const badge = document.getElementById('levelBadge');
+  if (badge) {
+    badge.textContent = level.toUpperCase();
+    badge.className = `badge-level ${level}`;
+  }
+
+  // Derive modules and badges if needed
+  const modules = (payload.modules && payload.modules.length > 0)
+    ? payload.modules
+    : deriveModules(payload.concepts || ["inflazione", "fondo di emergenza"], lang);
+
+  const badgesData = (payload.badges && payload.badges.badges)
+    ? payload.badges
+    : deriveBadges(Array.isArray(payload.badges) ? payload.badges : ["first_step", "safety_belt"], lang);
+
+  const dailyPill = (payload.daily_pill && payload.daily_pill.concept_pill)
+    ? payload.daily_pill
+    : deriveDailyPill(modules, lang);
+
+  // Progress
+  const masteredCount = modules.filter(m => m.status === 'mastered').length;
+  const totalCount = modules.length || 13;
+  const pct = Math.round((masteredCount / totalCount) * 100);
+  document.getElementById('progressPercent').textContent = pct + '%';
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  // Pillola del Giorno
+  if (dailyPill.concept_pill) {
+    document.getElementById('pillTitle').textContent = dailyPill.concept_pill.title;
+    document.getElementById('pillDesc').textContent = dailyPill.concept_pill.explanation;
+    document.getElementById('pillLevelTag').textContent = (dailyPill.concept_pill.level || 'Beginner').toUpperCase();
+  }
+  if (dailyPill.market_news_context) {
+    document.getElementById('newsTopic').textContent = dailyPill.market_news_context.topic || (isEn ? 'ECONOMIC CONTEXT' : 'ATTUALITÀ ECONOMICA');
+    document.getElementById('newsHeadline').textContent = dailyPill.market_news_context.headline || '';
+    document.getElementById('newsImpact').innerHTML = `<strong>💡 ${dailyPill.market_news_context.tailored_impact}</strong><br><span style="font-size:11px; color:var(--muted);">${dailyPill.market_news_context.for_profile || ''}</span>`;
+  }
+
+  // Timeline Percorso
+  const timeline = document.getElementById('timelineList');
+  if (modules.length > 0) {
+    timeline.innerHTML = modules.map((m, idx) => {
+      let icon = m.status === 'mastered' ? '✓' : (m.status === 'current' ? '🎯' : (idx + 1));
+      let badgeLabel = m.status === 'mastered' 
+        ? (isEn ? 'Mastered' : 'Completato') 
+        : (m.status === 'current' ? (isEn ? 'Current Step' : 'Tappa Attuale') : (isEn ? 'Upcoming' : 'In Programma'));
+      return `
+        <div class="step-item ${m.status}">
+          <div class="step-dot">${icon}</div>
+          <div class="step-content">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="step-title">${m.title}</span>
+              <span style="font-size:9.5px; font-weight:700; text-transform:uppercase; color:${m.status==='mastered'?'var(--success)':(m.status==='current'?'var(--accent)':'var(--muted)')};">${badgeLabel}</span>
+            </div>
+            <div class="step-desc">${m.desc}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // BADGES GRID
+  document.getElementById('tabBadgeCount').textContent = badgesData.earned_count || 0;
+  document.getElementById('badgesRatio').textContent = `${badgesData.earned_count || 0} / ${badgesData.total || 10} ${isEn ? 'Unlocked' : 'Sbloccati'}`;
+
+  const bGrid = document.getElementById('badgesGrid');
+  if (badgesData.badges && badgesData.badges.length > 0) {
+    bGrid.innerHTML = badgesData.badges.map(b => {
+      if (b.unlocked) {
+        return `
+          <div class="badge-card unlocked">
+            <div class="badge-icon">${b.icon}</div>
+            <div class="badge-info">
+              <div class="badge-name">${b.title} <span class="badge-status-tag">✓ ${isEn ? 'UNLOCKED' : 'SBLOCCATO'}</span></div>
+              <div class="badge-desc">${b.desc}</div>
+            </div>
+          </div>
+        `;
+      } else {
+        return `
+          <div class="badge-card locked">
+            <div class="badge-icon">🔒</div>
+            <div class="badge-info">
+              <div class="badge-name">${b.title} <span class="badge-status-tag">${isEn ? 'LOCKED' : 'BLOCCATO'}</span></div>
+              <div class="badge-desc"><em>${b.criteria}</em></div>
+            </div>
+          </div>
+        `;
+      }
+    }).join('');
+  }
+
+  // Profilo
+  document.getElementById('profLevel').textContent = level.toUpperCase();
+  document.getElementById('profHorizon').textContent = profile.time_horizon || (isEn ? 'Medium-Long Term (> 5 years)' : 'Medio-Lungo (> 5 anni)');
+  document.getElementById('profRisk').textContent = profile.risk_attitude || (isEn ? 'Prudent / Balanced' : 'Prudente / Equilibrata');
+  document.getElementById('profTone').textContent = profile.tone_preference || (isEn ? 'Everyday analogies and empathy' : 'Analogie e metafore');
+
+  const goalsContainer = document.getElementById('goalsList');
+  const goals = profile.goals || (isEn ? ["Build emergency fund", "Financial peace of mind"] : ["Costruire fondo emergenza", "Tranquillità economica"]);
+  if (goals.length > 0) {
+    goalsContainer.innerHTML = goals.map(g => `
+      <div style="background:var(--bg); border:1px solid var(--line); border-radius:6px; padding:6px 10px; font-size:11.5px; margin-top:4px;">
+        🎯 ${g}
+      </div>
+    `).join('');
+  }
+
+  // Target Tab
+  try {
+    const params = new URLSearchParams(location.search);
+    const initTab = payload.tab || params.get("tab");
+    if (initTab && ['pill', 'path', 'badges', 'profile', 'mindset'].includes(initTab)) {
+      switchTab(initTab);
+    }
+  } catch (e) {
+    console.warn("Could not set initial tab:", e);
+  }
+}
+
+// Initial render
+render();
+</script>
 </body>
 </html>

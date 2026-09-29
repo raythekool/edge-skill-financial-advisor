@@ -6,8 +6,419 @@
   <title>Financial Advisor — Leo Brain Runner</title>
 </head>
 <body>
-<script src="i18n.js"></script>
-<script src="config.js"></script>
-<script src="brain.js"></script>
+<script>
+  const STORAGE_KEY = "financial_advisor_leo_brain_v3";
+
+  const BADGES_CATALOG = [
+    {
+      id: "first_step",
+      icon: "🌱",
+      title: "Primo Passo",
+      title_en: "First Step",
+      desc: "Hai iniziato a dialogare con Leo per prendere in mano il tuo futuro economico.",
+      desc_en: "You started chatting with Leo to take charge of your financial future.",
+      criteria: "Poni la tua prima domanda a Leo",
+      criteria_en: "Ask your first question to Leo"
+    },
+    {
+      id: "safety_belt",
+      icon: "🦺",
+      title: "Cintura Allacciata",
+      title_en: "Safety Belt",
+      desc: "Hai compreso e pianificato la sicurezza del Fondo di Emergenza (3-6 mesi).",
+      desc_en: "You planned and understood the security of an Emergency Fund (3-6 months).",
+      criteria: "Affronta il tema del fondo di emergenza o della liquidità",
+      criteria_en: "Discuss emergency funds or cash buffers"
+    },
+    {
+      id: "snowball",
+      icon: "⛄",
+      title: "Effetto Valanga",
+      title_en: "Snowball Effect",
+      desc: "Hai compreso il potere esponenziale dell'Interesse Composto nel tempo.",
+      desc_en: "You grasped the exponential power of Compound Interest over time.",
+      criteria: "Esplora il concetto di interesse composto",
+      criteria_en: "Explore the compound interest concept"
+    },
+    {
+      id: "smart_cart",
+      icon: "🛒",
+      title: "Carrello Globale",
+      title_en: "Global Cart",
+      desc: "Hai compreso la diversificazione e la forza degli ETF a basso costo.",
+      desc_en: "You understood diversification and the power of low-cost index ETFs.",
+      criteria: "Approfondisci come funzionano gli ETF indicizzati",
+      criteria_en: "Learn how index ETFs work"
+    },
+    {
+      id: "anti_fomo",
+      icon: "🛡️",
+      title: "Scudo Anti-FOMO",
+      title_en: "Anti-FOMO Shield",
+      desc: "Hai riconosciuto la trappola del guadagno facile e le regole etiche del no-advice.",
+      desc_en: "You recognized get-rich-quick traps and the ethical Rule Zero.",
+      criteria: "Discuti di mode speculative o ricevi la spiegazione della Regola Zero",
+      criteria_en: "Discuss speculative fads or learn Rule Zero"
+    },
+    {
+      id: "zen_mind",
+      icon: "🧘",
+      title: "Mente Zen",
+      title_en: "Zen Mind",
+      desc: "Hai imparato a non farti spaventare dalla volatilità fisiologica dei mercati.",
+      desc_en: "You learned not to panic during natural market volatility and dips.",
+      criteria: "Esplora come gestire il panico e i crolli di borsa",
+      criteria_en: "Learn how to manage anxiety and market drops"
+    },
+    {
+      id: "goal_setter",
+      icon: "🎯",
+      title: "Bussola Accesa",
+      title_en: "Compass Activated",
+      desc: "Hai definito nel tuo profilo un obiettivo concreto e un orizzonte temporale.",
+      desc_en: "You set a clear goal and time horizon in your profile.",
+      criteria: "Condividi la tua età, un orizzonte temporale o un obiettivo (es. casa)",
+      criteria_en: "Share your age, a time horizon, or a goal (e.g. buying a house)"
+    },
+    {
+      id: "daily_learner",
+      icon: "☀️",
+      title: "Costanza Quotidiana",
+      title_en: "Daily Consistency",
+      desc: "Hai consultato la Pillola del Giorno e l'impatto delle notizie economiche.",
+      desc_en: "You checked the Daily Pill and practical economic news impact.",
+      criteria: "Richiedi la pillola del giorno a Leo",
+      criteria_en: "Request today's daily pill from Leo"
+    },
+    {
+      id: "tax_smart",
+      icon: "⚖️",
+      title: "Occhio ai Costi & Fisco",
+      title_en: "Fees & Taxes Savvy",
+      desc: "Hai compreso l'impatto devastante del TER e la deducibilità della previdenza.",
+      desc_en: "You understood the compounding drag of TER fees and pension deductions.",
+      criteria: "Approfondisci i costi dei fondi o la previdenza integrativa",
+      criteria_en: "Explore fund fees or supplementary pension deductions"
+    },
+    {
+      id: "roadmap_explorer",
+      icon: "🧭",
+      title: "Esploratore della Roadmap",
+      title_en: "Roadmap Explorer",
+      desc: "Hai esaminato il tuo percorso formativo completo a 13 moduli.",
+      desc_en: "You reviewed your full 13-module learning curriculum.",
+      criteria: "Esamina la roadmap del tuo percorso didattico",
+      criteria_en: "Examine the learning path roadmap"
+    }
+  ];
+
+  const CURRICULUM = [
+    { id: "mod_1", pillar: "Fondamenta", pillar_en: "Foundations", level: "beginner", title: "Budgeting & Regola 50/30/20", title_en: "Budgeting & The 50/30/20 Rule", concept: "budgeting", desc: "Gestire entrate e uscite separando necessità (50%), desideri (30%) e risparmio (20%).", desc_en: "Manage income and expenses: needs (50%), wants (30%), and savings (20%)." },
+    { id: "mod_2", pillar: "Fondamenta", pillar_en: "Foundations", level: "beginner", title: "L'Inflazione & Potere d'Acquisto", title_en: "Inflation & Purchasing Power", concept: "inflazione", desc: "Capire perché lasciare tutti i soldi fermi sul conto corrente li svaluta nel tempo.", desc_en: "Understand why leaving all money idle in checking accounts erodes wealth over time." },
+    { id: "mod_3", pillar: "Fondamenta", pillar_en: "Foundations", level: "beginner", title: "Fondo di Emergenza", title_en: "Emergency Fund", concept: "fondo di emergenza", desc: "La cintura di sicurezza: 3-6 mesi di spese vive liquide prima di qualsiasi investimento.", desc_en: "The financial seatbelt: 3-6 months of liquid expenses before investing." },
+    { id: "mod_4", pillar: "Fondamenta", pillar_en: "Foundations", level: "beginner", title: "Conto Corrente vs Conto Deposito", title_en: "Checking vs Savings Account", concept: "conto deposito", desc: "Distinguere lo strumento per le spese quotidiane da quello per remunerare la liquidità.", desc_en: "Differentiate daily expense checking accounts from liquidity-remunerating savings." },
+    { id: "mod_5", pillar: "Investimenti", pillar_en: "Investments", level: "intermediate", title: "Interesse Composto & Tempo", title_en: "Compound Interest & Time", concept: "interesse composto", desc: "L'effetto valanga: generare rendimenti sui rendimenti passati grazie alla leva degli anni.", desc_en: "The snowball effect: generating returns on previous returns using the leverage of time." },
+    { id: "mod_6", pillar: "Investimenti", pillar_en: "Investments", level: "intermediate", title: "Azioni vs Obbligazioni", title_en: "Stocks vs Bonds", concept: "differenza tra azioni e obbligazioni", desc: "La differenza tra diventare socio di un'azienda (azioni) o prestarle del denaro (obbligazioni/bond).", desc_en: "The difference between becoming a business shareholder (stocks) vs lending money (bonds)." },
+    { id: "mod_7", pillar: "Investimenti", pillar_en: "Investments", level: "intermediate", title: "ETF & Diversificazione Globale", title_en: "ETFs & Global Diversification", concept: "etf", desc: "Il carrello della spesa: comprare migliaia di titoli mondiali con un'unica quota a bassissimo costo.", desc_en: "The grocery cart: owning thousands of global companies in one low-cost basket." },
+    { id: "mod_8", pillar: "Investimenti", pillar_en: "Investments", level: "intermediate", title: "Il PAC (Piano di Accumulo)", title_en: "DCA (Dollar-Cost Averaging)", concept: "pac", desc: "Investire una somma fissa ogni mese per non farsi condizionare dall'ansia del market timing.", desc_en: "Investing fixed monthly amounts to neutralize market timing anxiety." },
+    { id: "mod_9", pillar: "Investimenti", pillar_en: "Investments", level: "intermediate", title: "Costi e Fisco (TER e Tassazione)", title_en: "Costs & Taxes (TER & Taxation)", concept: "costi e ter", desc: "Impatto devastante dei costi di gestione attivi a 20 anni e tassazione sulle rendite (26% vs 12.5%).", desc_en: "The massive long-term drag of active management fees (TER) and capital gains taxation." },
+    { id: "mod_10", pillar: "Previdenza & Strategia", pillar_en: "Retirement & Strategy", level: "advanced", title: "Previdenza Integrativa & Vantaggi Fiscali", title_en: "Supplementary Pension & Tax Relief", concept: "fondo pensione", desc: "Costruire il secondo pilastro pensionistico sfruttando la deduzione fiscale annuale.", desc_en: "Building a secondary retirement pillar leveraging annual tax deductions." },
+    { id: "mod_11", pillar: "Previdenza & Strategia", pillar_en: "Retirement & Strategy", level: "advanced", title: "Volatilità, Rischio & Drawdown", title_en: "Volatility, Risk & Drawdown", concept: "volatilita e rischio", desc: "Capire che le oscillazioni di breve periodo sono il prezzo pagato per il rendimento a lungo termine.", desc_en: "Understanding that short-term fluctuations are the toll for long-term real growth." },
+    { id: "mod_12", pillar: "Previdenza & Strategia", pillar_en: "Retirement & Strategy", level: "advanced", title: "Asset Allocation & Ribilanciamento", title_en: "Asset Allocation & Rebalancing", concept: "asset allocation", desc: "Calibrare pesi tra azioni e bond nel ciclo di vita e ripristinarli una volta all'anno.", desc_en: "Calibrating stock/bond weights across life cycles and restoring them periodically." },
+    { id: "mod_13", pillar: "Previdenza & Strategia", pillar_en: "Retirement & Strategy", level: "advanced", title: "Finanza Comportamentale & Bias", title_en: "Behavioral Finance & Biases", concept: "finanza comportamentale", desc: "Difendersi da FOMO, overconfidence e dalla paura paralizzante dei crolli di borsa.", desc_en: "Defending yourself against FOMO, overconfidence, and panic during market downturns." }
+  ];
+
+  const DEFAULT_STATE = {
+    mentor_name: "Leo",
+    level: "beginner",
+    user_profile: {
+      goals: ["Costruire fondo emergenza", "Tranquillità economica"],
+      age_range: "non specificata",
+      time_horizon: "medio-lungo termine (> 5 anni)",
+      risk_attitude: "prudente / bilanciata",
+      tone_preference: "metafore quotidiane ed empatia"
+    },
+    concepts_learned: ["inflazione", "fondo di emergenza"],
+    badges_earned: [
+      { id: "first_step", unlocked_at: new Date().toISOString() },
+      { id: "safety_belt", unlocked_at: new Date().toISOString() }
+    ],
+    user_notes: [
+      "Profilo orientato alla tranquillità e consapevolezza dei rischi",
+      "Iniziato percorso di alfabetizzazione finanziaria con Leo"
+    ],
+    history_summaries: [
+      { date: new Date().toISOString().split("T")[0], summary: "Inaugurato percorso con Leo: esplorati concetti di inflazione e fondo emergenza." }
+    ],
+    last_updated: new Date().toISOString(),
+    streak: 1,
+    last_interaction_date: new Date().toISOString().split("T")[0]
+  };
+
+  function getStoredState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        let parsed = JSON.parse(raw);
+        if (!parsed.profiles) {
+          return { activeId: 'default', profiles: { 'default': parsed } };
+        }
+        return parsed;
+      }
+    } catch (e) {
+      console.warn("localStorage read failed:", e);
+    }
+    return null;
+  }
+
+  function saveStoredState(globalState) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(globalState));
+    } catch (e) {
+      console.error("Storage save failed:", e);
+    }
+  }
+
+  function initializeOrGetState() {
+    let globalState = getStoredState();
+    if (!globalState) {
+      globalState = {
+        activeId: 'default',
+        profiles: {
+          'default': JSON.parse(JSON.stringify(DEFAULT_STATE))
+        }
+      };
+      saveStoredState(globalState);
+    }
+    let state = globalState.profiles[globalState.activeId];
+    if (!state.badges_earned) state.badges_earned = [...DEFAULT_STATE.badges_earned];
+    if (!state.user_profile) state.user_profile = { ...DEFAULT_STATE.user_profile };
+    if (state.streak === undefined) state.streak = 1;
+
+    const today = new Date().toISOString().split("T")[0];
+    if (state.last_interaction_date) {
+      const lastDate = new Date(state.last_interaction_date);
+      const todayDate = new Date(today);
+      const diffTime = Math.abs(todayDate - lastDate);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      if (diffDays === 1) {
+        state.streak += 1;
+      } else if (diffDays > 1) {
+        state.streak = 1;
+      }
+    } else {
+      state.streak = 1;
+    }
+    state.last_interaction_date = today;
+    state.last_updated = new Date().toISOString();
+
+    return { globalState, state };
+  }
+
+  function calculateLearningPath(learnedConcepts, lang = "it") {
+    const list = (learnedConcepts || []).map(c => String(c).toLowerCase().trim());
+    let currentFound = false;
+
+    return CURRICULUM.map(mod => {
+      const isMastered = list.includes(mod.concept.toLowerCase());
+      let status = "upcoming";
+      if (isMastered) {
+        status = "mastered";
+      } else if (!currentFound) {
+        status = "current";
+        currentFound = true;
+      }
+      const title = (lang === "en" && mod.title_en) ? mod.title_en : mod.title;
+      const desc = (lang === "en" && mod.desc_en) ? mod.desc_en : mod.desc;
+      const pillar = (lang === "en" && mod.pillar_en) ? mod.pillar_en : mod.pillar;
+      return { ...mod, title, desc, pillar, status };
+    });
+  }
+
+  function evaluateBadges(state, context) {
+    const newlyUnlocked = [];
+    const earnedIds = (state.badges_earned || []).map(b => (typeof b === "string" ? b : b.id));
+    const concepts = (state.concepts_learned || []).map(c => c.toLowerCase());
+
+    const checkAndAward = (badgeId) => {
+      if (!earnedIds.includes(badgeId)) {
+        const entry = { id: badgeId, unlocked_at: new Date().toISOString() };
+        state.badges_earned.push(entry);
+        earnedIds.push(badgeId);
+        const fullBadge = BADGES_CATALOG.find(b => b.id === badgeId);
+        if (fullBadge) newlyUnlocked.push(fullBadge);
+      }
+    };
+
+    checkAndAward("first_step");
+
+    if (concepts.includes("interesse composto")) checkAndAward("snowball");
+    if (concepts.includes("fondo di emergenza")) checkAndAward("safety_belt");
+    if (concepts.includes("etf")) checkAndAward("smart_cart");
+    if (concepts.includes("costi e ter") || concepts.includes("fondo pensione")) checkAndAward("tax_smart");
+
+    if (context) {
+      if (context.fomo_triggered) checkAndAward("anti_fomo");
+      if (context.volatility_discussed) checkAndAward("zen_mind");
+      if (context.goal_set) checkAndAward("goal_setter");
+      if (context.daily_pill_called) checkAndAward("daily_learner");
+      if (context.roadmap_viewed) checkAndAward("roadmap_explorer");
+    }
+
+    return newlyUnlocked;
+  }
+
+  function buildWebview(state, globalState, lang, targetTab = "pill") {
+    const compactPayload = {
+      mentor: "Leo",
+      level: state.level || "beginner",
+      streak: state.streak || 1,
+      concepts: state.concepts_learned || [],
+      badges: (state.badges_earned || []).map(b => (typeof b === "string" ? b : b.id)),
+      tab: targetTab,
+      lang: lang || "it",
+      profile: state.user_profile || {}
+    };
+
+    const webviewUrl = `../assets/webview.html?payload=${encodeURIComponent(JSON.stringify(compactPayload))}&lang=${lang || "it"}&tab=${targetTab}`;
+
+    return {
+      url: webviewUrl,
+      aspectRatio: 0.85
+    };
+  }
+
+  window["ai_edge_gallery_get_result"] = async (data) => {
+    try {
+      let request = {};
+      if (typeof data === "string") {
+        try {
+          request = JSON.parse(data || "{}");
+        } catch (_) {
+          request = {};
+        }
+      } else if (data && typeof data === "object") {
+        request = data;
+      }
+
+      const action = request.action || "interact";
+      const lang = request.lang || "it";
+      let { globalState, state } = initializeOrGetState();
+
+      if (action === "interact" || action === "view_hub" || !action) {
+        const conceptsToAdd = [];
+        if (request.concept) conceptsToAdd.push(request.concept);
+        if (Array.isArray(request.concepts)) conceptsToAdd.push(...request.concepts);
+        if (Array.isArray(request.add_concepts)) conceptsToAdd.push(...request.add_concepts);
+
+        for (const c of conceptsToAdd) {
+          const clean = String(c).trim().toLowerCase();
+          if (clean && !state.concepts_learned.includes(clean)) {
+            state.concepts_learned.push(clean);
+          }
+        }
+
+        if (request.profile_update && typeof request.profile_update === "object") {
+          state.user_profile = { ...state.user_profile, ...request.profile_update };
+        }
+
+        const context = {
+          fomo_triggered: Boolean(request.fomo_triggered),
+          volatility_discussed: Boolean(request.volatility_discussed),
+          goal_set: Boolean(request.profile_update && (request.profile_update.goals || request.profile_update.time_horizon)),
+          daily_pill_called: Boolean(request.daily_pill_called || action === "get_daily_pill"),
+          roadmap_viewed: Boolean(request.roadmap_viewed || action === "get_learning_path")
+        };
+        const newlyUnlocked = evaluateBadges(state, context);
+        saveStoredState(globalState);
+
+        let targetTab = "pill";
+        if (newlyUnlocked.length > 0) {
+          targetTab = "badges";
+        } else if (conceptsToAdd.length > 0) {
+          targetTab = "path";
+        }
+
+        const path = calculateLearningPath(state.concepts_learned || [], lang);
+        const completed = path.filter(p => p.status === "mastered").length;
+
+        const resultPayload = {
+          mentor: "Leo",
+          level: state.level,
+          concepts_learned: state.concepts_learned,
+          newly_unlocked_badges: newlyUnlocked,
+          total_badges_earned: state.badges_earned.length,
+          streak: state.streak,
+          progress_percent: Math.round((completed / path.length) * 100),
+          summary: newlyUnlocked.length > 0
+            ? (lang === "en" ? `Awarded ${newlyUnlocked.length} badge(s)!` : `Sbloccati ${newlyUnlocked.length} nuovo/i badge!`)
+            : (lang === "en" ? `Dashboard ready.` : `Dashboard pronta.`)
+        };
+
+        return JSON.stringify({
+          result: JSON.stringify(resultPayload),
+          webview: buildWebview(state, globalState, lang, targetTab)
+        });
+      }
+
+      if (action === "get_badges") {
+        const badgesStatus = {
+          total: BADGES_CATALOG.length,
+          earned_count: state.badges_earned.length,
+          badges: BADGES_CATALOG.map(b => ({
+            ...b,
+            unlocked: state.badges_earned.some(eb => (eb.id || eb) === b.id)
+          }))
+        };
+        return JSON.stringify({
+          result: JSON.stringify(badgesStatus),
+          webview: buildWebview(state, globalState, lang, "badges")
+        });
+      }
+
+      if (action === "get_learning_path") {
+        evaluateBadges(state, { roadmap_viewed: true });
+        saveStoredState(globalState);
+        const path = calculateLearningPath(state.concepts_learned || [], lang);
+        const completed = path.filter(p => p.status === "mastered").length;
+        return JSON.stringify({
+          result: JSON.stringify({
+            mentor: "Leo",
+            progress_percent: Math.round((completed / path.length) * 100),
+            completed_modules: completed,
+            total_modules: path.length,
+            modules: path
+          }),
+          webview: buildWebview(state, globalState, lang, "path")
+        });
+      }
+
+      if (action === "get_daily_pill") {
+        evaluateBadges(state, { daily_pill_called: true });
+        saveStoredState(globalState);
+        return JSON.stringify({
+          result: JSON.stringify({
+            mentor: "Leo",
+            streak: state.streak,
+            daily_pill: "La costanza batte il tempismo."
+          }),
+          webview: buildWebview(state, globalState, lang, "pill")
+        });
+      }
+
+      // Default fallback
+      return JSON.stringify({
+        result: JSON.stringify({ status: "ok", action }),
+        webview: buildWebview(state, globalState, lang, "pill")
+      });
+
+    } catch (err) {
+      console.error("Error in Leo Brain:", err);
+      return JSON.stringify({
+        error: `Leo Brain Error: ${err.message}`
+      });
+    }
+  };
+</script>
 </body>
 </html>
