@@ -26,6 +26,14 @@ Click any of the pre-set prompt chips (e.g., *"What is an ETF?"* or *"Explain co
 
 ## 🛠️ How-To Guides: Using Leo in Google AI Edge Gallery
 
+### ⚡ 1-Click Quick Add
+[![Add Skill to Google AI Edge Gallery](https://img.shields.io/badge/📲%20Add%20Skill%20to-Google%20AI%20Edge%20Gallery-0284c7?style=for-the-badge&logo=google)](https://raythekool.github.io/edge-skill-financial-advisor/skills/financial-advisor/)
+
+**Skill URL to paste in the app:**
+```text
+https://raythekool.github.io/edge-skill-financial-advisor/skills/financial-advisor/
+```
+
 ### How to Install Leo on Your Phone (Android & iOS)
 You can add Leo directly into the **Google AI Edge Gallery** app in under 30 seconds:
 
