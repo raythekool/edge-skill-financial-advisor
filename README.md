@@ -1,103 +1,98 @@
-# <img src="skills/financial-advisor/assets/icon.svg" width="28" height="28" alt="Financial Advisor Icon" style="vertical-align: middle;"> Leo — Financial Advisor for Google AI Edge Gallery
+# <img src="skills/financial-advisor/assets/icon.svg" width="28" height="28" alt="Financial Advisor Icon" style="vertical-align: middle;"> Leo — Financial Mentor for Google AI Edge Gallery
 
 > 🇮🇹 Leggi la versione in Italiano: [README.it.md](README.it.md)
 
-A Google AI Edge Gallery Agent Skill featuring **Leo**, a personal financial literacy mentor. Leo provides warm, empathetic guidance (Soul) powered by an on-device persistent memory (Brain). He helps users navigate financial literacy through a gamified badge system, a 13-module learning path, and dynamic daily pills powered by LLM.
+**Leo** is a personal financial literacy mentor for the **Google AI Edge Gallery** mobile app (available on Android & iOS). 
 
-![Status](https://img.shields.io/badge/status-active-brightgreen)
-![Platform](https://img.shields.io/badge/platform-Google%20AI%20Edge%20Gallery-blue)
-![Type](https://img.shields.io/badge/type-JS%20Skill%20%2B%20Webview-orange)
-![Compliance](https://img.shields.io/badge/compliance-Educational%20Only-green)
+He provides warm, empathetic guidance powered by persistent on-device memory, an unlockable trophy system (10 badges), a 13-module learning pathway, and dynamic daily macroeconomic pills—**running 100% locally on your smartphone with complete privacy and zero investment solicitation.**
+
+[![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=flat-square)](https://github.com/raythekool/edge-skill-financial-advisor)
+[![Platform](https://img.shields.io/badge/Platform-Google%20AI%20Edge%20Gallery-blue?style=flat-square)](https://github.com/google-ai-edge/gallery)
+[![Device](https://img.shields.io/badge/Supported-Android%20%7C%20iOS-orange?style=flat-square)](https://github.com/raythekool/edge-skill-financial-advisor)
+[![Privacy](https://img.shields.io/badge/Privacy-100%25%20On--Device-success?style=flat-square)](https://github.com/raythekool/edge-skill-financial-advisor)
+[![Compliance](https://img.shields.io/badge/Compliance-Strict%20No--Advice-emerald?style=flat-square)](https://github.com/raythekool/edge-skill-financial-advisor)
 
 ---
 
-## 📚 Tutorials (Learning-Oriented)
+## 📚 Tutorials: Getting Started with Leo
 
-### Getting Started: Chat with Leo Locally
-If you want to experience what it's like to chat with Leo and explore his Webview Dashboard without installing it on a physical device, you can use the built-in local simulator.
+### 1. Try Leo Directly in Your Browser (No Installation Needed)
+Experience what chatting with Leo feels like before loading him onto your phone:
+👉 **[Open the Live Web Simulator](https://raythekool.github.io/edge-skill-financial-advisor/)**
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/raythekool/edge-skill-financial-advisor.git
-   cd edge-skill-financial-advisor
+Click any of the pre-set prompt chips (e.g., *"What is an ETF?"* or *"Explain compound interest"*) to see Leo explain concepts with relatable metaphors, unlock trophies, and display the interactive dashboard.
+
+---
+
+## 🛠️ How-To Guides: Using Leo in Google AI Edge Gallery
+
+### How to Install Leo on Your Phone (Android & iOS)
+You can add Leo directly into the **Google AI Edge Gallery** app in under 30 seconds:
+
+1. **Open Google AI Edge Gallery** on your Android device or iPhone.
+2. In the navigation menu, select **Agent Skills** (or **Skill Manager**).
+3. Tap **Add Skill** and choose **From URL** (or **Remote URL**).
+4. Paste the official skill link:
+   ```text
+   https://raythekool.github.io/edge-skill-financial-advisor/skills/financial-advisor/
    ```
-2. **Start the local server**:
-   ```bash
-   node serve.js
-   ```
-3. **Open your browser**:
-   Navigate to [http://localhost:3000/test-runner.html](http://localhost:3000/test-runner.html).
-4. **Interact**: Type a question (e.g., "What is compound interest?") to trigger the simulated LLM. Watch as the "Brain" updates your level, issues badges, and unlocks modules!
+5. Tap **Add / Confirm**. Leo is now active in your local model's toolset!
 
 ---
 
-## 🛠️ How-To Guides (Task-Oriented)
+## 📖 Reference: Prompts, Badges & Roadmap
 
-### How to Install the Skill on Google AI Edge Gallery
-You can deploy Leo to the Edge Gallery app running on an Android device using two methods.
+### What You Can Ask Leo (Prompt Ideas)
+Leo is programmed to answer everyday personal finance questions in plain, welcoming language:
 
-**Method 1: Via ADB (Local Import)**
-1. Connect your Android device via USB and ensure USB Debugging is enabled.
-2. Push the skill folder to your device's Download folder:
-   ```bash
-   adb push skills/financial-advisor/ /sdcard/Download/
-   ```
-3. Open the **Google AI Edge Gallery** app, tap **Import local skill**, and select the `financial-advisor` folder.
+| Category | Example Question to Ask Leo |
+| :--- | :--- |
+| **Daily Learning** | *"Give me today's daily pill and explain relevant economic news for me"* |
+| **Trophies & Progress** | *"Which badges have I earned so far?"* or *"Show me my trophies"* |
+| **Roadmap** | *"Show me my step-by-step learning roadmap"* |
+| **Financial Goals** | *"I am 30, want to buy a house in 7 years, and need an emergency fund. How do I start?"* |
+| **Key Concepts** | *"Explain compound interest using the snowball metaphor"* |
+| **Investing Basics** | *"What are ETFs and why is everyone talking about them?"* |
+| **Market Fluctuations** | *"Markets are crashing, should I panic and sell everything?"* |
+| **Advice Check** | *"Where should I invest my $10,000?"* *(Leo will explain instruments and reinforce Rule Zero)* |
+| **Full Overview** | *"Show me the full dashboard"* |
 
-**Method 2: Via URL (GitHub Pages)**
-1. Host the `skills/financial-advisor/` folder on a public URL.
-2. Inside the Edge Gallery app's Skill Manager, paste the URL (e.g., `https://raythekool.github.io/edge-skill-financial-advisor/skills/financial-advisor/`).
+### The 10 Unlockable Achievement Badges
+As you chat with Leo, his on-device memory tracks your milestones and awards trophies:
 
-### How to Add a New UI Language
-The Webview Dashboard supports i18n. To add a new language (e.g., Spanish):
-1. Open `skills/financial-advisor/scripts/i18n.js`.
-2. Add an `es` key to the `I18N` object containing the translations for the UI tabs and labels.
-3. Update `currentLang = "es";` or add logic to detect the device's locale dynamically.
+1. 🌱 **First Step**: Began your journey towards financial confidence.
+2. 🦺 **Safety Belt**: Understood the necessity of a 3-6 month liquid Emergency Fund.
+3. ⛄ **Snowball Effect**: Grasped the exponential power of Compound Interest over time.
+4. 🛒 **Global Cart**: Discovered global diversification through low-cost index ETFs.
+5. 🛡️ **Anti-FOMO Shield**: Learned to reject get-rich-quick schemes and verified Rule Zero.
+6. 🧘 **Zen Mind**: Gained psychological resilience against temporary market dips.
+7. 🎯 **Compass Activated**: Defined your age, time horizon, and a concrete savings goal.
+8. ☀️ **Daily Consistency**: Completed daily micro-learning with the Daily Pill.
+9. ⚖️ **Fees & Taxes Savvy**: Realized the 20-year drag of high management fees (TER).
+10. 🧭 **Roadmap Explorer**: Reviewed all 13 modules of the curriculum.
 
----
-
-## 📖 Reference (Information-Oriented)
-
-### File Structure & Architecture
-The skill relies on a Vanilla JS architecture completely decoupled from build tools (no Webpack/Vite required).
-
-```text
-skills/financial-advisor/
-├── SKILL.md             # The "Soul": LLM System Prompt & Instructions
-└── scripts/
-    ├── brain.js         # The "Brain": State management & API Handler
-    ├── config.js        # The "Data": Curriculum, Badges catalog, Default state
-    └── i18n.js          # The "Dictionary": UI Strings (EN/IT)
-└── assets/
-    ├── webview.html     # Dashboard layout
-    ├── app.js           # Dashboard UI logic (Tabs, Rendering)
-    ├── style.css        # Dashboard styling (Dark/Light mode)
-    └── icon.svg         # Skill Icon
-```
-
-### The `ai_edge_gallery_get_result` API
-The core of the skill is the `window["ai_edge_gallery_get_result"]` function in `brain.js`. The host app calls this function passing a JSON payload with an `action`.
-Supported actions:
-- `load_memory`: Returns current level, badges, and progress.
-- `update_memory`: Updates concepts learned and issues new badges.
-- `get_badges`: Returns the array of unlocked and locked badges.
-- `get_learning_path`: Returns the 13-module roadmap status.
-- `get_daily_pill`: Triggers the LLM to provide a dynamically generated economic news snippet (`llm_news`).
-- `view_hub`: Returns the payload required to render `webview.html`.
-- `switch_profile`: Swaps the active `localStorage` user profile.
+### The 13-Module Learning Curriculum
+- **Foundations**: 1. Budgeting (50/30/20) · 2. Inflation & Purchasing Power · 3. Emergency Fund · 4. Checking vs Savings Accounts.
+- **Investments**: 5. Compound Interest · 6. Stocks vs Bonds · 7. ETFs & Diversification · 8. Dollar-Cost Averaging (DCA) · 9. Costs & Taxation.
+- **Retirement & Strategy**: 10. Supplementary Pension · 11. Volatility & Drawdowns · 12. Asset Allocation & Rebalancing · 13. Behavioral Biases.
 
 ---
 
-## 🧠 Explanation (Understanding-Oriented)
+## 🧠 Explanation: Philosophy, Privacy & Ethics
 
-### The Philosophy: Soul & Brain
-Leo is designed not just to spit out financial facts, but to act as an empathetic mentor. This is achieved by dividing the skill into two distinct components:
+### 1. Soul & Brain Architecture
+- **The Soul**: Leo speaks with warmth, patience, and stoic composure. He never gets infected by market hype or panic, believing that *"Time always beats timing, and calmness always beats rush."*
+- **The Brain**: An on-device memory engine that remembers your level (Beginner, Intermediate, Advanced) and previously learned topics across sessions using private local storage on your phone.
 
-1. **The Soul (`SKILL.md`)**: This file dictates Leo's personality to the LLM. It strictly enforces the **Zero Rule (No Investment Advice)**, ensuring Leo never recommends specific stocks or crypto, but instead focuses on education using relatable metaphors.
-2. **The Brain (`brain.js`)**: An invisible runtime that provides persistence across sessions. Using the device's `localStorage`, it tracks what the user has learned. If the user asks about ETFs, the Brain records this, levels up the user to "Intermediate", and unlocks the "Smart Cart" badge.
+### 2. 100% Privacy-First & Offline
+Your financial questions, life goals, and personal timeline are sensitive information. Leo stores and processes everything **locally on your device**. No data is ever sent to external cloud databases or tracking servers.
 
-### Why Vanilla JS?
-To guarantee maximum compatibility and execution speed within the constrained Android Webview environment of the AI Edge Gallery app, the codebase relies entirely on Vanilla JavaScript, CSS variables, and HTML5. No bundlers or massive frameworks (like React) are used, keeping the payload footprint minuscule and the execution instantaneous.
+### 3. Rule Zero: Pure Financial Literacy, No Investment Advice
+Leo strictly adheres to **Rule Zero**:
+- He will **never** recommend buying or selling specific stocks, funds, or cryptocurrencies.
+- He exists to give you the mental map and conceptual understanding to make independent, educated decisions, while leaving individual asset management to certified professionals.
 
 ---
-*Disclaimer: This tool is exclusively for educational purposes and financial literacy. It does not constitute personalized financial advice or public savings solicitation.*
+
+## ⚠️ Disclaimer
+*Leo is an AI-powered educational companion built strictly for financial literacy. He does not provide personalized investment, legal, or tax advice, nor does he solicit public savings.*
