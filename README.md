@@ -24,27 +24,24 @@ Click any of the pre-set prompt chips (e.g., *"What is an ETF?"* or *"Explain co
 
 ---
 
-## 🛠️ How-To Guides: Using Leo in Google AI Edge Gallery
+## 🛠️ How-To: How to Install Leo on Your Phone (Android & iOS)
 
-### ⚡ 1-Click Quick Add
-[![Add Skill to Google AI Edge Gallery](https://img.shields.io/badge/📲%20Add%20Skill%20to-Google%20AI%20Edge%20Gallery-0284c7?style=for-the-badge&logo=google)](https://raythekool.github.io/edge-skill-financial-advisor/skills/financial-advisor/)
-
-**Skill URL to paste in the app:**
-```text
-https://raythekool.github.io/edge-skill-financial-advisor/skills/financial-advisor/
-```
-
-### How to Install Leo on Your Phone (Android & iOS)
 You can add Leo directly into the **Google AI Edge Gallery** app in under 30 seconds:
 
-1. **Open Google AI Edge Gallery** on your Android device or iPhone.
+<p align="left">
+  <a href="https://raythekool.github.io/edge-skill-financial-advisor/skills/financial-advisor/">
+    <img src="https://img.shields.io/badge/📲%20Quick%20Add%20to-Google%20AI%20Edge%20Gallery-0284c7?style=for-the-badge&logo=google" alt="Add Skill to Google AI Edge Gallery">
+  </a>
+</p>
+
+1. **Open Google AI Edge Gallery** on your Android phone or iPhone.
 2. In the navigation menu, select **Agent Skills** (or **Skill Manager**).
 3. Tap **Add Skill** and choose **From URL** (or **Remote URL**).
 4. Paste the official skill link:
    ```text
    https://raythekool.github.io/edge-skill-financial-advisor/skills/financial-advisor/
    ```
-5. Tap **Add / Confirm**. Leo is now active in your local model's toolset!
+5. Tap **Add / Confirm**. Leo is now active in your chat!
 
 ---
 

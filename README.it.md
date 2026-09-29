@@ -24,18 +24,15 @@ Fai clic su uno qualsiasi dei suggerimenti rapidi (es. *"Cosa sono gli ETF?"* o 
 
 ---
 
-## 🛠️ How-To Guides: Usare Leo su Google AI Edge Gallery
+## 🛠️ How-To: Come Installare Leo sullo Smartphone (Android & iOS)
 
-### ⚡ Aggiunta Rapida con 1 Click
-[![Aggiungi Skill a Google AI Edge Gallery](https://img.shields.io/badge/📲%20Aggiungi%20a-Google%20AI%20Edge%20Gallery-0284c7?style=for-the-badge&logo=google)](https://raythekool.github.io/edge-skill-financial-advisor/skills/financial-advisor/)
-
-**Indirizzo ufficiale della skill da incollare nell'app:**
-```text
-https://raythekool.github.io/edge-skill-financial-advisor/skills/financial-advisor/
-```
-
-### Come installare Leo sul tuo Smartphone (Android & iOS)
 Puoi aggiungere Leo all'app **Google AI Edge Gallery** in meno di 30 secondi:
+
+<p align="left">
+  <a href="https://raythekool.github.io/edge-skill-financial-advisor/skills/financial-advisor/">
+    <img src="https://img.shields.io/badge/📲%20Aggiunta%20Rapida%20a-Google%20AI%20Edge%20Gallery-0284c7?style=for-the-badge&logo=google" alt="Aggiungi Skill a Google AI Edge Gallery">
+  </a>
+</p>
 
 1. **Apri Google AI Edge Gallery** sul tuo smartphone Android o iPhone.
 2. Nel menu, seleziona **Agent Skills** (o **Skill Manager**).
