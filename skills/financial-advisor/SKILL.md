@@ -71,9 +71,16 @@ Quando l'utente chiede lo stato della sua roadmap formativa (13 moduli suddivisi
 ---
 
 ### 4. Pillola del Giorno & Notizia Rilevante (`get_daily_pill`)
-Micro-apprendimento quotidiano sul prossimo modulo e scenario di attualità economica spiegato per il profilo dell'utente:
+Quando l'utente chiede la "Pillola del Giorno" o le notizie, **GENERA TU** uno scenario di attualità economica (es. tassi BCE, inflazione, borse) e passalo al Brain. Chiama `run_js` con:
 ```json
-{"action": "get_daily_pill"}
+{
+  "action": "get_daily_pill",
+  "llm_news": {
+    "topic": "Tassi BCE",
+    "headline": "La BCE valuta il taglio dei tassi",
+    "tailored_impact": "Spiegazione per il livello dell'utente (beginner/intermediate/advanced)"
+  }
+}
 ```
 
 ---

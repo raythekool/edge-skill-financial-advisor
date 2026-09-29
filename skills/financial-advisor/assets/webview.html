@@ -4,366 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Leo — Financial Advisor Dashboard</title>
-<style>
-:root {
-  color-scheme: light dark;
-  --bg: #f8fafc;
-  --card: #ffffff;
-  --text: #0f172a;
-  --muted: #64748b;
-  --line: #e2e8f0;
-  --accent: #0284c7;
-  --accent-light: #e0f2fe;
-  --success: #16a34a;
-  --success-bg: #dcfce7;
-  --gold: #d97706;
-  --gold-bg: #fef3c7;
-  --badge-border: #fde68a;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0f172a;
-    --card: #1e293b;
-    --text: #f8fafc;
-    --muted: #94a3b8;
-    --line: #334155;
-    --accent: #38bdf8;
-    --accent-light: #082f49;
-    --success: #4ade80;
-    --success-bg: #052e16;
-    --gold: #fbbf24;
-    --gold-bg: #451a03;
-    --badge-border: #78350f;
-  }
-}
-* { box-sizing: border-box; }
-html, body { scrollbar-width: none; -ms-overflow-style: none; }
-::-webkit-scrollbar { display: none; }
-body {
-  margin: 0;
-  padding: 12px;
-  background: var(--bg);
-  color: var(--text);
-  font: 13.5px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-}
-main { max-width: 620px; margin: auto; }
-.card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 16px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-}
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-}
-.title-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  flex-shrink: 0;
-}
-h1 { margin: 0; font-size: 16px; font-weight: 700; }
-.subtitle { margin: 2px 0 0; font-size: 11px; color: var(--muted); }
-
-.badge-level {
-  border-radius: 12px;
-  padding: 4px 9px;
-  font-weight: 700;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-}
-.badge-level::before {
-  content: "";
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
-}
-.badge-level.beginner { background: #dbeafe; color: #1d4ed8; }
-.badge-level.intermediate { background: #fef3c7; color: #b45309; }
-.badge-level.advanced { background: #dcfce7; color: #15803d; }
-
-.tabs {
-  display: flex;
-  background: var(--bg);
-  padding: 3px;
-  border-radius: 12px;
-  gap: 2px;
-  margin: 12px 0 10px;
-  border: 1px solid var(--line);
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.tabs::-webkit-scrollbar { display: none; }
-.tab {
-  flex: 1;
-  padding: 7px 6px;
-  border: none;
-  background: transparent;
-  color: var(--text);
-  font-weight: 600;
-  font-size: 11.5px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  white-space: nowrap;
-}
-.tab.active {
-  background: var(--card);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  color: var(--accent);
-}
-
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-/* Progress bar */
-.progress-container { margin: 10px 0 14px; }
-.progress-label {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  color: var(--muted);
-  margin-bottom: 4px;
-}
-.progress-bar-bg {
-  background: var(--line);
-  height: 7px;
-  border-radius: 4px;
-  overflow: hidden;
-}
-.progress-bar-fill {
-  background: linear-gradient(90deg, #0284c7, #38bdf8);
-  height: 100%;
-  width: 0%;
-  transition: width 0.4s ease;
-}
-
-/* Daily Pill Card */
-.pill-card {
-  background: linear-gradient(135deg, #f0fdf4, #e0f2fe);
-  border: 1px solid #bae6fd;
-  border-radius: 14px;
-  padding: 12px 14px;
-  margin-bottom: 12px;
-  color: #0369a1;
-}
-@media (prefers-color-scheme: dark) {
-  .pill-card {
-    background: linear-gradient(135deg, #064e3b22, #07598533);
-    border-color: #0369a1;
-    color: #bae6fd;
-  }
-}
-.pill-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 6px;
-}
-.pill-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: #0f172a;
-  margin-bottom: 4px;
-}
-@media (prefers-color-scheme: dark) {
-  .pill-title { color: #f8fafc; }
-}
-.pill-desc {
-  font-size: 12.5px;
-  line-height: 1.45;
-  color: #334155;
-}
-@media (prefers-color-scheme: dark) {
-  .pill-desc { color: #cbd5e1; }
-}
-
-/* News Scenario Card */
-.news-card {
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-left: 4px solid var(--accent);
-  border-radius: 12px;
-  padding: 12px;
-  margin-top: 10px;
-}
-.news-topic {
-  font-size: 10.5px;
-  font-weight: 700;
-  color: var(--accent);
-  text-transform: uppercase;
-}
-.news-headline {
-  font-size: 13px;
-  font-weight: 700;
-  margin: 3px 0 6px;
-}
-.news-impact {
-  background: var(--card);
-  padding: 8px 10px;
-  border-radius: 8px;
-  font-size: 12px;
-  line-height: 1.4;
-  color: var(--text);
-  border: 1px solid var(--line);
-}
-
-/* Stepper / Timeline */
-.timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 10px;
-}
-.step-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 8px 10px;
-  border-radius: 10px;
-  background: var(--bg);
-  border: 1px solid transparent;
-}
-.step-item.current {
-  background: var(--card);
-  border-color: var(--accent);
-  box-shadow: 0 2px 8px rgba(2,132,199,0.12);
-}
-.step-dot {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 700;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-.step-item.mastered .step-dot { background: var(--success-bg); color: var(--success); }
-.step-item.current .step-dot { background: var(--accent-light); color: var(--accent); border: 1.5px solid var(--accent); }
-.step-item.upcoming .step-dot { background: var(--line); color: var(--muted); }
-
-.step-content { flex: 1; }
-.step-title { font-size: 12.5px; font-weight: 700; }
-.step-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
-
-/* BADGES SHOWCASE GRID */
-.badges-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-.badges-count {
-  font-size: 11.5px;
-  font-weight: 700;
-  background: var(--gold-bg);
-  color: var(--gold);
-  padding: 3px 8px;
-  border-radius: 12px;
-}
-.badges-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-.badge-card {
-  border-radius: 12px;
-  padding: 10px;
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-  transition: transform 0.15s;
-}
-.badge-card.unlocked {
-  background: var(--card);
-  border: 1.5px solid var(--badge-border);
-  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.08);
-}
-.badge-card.locked {
-  background: var(--bg);
-  border: 1px dashed var(--line);
-  opacity: 0.65;
-}
-.badge-icon {
-  font-size: 24px;
-  line-height: 1;
-  flex-shrink: 0;
-}
-.badge-card.locked .badge-icon {
-  filter: grayscale(1);
-}
-.badge-info { flex: 1; min-width: 0; }
-.badge-name {
-  font-size: 12px;
-  font-weight: 700;
-  margin-bottom: 2px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.badge-status-tag {
-  font-size: 9px;
-  font-weight: 700;
-  color: var(--success);
-}
-.badge-card.locked .badge-status-tag {
-  color: var(--muted);
-}
-.badge-desc {
-  font-size: 10.5px;
-  color: var(--muted);
-  line-height: 1.35;
-}
-
-/* Profile Grid */
-.profile-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-top: 8px;
-}
-.profile-box {
-  background: var(--bg);
-  border: 1px solid var(--line);
-  padding: 8px 10px;
-  border-radius: 8px;
-}
-.profile-box-label { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 600; }
-.profile-box-val { font-size: 12px; font-weight: 600; margin-top: 2px; }
-
-.disclaimer {
-  font-size: 10.5px;
-  color: var(--muted);
-  text-align: center;
-  margin-top: 12px;
-  line-height: 1.35;
-}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <main id="app">
@@ -376,7 +17,7 @@ h1 { margin: 0; font-size: 16px; font-weight: 700; }
           <div class="subtitle" id="lastSyncLabel">Il tuo compagno di alfabetizzazione finanziaria</div>
         </div>
       </div>
-      <div id="levelBadge" class="badge-level beginner">Beginner</div>
+      <div style="display:flex; gap:8px; align-items:center;"><div id="streakBadge" style="font-size:12px; font-weight:bold; color:var(--gold);">🔥 <span id="streakCount">0</span></div><div id="levelBadge" class="badge-level beginner">Beginner</div></div>
     </div>
 
     <!-- Progress bar -->
@@ -391,16 +32,16 @@ h1 { margin: 0; font-size: 16px; font-weight: 700; }
     </div>
 
     <!-- Tabs -->
-    <div class="tabs">
-      <button class="tab active" onclick="switchTab('pill')">☀️ Pillola Oggi</button>
-      <button class="tab" onclick="switchTab('path')">🗺️ Percorso</button>
-      <button class="tab" onclick="switchTab('badges')">🏆 Badge (<span id="tabBadgeCount">0</span>)</button>
-      <button class="tab" onclick="switchTab('profile')">👤 Profilo</button>
-      <button class="tab" onclick="switchTab('mindset')">🧠 Mindset</button>
+    <div class="tabs" role="tablist" aria-label="Sezioni Dashboard">
+      <button class="tab active" role="tab" aria-selected="true" aria-controls="tab-pill" onclick="switchTab('pill')">☀️ Pillola Oggi</button>
+      <button class="tab" role="tab" aria-selected="false" onclick="switchTab('path')">🗺️ Percorso</button>
+      <button class="tab" role="tab" aria-selected="false" onclick="switchTab('badges')">🏆 Badge (<span id="tabBadgeCount">0</span>)</button>
+      <button class="tab" role="tab" aria-selected="false" onclick="switchTab('profile')">👤 Profilo</button>
+      <button class="tab" role="tab" aria-selected="false" onclick="switchTab('mindset')">🧠 Mindset</button>
     </div>
 
     <!-- Tab 1: Pillola del Giorno -->
-    <div id="tab-pill" class="tab-content active">
+    <div id="tab-pill" role="tabpanel" class="tab-content active">
       <div class="pill-card">
         <div class="pill-header">
           <span>💡 Concetto del Giorno con Leo</span>
@@ -418,7 +59,7 @@ h1 { margin: 0; font-size: 16px; font-weight: 700; }
     </div>
 
     <!-- Tab 2: Percorso di Apprendimento -->
-    <div id="tab-path" class="tab-content">
+    <div id="tab-path" role="tabpanel" class="tab-content">
       <div style="font-size: 11.5px; color: var(--muted); margin-bottom: 6px;">
         Roadmap a 13 moduli con Leo:
       </div>
@@ -426,7 +67,7 @@ h1 { margin: 0; font-size: 16px; font-weight: 700; }
     </div>
 
     <!-- Tab 3: Badge & Trofei -->
-    <div id="tab-badges" class="tab-content">
+    <div id="tab-badges" role="tabpanel" class="tab-content">
       <div class="badges-header">
         <span style="font-size: 11.5px; color: var(--muted);">Trofei sbloccati dialogando con Leo:</span>
         <span class="badges-count" id="badgesRatio">0 / 10 Sbloccati</span>
@@ -435,7 +76,7 @@ h1 { margin: 0; font-size: 16px; font-weight: 700; }
     </div>
 
     <!-- Tab 4: Profilo Utente -->
-    <div id="tab-profile" class="tab-content">
+    <div id="tab-profile" role="tabpanel" class="tab-content">
       <div style="font-size: 11.5px; color: var(--muted); margin-bottom: 6px;">
         Profilo memorizzato da Leo in base alle tue domande:
       </div>
@@ -465,7 +106,7 @@ h1 { margin: 0; font-size: 16px; font-weight: 700; }
     </div>
 
     <!-- Tab 5: Mindset & Bias -->
-    <div id="tab-mindset" class="tab-content">
+    <div id="tab-mindset" role="tabpanel" class="tab-content">
       <div style="font-size: 11.5px; color: var(--muted); margin-bottom: 6px;">
         Igiene mentale e protezione dai bias cognitivi con Leo:
       </div>
@@ -486,125 +127,7 @@ h1 { margin: 0; font-size: 16px; font-weight: 700; }
   </div>
 </main>
 
-<script>
-  let payload = {};
-  try {
-    const params = new URLSearchParams(location.search);
-    const raw = params.get("payload");
-    if (raw) payload = JSON.parse(decodeURIComponent(raw));
-  } catch (e) {
-    console.warn("Payload non valido o assente:", e);
-  }
-
-  function switchTab(tabId) {
-    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    
-    event.currentTarget.classList.add('active');
-    document.getElementById('tab-' + tabId).classList.add('active');
-  }
-
-  function render() {
-    const level = payload.level || "beginner";
-    const profile = payload.profile || {};
-    const modules = payload.modules || [];
-    const dailyPill = payload.daily_pill || {};
-    const badgesData = payload.badges || { earned_count: 0, total: 10, badges: [] };
-
-    // Badge Level
-    const badge = document.getElementById('levelBadge');
-    badge.textContent = level;
-    badge.className = `badge-level ${level}`;
-
-    // Progress
-    const masteredCount = modules.filter(m => m.status === 'mastered').length;
-    const totalCount = modules.length || 13;
-    const pct = Math.round((masteredCount / totalCount) * 100);
-    document.getElementById('progressPercent').textContent = pct + '%';
-    document.getElementById('progressFill').style.width = pct + '%';
-
-    // Pillola del Giorno
-    if (dailyPill.concept_pill) {
-      document.getElementById('pillTitle').textContent = dailyPill.concept_pill.title;
-      document.getElementById('pillDesc').textContent = dailyPill.concept_pill.explanation;
-      document.getElementById('pillLevelTag').textContent = (dailyPill.concept_pill.level || 'Beginner').toUpperCase();
-    }
-    if (dailyPill.market_news_context) {
-      document.getElementById('newsTopic').textContent = dailyPill.market_news_context.topic || 'Attualità Economica';
-      document.getElementById('newsHeadline').textContent = dailyPill.market_news_context.headline || '';
-      document.getElementById('newsImpact').innerHTML = `<strong>💡 ${dailyPill.market_news_context.tailored_impact}</strong><br><span style="font-size:11px; color:var(--muted);">${dailyPill.market_news_context.for_profile || ''}</span>`;
-    }
-
-    // Timeline Percorso
-    const timeline = document.getElementById('timelineList');
-    if (modules.length > 0) {
-      timeline.innerHTML = modules.map((m, idx) => {
-        let icon = m.status === 'mastered' ? '✓' : (m.status === 'current' ? '🎯' : (idx + 1));
-        let badgeLabel = m.status === 'mastered' ? 'Completato' : (m.status === 'current' ? 'Tappa Attuale' : 'In Programma');
-        return `
-          <div class="step-item ${m.status}">
-            <div class="step-dot">${icon}</div>
-            <div class="step-content">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span class="step-title">${m.title}</span>
-                <span style="font-size:9.5px; font-weight:700; text-transform:uppercase; color:${m.status==='mastered'?'var(--success)':(m.status==='current'?'var(--accent)':'var(--muted)')};">${badgeLabel}</span>
-              </div>
-              <div class="step-desc">${m.desc}</div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    // BADGES GRID
-    document.getElementById('tabBadgeCount').textContent = badgesData.earned_count || 0;
-    document.getElementById('badgesRatio').textContent = `${badgesData.earned_count || 0} / ${badgesData.total || 10} Sbloccati`;
-
-    const bGrid = document.getElementById('badgesGrid');
-    if (badgesData.badges && badgesData.badges.length > 0) {
-      bGrid.innerHTML = badgesData.badges.map(b => {
-        if (b.unlocked) {
-          return `
-            <div class="badge-card unlocked">
-              <div class="badge-icon">${b.icon}</div>
-              <div class="badge-info">
-                <div class="badge-name">${b.title} <span class="badge-status-tag">✓ SBLOCCATO</span></div>
-                <div class="badge-desc">${b.desc}</div>
-              </div>
-            </div>
-          `;
-        } else {
-          return `
-            <div class="badge-card locked">
-              <div class="badge-icon">🔒</div>
-              <div class="badge-info">
-                <div class="badge-name">${b.title} <span class="badge-status-tag">BLOCCATO</span></div>
-                <div class="badge-desc"><em>${b.criteria}</em></div>
-              </div>
-            </div>
-          `;
-        }
-      }).join('');
-    }
-
-    // Profilo
-    document.getElementById('profLevel').textContent = level.toUpperCase();
-    document.getElementById('profHorizon').textContent = profile.time_horizon || 'Medio-Lungo Termine';
-    document.getElementById('profRisk').textContent = profile.risk_attitude || 'Equilibrata';
-    document.getElementById('profTone').textContent = profile.tone_preference || 'Analogie e metafore';
-
-    const goalsContainer = document.getElementById('goalsList');
-    const goals = profile.goals || [];
-    if (goals.length > 0) {
-      goalsContainer.innerHTML = goals.map(g => `
-        <div style="background:var(--bg); border:1px solid var(--line); border-radius:6px; padding:6px 10px; font-size:11.5px; margin-top:4px;">
-          🎯 ${g}
-        </div>
-      `).join('');
-    }
-  }
-
-  render();
-</script>
+<script src="../scripts/i18n.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

@@ -540,7 +540,7 @@
 
     // 2. PILLOLA DEL GIORNO & NOTIZIA ECONOMICA
     if (p.includes('pillola') || p.includes('notizi') || (p.includes('oggi') && (p.includes('giorno') || p.includes('imparare')))) {
-      const pillRes = await invokeBrain({ action: 'get_daily_pill' });
+      const pillRes = await invokeBrain({ action: 'get_daily_pill', llm_news: { topic: "Test LLM", headline: "Mercati generati dall'LLM", tailored_impact: "Impatto simulato" } });
       const pillData = JSON.parse(pillRes.result);
       const hubRes = await invokeBrain({ action: 'view_hub' });
       const webviewUrl = 'skills/financial-advisor/assets/' + hubRes.webview.url.replace(/^..\//, '').replace(/^assets\//, '');
