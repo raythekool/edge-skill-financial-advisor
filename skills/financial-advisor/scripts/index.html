@@ -3,86 +3,154 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Financial Advisor Brain Runner</title>
+  <title>Financial Advisor — Leo Brain Runner</title>
 </head>
 <body>
 <script>
-  const STORAGE_KEY = "financial_advisor_brain_state_v2";
+  const STORAGE_KEY = "financial_advisor_leo_brain_v3";
 
-  // Curriculum di apprendimento strutturato in 3 pilastri
+  // Catalogo Ufficiale dei Badge Guadagnabili
+  const BADGES_CATALOG = [
+    {
+      id: "first_step",
+      icon: "🌱",
+      title: "Primo Passo",
+      desc: "Hai iniziato a dialogare con Leo per prendere in mano il tuo futuro economico.",
+      criteria: "Poni la tua prima domanda a Leo"
+    },
+    {
+      id: "safety_belt",
+      icon: "🦺",
+      title: "Cintura Allacciata",
+      desc: "Hai compreso e pianificato la sicurezza del Fondo di Emergenza (3-6 mesi).",
+      criteria: "Affronta il tema del fondo di emergenza o della liquidità"
+    },
+    {
+      id: "snowball",
+      icon: "⛄",
+      title: "Effetto Valanga",
+      desc: "Hai compreso il potere esponenziale dell'Interesse Composto nel tempo.",
+      criteria: "Esplora il concetto di interesse composto"
+    },
+    {
+      id: "smart_cart",
+      icon: "🛒",
+      title: "Carrello Globale",
+      desc: "Hai compreso la diversificazione e la forza degli ETF a basso costo.",
+      criteria: "Approfondisci come funzionano gli ETF indicizzati"
+    },
+    {
+      id: "anti_fomo",
+      icon: "🛡️",
+      title: "Scudo Anti-FOMO",
+      desc: "Hai riconosciuto la trappola del guadagno facile e le regole etiche del no-advice.",
+      criteria: "Discuti di mode speculative o ricevi la spiegazione della Regola Zero"
+    },
+    {
+      id: "zen_mind",
+      icon: "🧘",
+      title: "Mente Zen",
+      desc: "Hai imparato a non farti spaventare dalla volatilità fisiologica dei mercati.",
+      criteria: "Esplora come gestire il panico e i crolli di borsa"
+    },
+    {
+      id: "goal_setter",
+      icon: "🎯",
+      title: "Bussola Accesa",
+      desc: "Hai definito nel tuo profilo un obiettivo concreto e un orizzonte temporale.",
+      criteria: "Condividi la tua età, un orizzonte temporale o un obiettivo (es. casa)"
+    },
+    {
+      id: "daily_learner",
+      icon: "☀️",
+      title: "Costanza Quotidiana",
+      desc: "Hai consultato la Pillola del Giorno e l'impatto delle notizie economiche.",
+      criteria: "Richiedi la pillola del giorno a Leo"
+    },
+    {
+      id: "tax_smart",
+      icon: "⚖️",
+      title: "Occhio ai Costi & Fisco",
+      desc: "Hai compreso l'impatto devastante del TER e la deducibilità della previdenza.",
+      criteria: "Approfondisci i costi dei fondi o la previdenza integrativa"
+    },
+    {
+      id: "roadmap_explorer",
+      icon: "🧭",
+      title: "Esploratore della Roadmap",
+      desc: "Hai esaminato il tuo percorso formativo completo a 13 moduli.",
+      criteria: "Esamina la roadmap del tuo percorso didattico"
+    }
+  ];
+
+  // Curriculum di apprendimento a 13 moduli
   const CURRICULUM = [
-    // Pilastro 1: Fondamenta (Beginner)
     { id: "mod_1", pillar: "Fondamenta", level: "beginner", title: "Budgeting & Regola 50/30/20", concept: "budgeting", desc: "Gestire entrate e uscite separando necessità (50%), desideri (30%) e risparmio (20%)." },
     { id: "mod_2", pillar: "Fondamenta", level: "beginner", title: "L'Inflazione & Potere d'Acquisto", concept: "inflazione", desc: "Capire perché lasciare tutti i soldi fermi sul conto corrente li svaluta nel tempo." },
     { id: "mod_3", pillar: "Fondamenta", level: "beginner", title: "Fondo di Emergenza", concept: "fondo di emergenza", desc: "La cintura di sicurezza: 3-6 mesi di spese vive liquide prima di qualsiasi investimento." },
     { id: "mod_4", pillar: "Fondamenta", level: "beginner", title: "Conto Corrente vs Conto Deposito", concept: "conto deposito", desc: "Distinguere lo strumento per le spese quotidiane da quello per remunerare la liquidità." },
 
-    // Pilastro 2: Investimenti & Crescita (Intermediate)
     { id: "mod_5", pillar: "Investimenti", level: "intermediate", title: "Interesse Composto & Tempo", concept: "interesse composto", desc: "L'effetto valanga: generare rendimenti sui rendimenti passati grazie alla leva degli anni." },
     { id: "mod_6", pillar: "Investimenti", level: "intermediate", title: "Azioni vs Obbligazioni", concept: "differenza tra azioni e obbligazioni", desc: "La differenza tra diventare socio di un'azienda (azioni) o prestarle del denaro (obbligazioni/bond)." },
     { id: "mod_7", pillar: "Investimenti", level: "intermediate", title: "ETF & Diversificazione Globale", concept: "etf", desc: "Il carrello della spesa: comprare migliaia di titoli mondiali con un'unica quota a bassissimo costo." },
     { id: "mod_8", pillar: "Investimenti", level: "intermediate", title: "Il PAC (Piano di Accumulo)", concept: "pac", desc: "Investire una somma fissa ogni mese per non farsi condizionare dall'ansia del market timing." },
     { id: "mod_9", pillar: "Investimenti", level: "intermediate", title: "Costi e Fisco (TER e Tassazione)", concept: "costi e ter", desc: "Impatto devastante dei costi di gestione attivi a 20 anni e tassazione sulle rendite (26% vs 12.5%)." },
 
-    // Pilastro 3: Strategia & Previdenza (Advanced)
     { id: "mod_10", pillar: "Previdenza & Strategia", level: "advanced", title: "Previdenza Integrativa & Vantaggi Fiscali", concept: "fondo pensione", desc: "Costruire il secondo pilastro pensionistico sfruttando la deduzione fiscale annuale fino a 5.164€." },
     { id: "mod_11", pillar: "Previdenza & Strategia", level: "advanced", title: "Volatilità, Rischio & Drawdown", concept: "volatilita e rischio", desc: "Capire che le oscillazioni di breve periodo sono il prezzo pagato per il rendimento a lungo termine." },
     { id: "mod_12", pillar: "Previdenza & Strategia", level: "advanced", title: "Asset Allocation & Ribilanciamento", concept: "asset allocation", desc: "Calibrare pesi tra azioni e bond nel ciclo di vita e ripristinarli una volta all'anno." },
     { id: "mod_13", pillar: "Previdenza & Strategia", level: "advanced", title: "Finanza Comportamentale & Bias", concept: "finanza comportamentale", desc: "Difendersi da FOMO, overconfidence e dalla paura paralizzante dei crolli di borsa." }
   ];
 
-  // Notizie e scenari economici a rotazione per le Pillole del Giorno
+  // Scenari di attualità per le Pillole del Giorno
   const NEWS_SCENARIOS = [
     {
       id: "bce_rates",
       topic: "Tassi delle Banche Centrali (BCE)",
-      headline: "La BCE valuta l'andamento dei tassi di interesse guida",
+      headline: "La BCE valuta l'andamento dei tassi guida",
       beginner_impact: "Cosa significa per te: se i tassi scendono, i nuovi mutui costano un po' meno, ma anche i conti deposito renderanno leggermente meno.",
-      intermediate_impact: "Cosa significa per te: quando i tassi scendono, il prezzo delle obbligazioni già emesse tende a salire. Per le azioni significa costi di finanziamento minori per le imprese.",
-      advanced_impact: "Cosa significa per te: impatto sulla duration della componente obbligazionaria in portafoglio e sul premio per il rischio azionario (Equity Risk Premium)."
+      intermediate_impact: "Cosa significa per te: quando i tassi scendono, il prezzo delle obbligazioni già emesse tende a salire. Per le azioni significa costi di finanziamento minori.",
+      advanced_impact: "Cosa significa per te: impatto sulla duration della componente obbligazionaria e sul premio per il rischio azionario (Equity Risk Premium)."
     },
     {
       id: "inflation_data",
       topic: "Dati sull'Inflazione ISTAT / Eurostat",
       headline: "L'inflazione frena la corsa: aggiornati i dati sui prezzi al consumo",
-      beginner_impact: "Cosa significa per te: l'aumento dei prezzi della spesa e delle bollette sta rallentando, ma i prezzi non tornano indietro: i soldi fermi sul conto continuano a perdere valore reale.",
-      intermediate_impact: "Cosa significa per te: per battere l'inflazione serve un rendimento reale positivo, motivo per cui il fondo d'emergenza va tenuto su conti remunerati e la quota a lungo termine su ETF azionari.",
-      advanced_impact: "Cosa significa per te: monitoraggio del break-even inflation rate e valutazione di strumenti inflation-linked per la parte difensiva del patrimonio."
+      beginner_impact: "Cosa significa per te: l'aumento dei prezzi rallenta, ma i prezzi non tornano indietro: i soldi fermi sul conto continuano a perdere potere d'acquisto.",
+      intermediate_impact: "Cosa significa per te: per battere l'inflazione serve un rendimento reale positivo, motivo per cui la liquidità a lungo termine va investita con metodo.",
+      advanced_impact: "Cosa significa per te: monitoraggio del break-even inflation rate e valutazione di strumenti inflation-linked per la componente difensiva."
     },
     {
       id: "btp_auctions",
       topic: "Rendimenti Titoli di Stato (BTP e Bund)",
       headline: "Aste del Tesoro: forte domanda per i titoli di stato italiani",
-      beginner_impact: "Cosa significa per te: lo Stato offre rendimenti garantiti a chi gli presta denaro per qualche anno, con una tassazione agevolata al 12,5% (rispetto al 26% consueto).",
-      intermediate_impact: "Cosa significa per te: ottima soluzione per obiettivi a scadenza prefissata (es. acquisto auto o casa tra 3-5 anni), evitando il rischio di oscillazione azionaria.",
-      advanced_impact: "Cosa significa per te: analisi della pendenza della curva dei rendimenti e spread BTP-Bund come termometro del rischio sovrano."
-    },
-    {
-      id: "market_rally",
-      topic: "Mercati Azionari Globali & Volatilità",
-      headline: "Gli indici mondiali (MSCI World / S&P 500) riflettono la crescita tecnologica",
-      beginner_impact: "Cosa significa per te: l'economia mondiale nel complesso continua a innovare. Con un ETF globale possiedi automaticamente le più grandi aziende del pianeta.",
-      intermediate_impact: "Cosa significa per te: chi investe con un PAC mensile non deve cercare di indovinare i massimi o i minimi: la costanza batte sempre il market timing.",
-      advanced_impact: "Cosa significa per te: concentrazione delle 'Magnificent 7' nella capitalizzazione e opportunità di ribilanciamento con indici Equal-Weight o mercati emergenti."
+      beginner_impact: "Cosa significa per te: lo Stato offre rendimenti fissi a chi gli presta denaro, con tassazione agevolata al 12,5% (rispetto al 26% delle azioni).",
+      intermediate_impact: "Cosa significa per te: ottima soluzione per obiettivi a scadenza prefissata (es. acquisto auto o casa tra 3-5 anni), evitando il rischio azionario.",
+      advanced_impact: "Cosa significa per te: analisi della curva dei rendimenti e spread BTP-Bund come termometro del rischio sovrano."
     }
   ];
 
   const DEFAULT_STATE = {
-    level: "beginner", // beginner | intermediate | advanced
+    mentor_name: "Leo",
+    level: "beginner",
     user_profile: {
-      goals: ["Creare fondo di emergenza", "Comprendere gli investimenti senza rischi eccessivi"],
+      goals: ["Creare fondo di emergenza", "Acquisire sicurezza economica"],
       age_range: "non specificata",
       time_horizon: "medio-lungo termine (> 5 anni)",
-      risk_attitude: "equilibrata / prudente",
-      tone_preference: "analogie quotidiane e spiegazioni chiare"
+      risk_attitude: "prudente / equilibrata",
+      tone_preference: "analogie quotidiane e calore empatico"
     },
     concepts_learned: ["inflazione", "fondo di emergenza"],
+    badges_earned: [
+      { id: "first_step", unlocked_at: new Date().toISOString() },
+      { id: "safety_belt", unlocked_at: new Date().toISOString() }
+    ],
     user_notes: [
       "Profilo orientato alla serenità e alla comprensione del rischio",
-      "Ha iniziato il percorso dalle fondamenta della finanza personale"
+      "Ha iniziato il percorso dalle fondamenta della finanza personale con Leo"
     ],
     history_summaries: [
-      { date: "2026-09-28", summary: "Inaugurato il percorso di alfabetizzazione finanziaria: discussi i primi concetti su inflazione e risparmio." }
+      { date: "2026-09-28", summary: "Inaugurato il percorso con Leo: discussi i primi concetti su inflazione e fondo emergenza." }
     ],
     last_updated: new Date().toISOString()
   };
@@ -112,6 +180,7 @@
       state = JSON.parse(JSON.stringify(DEFAULT_STATE));
       saveStoredState(state);
     }
+    if (!state.badges_earned) state.badges_earned = [...DEFAULT_STATE.badges_earned];
     if (!state.user_profile) state.user_profile = { ...DEFAULT_STATE.user_profile };
     return state;
   }
@@ -129,18 +198,69 @@
         status = "current";
         currentFound = true;
       }
+      return { ...mod, status };
+    });
+  }
+
+  // Verifica e sblocca badge in base a concetti, azioni o profilo
+  function evaluateBadges(state, context) {
+    const newlyUnlocked = [];
+    const earnedIds = (state.badges_earned || []).map(b => b.id);
+    const concepts = (state.concepts_learned || []).map(c => c.toLowerCase());
+
+    const checkAndAward = (badgeId) => {
+      if (!earnedIds.includes(badgeId)) {
+        const entry = { id: badgeId, unlocked_at: new Date().toISOString() };
+        state.badges_earned.push(entry);
+        earnedIds.push(badgeId);
+        const fullBadge = BADGES_CATALOG.find(b => b.id === badgeId);
+        newlyUnlocked.push(fullBadge);
+      }
+    };
+
+    // Controllo criteri
+    checkAndAward("first_step");
+
+    if (concepts.includes("interesse composto")) checkAndAward("snowball");
+    if (concepts.includes("fondo di emergenza")) checkAndAward("safety_belt");
+    if (concepts.includes("etf")) checkAndAward("smart_cart");
+    if (concepts.includes("costi e ter") || concepts.includes("fondo pensione")) checkAndAward("tax_smart");
+
+    if (context) {
+      if (context.fomo_triggered) checkAndAward("anti_fomo");
+      if (context.volatility_discussed) checkAndAward("zen_mind");
+      if (context.goal_set) checkAndAward("goal_setter");
+      if (context.daily_pill_called) checkAndAward("daily_learner");
+      if (context.roadmap_viewed) checkAndAward("roadmap_explorer");
+    }
+
+    return newlyUnlocked;
+  }
+
+  function getBadgesStatus(state) {
+    const earnedMap = new Map();
+    (state.badges_earned || []).forEach(b => earnedMap.set(b.id, b.unlocked_at));
+
+    const allBadges = BADGES_CATALOG.map(b => {
+      const isUnlocked = earnedMap.has(b.id);
       return {
-        ...mod,
-        status: status
+        ...b,
+        unlocked: isUnlocked,
+        unlocked_at: isUnlocked ? earnedMap.get(b.id) : null
       };
     });
+
+    return {
+      total: BADGES_CATALOG.length,
+      earned_count: earnedMap.size,
+      badges: allBadges
+    };
   }
 
   function getDailyPillData(state) {
     const path = calculateLearningPath(state.concepts_learned || []);
     const nextMod = path.find(m => m.status === "current") || CURRICULUM[0];
 
-    // Seleziona notizia basata sul giorno dell'anno
     const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
     const newsItem = NEWS_SCENARIOS[dayOfYear % NEWS_SCENARIOS.length];
 
@@ -167,7 +287,6 @@
     };
   }
 
-  // Entry point standard di Google AI Edge Gallery
   window["ai_edge_gallery_get_result"] = async (data) => {
     try {
       const request = typeof data === "string" ? JSON.parse(data || "{}") : (data || {});
@@ -177,14 +296,17 @@
       if (action === "load_memory") {
         const path = calculateLearningPath(state.concepts_learned);
         const currentStep = path.find(m => m.status === "current");
+        const badgesStatus = getBadgesStatus(state);
 
         const payload = {
+          mentor: "Leo",
           status: "ready",
           current_level: state.level || "beginner",
           user_profile: state.user_profile,
           concepts_already_learned: state.concepts_learned || [],
           concepts_count: (state.concepts_learned || []).length,
           current_learning_step: currentStep ? currentStep.title : "Tutti i moduli completati!",
+          badges: badgesStatus,
           user_notes: (state.user_notes || []).slice(-5),
           recent_topics: (state.history_summaries || []).slice(-3),
           last_updated: state.last_updated
@@ -194,12 +316,10 @@
       }
 
       if (action === "update_memory") {
-        // Aggiorna livello se richiesto
         if (request.new_level && ["beginner", "intermediate", "advanced"].includes(request.new_level)) {
           state.level = request.new_level;
         }
 
-        // Aggiungi concetti senza duplicati
         if (Array.isArray(request.add_concepts)) {
           for (const c of request.add_concepts) {
             const clean = String(c).trim().toLowerCase();
@@ -209,18 +329,15 @@
           }
         }
 
-        // Aggiorna dettagli profilo utente
         if (request.profile_update && typeof request.profile_update === "object") {
           state.user_profile = { ...state.user_profile, ...request.profile_update };
         }
 
-        // Aggiungi note
         if (request.add_note && typeof request.add_note === "string") {
           state.user_notes.push(request.add_note.trim());
           if (state.user_notes.length > 30) state.user_notes.shift();
         }
 
-        // Aggiungi sintesi storico
         if (request.summary && typeof request.summary === "string") {
           state.history_summaries.push({
             date: new Date().toISOString().split("T")[0],
@@ -229,31 +346,48 @@
           if (state.history_summaries.length > 20) state.history_summaries.shift();
         }
 
-        // Ricalcola livello automatico se sono stati appresi molti concetti
-        if (state.concepts_learned.length >= 8 && state.level === "beginner") {
-          state.level = "intermediate";
-        } else if (state.concepts_learned.length >= 12 && state.level === "intermediate") {
-          state.level = "advanced";
-        }
+        // Valutazione nuovi badge sbloccati
+        const context = {
+          fomo_triggered: request.fomo_triggered || false,
+          volatility_discussed: request.volatility_discussed || false,
+          goal_set: Boolean(request.profile_update && (request.profile_update.goals || request.profile_update.time_horizon)),
+          daily_pill_called: request.daily_pill_called || false,
+          roadmap_viewed: request.roadmap_viewed || false
+        };
+        const newlyUnlocked = evaluateBadges(state, context);
 
         saveStoredState(state);
 
         return JSON.stringify({
-          result: `Memoria aggiornata: livello=${state.level}, concetti=${state.concepts_learned.length}, profilo sincronizzato.`
+          result: JSON.stringify({
+            message: `Memoria di Leo aggiornata: livello=${state.level}, concetti=${state.concepts_learned.length}.`,
+            newly_unlocked_badges: newlyUnlocked,
+            total_badges_earned: state.badges_earned.length
+          })
+        });
+      }
+
+      if (action === "get_badges") {
+        const badgesStatus = getBadgesStatus(state);
+        return JSON.stringify({
+          result: JSON.stringify(badgesStatus)
         });
       }
 
       if (action === "get_learning_path") {
+        evaluateBadges(state, { roadmap_viewed: true });
+        saveStoredState(state);
+
         const path = calculateLearningPath(state.concepts_learned || []);
-        const total = path.length;
         const completed = path.filter(p => p.status === "mastered").length;
-        const progressPct = Math.round((completed / total) * 100);
+        const progressPct = Math.round((completed / path.length) * 100);
 
         return JSON.stringify({
           result: JSON.stringify({
+            mentor: "Leo",
             progress_percent: progressPct,
             completed_modules: completed,
-            total_modules: total,
+            total_modules: path.length,
             current_level: state.level,
             modules: path
           })
@@ -261,22 +395,31 @@
       }
 
       if (action === "get_daily_pill") {
+        const newlyUnlocked = evaluateBadges(state, { daily_pill_called: true });
+        saveStoredState(state);
+
         const pillData = getDailyPillData(state);
         return JSON.stringify({
-          result: JSON.stringify(pillData)
+          result: JSON.stringify({
+            ...pillData,
+            newly_unlocked_badges: newlyUnlocked
+          })
         });
       }
 
       if (action === "view_hub") {
         const path = calculateLearningPath(state.concepts_learned || []);
         const pill = getDailyPillData(state);
+        const badgesStatus = getBadgesStatus(state);
 
         const webviewPayload = {
+          mentor: "Leo",
           level: state.level || "beginner",
           profile: state.user_profile || {},
           concepts: state.concepts_learned || [],
           modules: path,
           daily_pill: pill,
+          badges: badgesStatus,
           notes: (state.user_notes || []).slice(-4),
           summaries: (state.history_summaries || []).slice(-4),
           updatedAt: state.last_updated
@@ -285,10 +428,10 @@
         const webviewUrl = `../assets/webview.html?payload=${encodeURIComponent(JSON.stringify(webviewPayload))}`;
 
         return JSON.stringify({
-          result: `Ecco la dashboard del tuo percorso formativo (Livello: ${state.level.toUpperCase()}).`,
+          result: `Ecco la dashboard completa di Leo: pillola odierna, percorso, bacheca dei badge e profilo.`,
           webview: {
             url: webviewUrl,
-            aspectRatio: 1.2
+            aspectRatio: 1.25
           }
         });
       }
@@ -298,16 +441,16 @@
         state = JSON.parse(JSON.stringify(DEFAULT_STATE));
         saveStoredState(state);
         return JSON.stringify({
-          result: "Memoria e profilo utente ripristinati con successo. Si riparte da zero!"
+          result: "Memoria e trofei ripristinati. Leo è pronto per iniziare un nuovo viaggio didattico con te!"
         });
       }
 
       throw new Error(`Azione non riconosciuta: ${action}`);
 
     } catch (err) {
-      console.error("Errore nel Brain:", err);
+      console.error("Errore nel Brain di Leo:", err);
       return JSON.stringify({
-        error: `Financial Advisor Brain Error: ${err.message}`
+        error: `Leo Brain Error: ${err.message}`
       });
     }
   };

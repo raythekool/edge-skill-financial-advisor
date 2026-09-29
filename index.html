@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Google AI Edge Gallery — Financial Advisor Chat Simulator</title>
+  <title>Google AI Edge Gallery — Leo (Financial Mentor Simulator)</title>
   <style>
     :root {
       --bg: #eef2f6;
@@ -15,6 +15,9 @@
       --text: #0f172a;
       --muted: #64748b;
       --border: #e2e8f0;
+      --gold: #d97706;
+      --gold-bg: #fef3c7;
+      --gold-border: #fde68a;
     }
     * { box-sizing: border-box; }
     body {
@@ -27,12 +30,12 @@
       justify-content: center;
     }
     .wrapper {
-      max-width: 620px;
+      max-width: 640px;
       width: 100%;
       display: flex;
       flex-direction: column;
       height: calc(100vh - 32px);
-      max-height: 920px;
+      max-height: 940px;
     }
     .app-header {
       background: var(--card);
@@ -51,9 +54,9 @@
       gap: 12px;
     }
     .mentor-info img {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
     }
     .mentor-info h2 {
       margin: 0;
@@ -74,6 +77,21 @@
       height: 7px;
       border-radius: 50%;
       background: #16a34a;
+    }
+    .header-badges {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .badge-counter {
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--gold-bg);
+      color: var(--gold);
+      padding: 4px 8px;
+      border-radius: 12px;
+      border: 1px solid var(--gold-border);
+      cursor: pointer;
     }
     .level-chip {
       font-size: 11px;
@@ -159,6 +177,26 @@
       border-radius: 6px;
       margin-top: 8px;
     }
+    .achievement-card {
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+      border: 1.5px solid #fde68a;
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #92400e;
+      animation: popIn 0.3s ease;
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.9); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .achievement-icon { font-size: 24px; }
+    .achievement-title { font-weight: 700; font-size: 12px; }
+    .achievement-desc { font-size: 11px; color: #b45309; }
+
     .msg-webview-container {
       margin-top: 10px;
       border-radius: 14px;
@@ -168,7 +206,7 @@
     }
     .msg-webview {
       width: 100%;
-      height: 480px;
+      height: 500px;
       border: none;
       display: block;
       background: #ffffff;
@@ -285,50 +323,53 @@
   <!-- Header -->
   <div class="app-header">
     <div class="mentor-info">
-      <img src="skills/financial-advisor/assets/icon.svg" alt="Icona">
+      <img src="skills/financial-advisor/assets/icon.svg" alt="Leo">
       <div>
-        <h2>Financial Mentor</h2>
+        <h2>Leo — Financial Mentor</h2>
         <div class="status">AI Edge Gallery On-Device Skill</div>
       </div>
     </div>
-    <div id="levelBadge" class="level-chip">Beginner</div>
+    <div class="header-badges">
+      <div id="badgeCounter" class="badge-counter" onclick="usePrompt('Mostrami i miei badge')">🏆 <span id="badgeCount">2</span>/10 Badge</div>
+      <div id="levelBadge" class="level-chip">Beginner</div>
+    </div>
   </div>
 
   <!-- Tabs: Chat vs Debug -->
   <div class="view-tabs">
-    <button class="tab-btn active" id="tabChatBtn" onclick="switchView('chat')">💬 Chat & Prompt</button>
-    <button class="tab-btn" id="tabDebugBtn" onclick="switchView('debug')">🧠 Ispezione Brain & Profilo</button>
+    <button class="tab-btn active" id="tabChatBtn" onclick="switchView('chat')">💬 Chat con Leo</button>
+    <button class="tab-btn" id="tabDebugBtn" onclick="switchView('debug')">🧠 Ispezione Brain & Badge</button>
   </div>
 
   <!-- CHAT VIEW -->
   <div id="chatView" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
     <div class="chat-box" id="chatBox">
       <div class="msg ai">
-        👋 Ciao! Sono il tuo <strong>Financial Mentor</strong> con memoria persistente (Brain) e guida empatica (Soul).<br><br>
-        Puoi usarmi per:<br>
-        1. <strong>Domande spot</strong>: chiedimi qualsiasi cosa (aggiornerò il tuo profilo e adatterò il mio linguaggio).<br>
-        2. <strong>Percorso formativo a tappe</strong>: segui la roadmap su misura per passare da principiante ad avanzato.<br>
-        3. <strong>Pillole del giorno</strong>: micro-concetto quotidiano e notizie economiche spiegate con l'impatto sul tuo profilo.<br><br>
-        Di cosa vorresti parlare oggi?
+        👋 Ciao! Sono <strong>Leo</strong>, il tuo mentore per l'educazione finanziaria.<br><br>
+        Il mio compito è guidarti passo dopo passo a costruire la tua sicurezza economica, senza ansia, senza formule astruse e <em>senza venderti prodotti o darti consigli speculativi</em>.<br><br>
+        Il mio motto? <em>"Il tempo batte sempre il timing, e la calma batte sempre la fretta."</em><br><br>
+        Man mano che dialogheremo e impareremo concetti sbloccherai dei <strong>Badge di Traguardo 🏆</strong>. Da dove ti va di cominciare oggi?
       </div>
     </div>
 
     <!-- Quick Prompt Chips -->
     <div class="chips-bar">
-      <div class="chip" onclick="usePrompt('Dammi la pillola del giorno e spiegami le notizie economiche rilevanti per me')">☀️ Pillola & Notizie del Giorno</div>
+      <div class="chip" onclick="usePrompt('Dammi la pillola del giorno e spiegami le notizie economiche rilevanti per me')">☀️ Pillola & Notizie Oggi</div>
+      <div class="chip" onclick="usePrompt('Quali badge ho guadagnato finora?')">🏆 I Miei Badge</div>
       <div class="chip" onclick="usePrompt('Mostrami il mio percorso di apprendimento a tappe')">🗺️ Percorso a Tappe</div>
-      <div class="chip" onclick="usePrompt('Ho 30 anni, vorrei comprare casa tra 7 anni e creare un fondo emergenza. Come inizio?')">🎯 Profilazione: Obiettivo Casa</div>
-      <div class="chip" onclick="usePrompt('Spiegami cos\'è l\'interesse composto con un\'analogia')">💡 Interesse Composto</div>
+      <div class="chip" onclick="usePrompt('Ho 30 anni, vorrei comprare casa tra 7 anni e creare un fondo emergenza. Come inizio?')">🎯 Obiettivo Casa (Profilo)</div>
+      <div class="chip" onclick="usePrompt('Spiegami cos\'è l\'interesse composto con la metafora della palla di neve')">💡 Interesse Composto</div>
       <div class="chip" onclick="usePrompt('Cosa sono gli ETF e perché tutti ne parlano?')">🛒 Cos'è un ETF</div>
+      <div class="chip" onclick="usePrompt('I mercati stanno crollando, devo vendere tutto?')">📉 Crollo Mercati (Mente Zen)</div>
       <div class="chip" onclick="usePrompt('In cosa dovrei investire i miei 10.000€?')">⚠️ In cosa investire? (Test No-Advice)</div>
-      <div class="chip" onclick="usePrompt('Mostrami i miei progressi')">📊 Dashboard Completa</div>
+      <div class="chip" onclick="usePrompt('Mostrami la dashboard completa')">📊 Dashboard Completa</div>
       <div class="chip" onclick="usePrompt('Azzera la mia memoria')">🔄 Azzera Memoria</div>
     </div>
 
     <!-- Prompt Input Form -->
     <form class="input-bar" id="promptForm" onsubmit="handleSend(event)">
-      <input type="text" id="promptInput" class="prompt-input" placeholder="Fai una domanda, chiedi la pillola del giorno o il tuo percorso..." autocomplete="off">
-      <button type="submit" class="send-btn" title="Invia prompt">
+      <input type="text" id="promptInput" class="prompt-input" placeholder="Chiedi a Leo una nozione, la pillola del giorno o i tuoi badge..." autocomplete="off">
+      <button type="submit" class="send-btn" title="Invia prompt a Leo">
         <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
       </button>
     </form>
@@ -336,14 +377,14 @@
 
   <!-- DEBUG VIEW -->
   <div id="debugView" class="debug-view">
-    <h3 style="margin-top:0;">🧠 Ispezione Stato Brain (`localStorage`)</h3>
+    <h3 style="margin-top:0;">🧠 Ispezione Stato Brain di Leo (`localStorage`)</h3>
     <p style="color:var(--muted); font-size:12px;">
-      Stato del Brain a lungo termine sincronizzato tramite <code>scripts/index.html</code>.
+      Memoria persistente, badge tracciati e profilo salvato in <code>scripts/index.html</code>.
     </p>
     <div class="debug-actions">
       <button class="debug-btn" onclick="callBrainRaw('load_memory')">🔄 Ricarica Memoria</button>
-      <button class="debug-btn" onclick="callBrainRaw('get_learning_path')">🗺️ Ispeziona Percorso</button>
-      <button class="debug-btn" onclick="callBrainRaw('get_daily_pill')">☀️ Ispeziona Pillola Oggi</button>
+      <button class="debug-btn" onclick="callBrainRaw('get_badges')">🏆 Ispeziona Badge</button>
+      <button class="debug-btn" onclick="callBrainRaw('get_learning_path')">🗺️ Ispeziona Roadmap</button>
       <button class="debug-btn" onclick="callBrainRaw('reset_memory')">🗑️ Resetta Tutto</button>
     </div>
     <div class="debug-log" id="debugLog">Inizializzazione sandbox Brain in corso...</div>
@@ -355,7 +396,7 @@
 
 <script>
   let sandboxReady = false;
-  let brainState = { current_level: 'beginner', user_profile: {}, concepts_already_learned: [] };
+  let brainState = { current_level: 'beginner', user_profile: {}, concepts_already_learned: [], badges: {} };
 
   function onSandboxReady() {
     sandboxReady = true;
@@ -379,6 +420,11 @@
         const badge = document.getElementById('levelBadge');
         badge.textContent = brainState.current_level || 'beginner';
         badge.className = `level-chip ${brainState.current_level || 'beginner'}`;
+        
+        if (brainState.badges) {
+          document.getElementById('badgeCount').textContent = brainState.badges.earned_count || 0;
+        }
+
         document.getElementById('debugLog').textContent = JSON.stringify(brainState, null, 2);
       }
     } catch (e) {
@@ -408,10 +454,10 @@
     input.value = '';
     appendMessage(prompt, 'user');
 
-    const thinkingId = appendMessage('<em>Il Financial Mentor sta consultando il Brain e formulando la risposta...</em>', 'ai');
+    const thinkingId = appendMessage('<em>Leo sta riflettendo e consultando il suo Brain...</em>', 'ai');
 
     try {
-      const replyObj = await simulateMentorSoul(prompt);
+      const replyObj = await simulateLeoMentor(prompt);
       document.getElementById(thinkingId).remove();
       appendAiResponse(replyObj);
       syncBrain();
@@ -440,8 +486,23 @@
 
     let content = `<div>${response.text}</div>`;
 
+    // Achievement badges alerts
+    if (response.newBadges && response.newBadges.length > 0) {
+      response.newBadges.forEach(b => {
+        content += `
+          <div class="achievement-card">
+            <div class="achievement-icon">${b.icon}</div>
+            <div>
+              <div class="achievement-title">🏆 NUOVO BADGE SBLOCCATO: ${b.title}!</div>
+              <div class="achievement-desc">${b.desc}</div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
     if (response.brainNote) {
-      content += `<div class="badge-note">🧠 Brain & Soul: ${response.brainNote}</div>`;
+      content += `<div class="badge-note">🧠 Brain & Soul di Leo: ${response.brainNote}</div>`;
     }
 
     if (response.webviewUrl) {
@@ -457,30 +518,48 @@
     box.scrollTop = box.scrollHeight;
   }
 
-  // Motore di simulazione Soul & Brain conforme a SKILL.md
-  async function simulateMentorSoul(prompt) {
+  // Motore di simulazione Soul & Brain di Leo conforme a SKILL.md
+  async function simulateLeoMentor(prompt) {
     const p = prompt.toLowerCase();
 
-    // 1. PILLOLA DEL GIORNO & NOTIZIA ECONOMICA
-    if (p.includes('pillola') || p.includes('notizi') || p.includes('oggi') && (p.includes('giorno') || p.includes('imparare'))) {
+    // 1. BACHECA DEI BADGE
+    if (p.includes('badge') || p.includes('trofei') || p.includes('conquistati')) {
+      const bRes = await invokeBrain({ action: 'get_badges' });
+      const bData = JSON.parse(bRes.result);
+      const hubRes = await invokeBrain({ action: 'view_hub' });
+      const webviewUrl = 'skills/financial-advisor/assets/' + hubRes.webview.url.replace(/^..\//, '').replace(/^assets\//, '');
+
+      return {
+        text: `🏆 <strong>La tua Bacheca dei Trofei!</strong><br><br>
+        Finora hai conquistato <strong>${bData.earned_count}</strong> badge su <strong>${bData.total}</strong>.<br><br>
+        Ogni volta che fai domande intelligenti su nuovi temi, definisci obiettivi o esplori le notizie, sblocchi nuovi riconoscimenti per la tua crescita finanziaria. Guarda qui sotto la tua bacheca interattiva:`,
+        webviewUrl: webviewUrl,
+        brainNote: 'Bacheca badge visualizzata da Leo'
+      };
+    }
+
+    // 2. PILLOLA DEL GIORNO & NOTIZIA ECONOMICA
+    if (p.includes('pillola') || p.includes('notizi') || (p.includes('oggi') && (p.includes('giorno') || p.includes('imparare')))) {
       const pillRes = await invokeBrain({ action: 'get_daily_pill' });
       const pillData = JSON.parse(pillRes.result);
       const hubRes = await invokeBrain({ action: 'view_hub' });
       const webviewUrl = 'skills/financial-advisor/assets/' + hubRes.webview.url.replace(/^..\//, '').replace(/^assets\//, '');
 
       return {
-        text: `☀️ <strong>Pillola del Giorno — ${pillData.date}</strong><br><br>
+        text: `☀️ <strong>La Pillola del Giorno di Leo — ${pillData.date}</strong><br><br>
         💡 <strong>Concetto Chiave: ${pillData.concept_pill.title}</strong><br>
         ${pillData.concept_pill.explanation}<br><br>
         📰 <strong>Attualità Economica: ${pillData.market_news_context.headline}</strong><br>
         ${pillData.market_news_context.tailored_impact}<br><br>
-        <span style="font-size:12px; color:var(--muted);">${pillData.market_news_context.for_profile}</span>`,
+        <span style="font-size:12px; color:var(--muted);">${pillData.market_news_context.for_profile}</span><br><br>
+        <em>— Leo: "Un piccolo passo al giorno costruisce la tua serenità di domani."</em>`,
         webviewUrl: webviewUrl,
-        brainNote: 'Pillola del giorno generata e calibrata sul tuo profilo.'
+        newBadges: pillData.newly_unlocked_badges || [],
+        brainNote: 'Pillola del giorno generata e verificato badge Costanza'
       };
     }
 
-    // 2. PERCORSO DI APPRENDIMENTO (Learning Path)
+    // 3. ROADMAP / PERCORSO A TAPPE
     if (p.includes('percorso') || p.includes('tappe') || p.includes('roadmap') || p.includes('modul')) {
       const pathRes = await invokeBrain({ action: 'get_learning_path' });
       const pathData = JSON.parse(pathRes.result);
@@ -489,135 +568,166 @@
       const webviewUrl = 'skills/financial-advisor/assets/' + hubRes.webview.url.replace(/^..\//, '').replace(/^assets\//, '');
 
       return {
-        text: `🗺️ <strong>Il Tuo Percorso di Apprendimento</strong> (Progresso: ${pathData.progress_percent}%)<br><br>
-        Sei al livello <strong>${pathData.current_level.toUpperCase()}</strong>. Hai padroneggiato <strong>${pathData.completed_modules}</strong> moduli su ${pathData.total_modules}.<br><br>
-        🎯 <strong>Tappa attuale suggerita per te:</strong><br>
-        <strong>${currentMod ? currentMod.title : 'Ottimo lavoro!'}</strong>: ${currentMod ? currentMod.desc : 'Hai completato tutti i moduli!'}<br><br>
-        Ecco la tua mappa interattiva con tutti i moduli sbloccati e futuri:`,
+        text: `🗺️ <strong>Il Tuo Percorso Formativo con Leo</strong> (Progresso: ${pathData.progress_percent}%)<br><br>
+        Sei al livello <strong>${pathData.current_level.toUpperCase()}</strong>. Hai conquistato <strong>${pathData.completed_modules}</strong> tappe su ${pathData.total_modules}.<br><br>
+        🎯 <strong>Prossima tappa raccomandata:</strong><br>
+        <strong>${currentMod ? currentMod.title : 'Curriculum Completato!'}</strong>: ${currentMod ? currentMod.desc : 'Sei un maestro della finanza personale!'}<br><br>
+        Ecco la tua mappa interattiva:`,
         webviewUrl: webviewUrl,
-        brainNote: `Curriculum interrogato: modulo corrente "${currentMod ? currentMod.title : 'Done'}"`
+        brainNote: 'Roadmap interrogata e registrata nel Brain'
       };
     }
 
-    // 3. DOMANDA SPOT CON PROFILAZIONE (Es. età, casa, orizzonte temporale)
-    if (p.includes('anni') || p.includes('casa') || p.includes('fondo') || p.includes('orizzonte') || p.includes('stipendio') || p.includes('risparmiare')) {
-      // Estrai dettagli per aggiornare il profilo
-      let detectedGoal = p.includes('casa') ? 'Acquisto casa' : 'Pianificazione personale';
-      let detectedHorizon = p.includes('casa') ? 'Medio termine (5-7 anni)' : 'Lungo termine (> 10 anni)';
-      let detectedAge = p.match(/\b\d{2}\b/) ? p.match(/\b\d{2}\b/)[0] + ' anni' : '30 circa';
-
-      await invokeBrain({
-        action: 'update_memory',
-        profile_update: {
-          age_range: detectedAge,
-          goals: ['Creare fondo emergenza', detectedGoal],
-          time_horizon: detectedHorizon
-        },
-        add_note: `Utente ha condiviso: età ${detectedAge}, obiettivo ${detectedGoal}, orizzonte ${detectedHorizon}.`,
-        summary: `Condiviso profilo personale per pianificazione verso ${detectedGoal}.`
-      });
-
-      return {
-        text: `🎯 <strong>Ho aggiornato il tuo profilo nel Brain!</strong><br><br>
-        Pianificare con un orizzonte di <strong>${detectedHorizon}</strong> e l'obiettivo di <strong>${detectedGoal}</strong> è fantastico perché ci dà una bussola precisa.<br><br>
-        Ecco la strategia metodologica a 3 pilastri adatta al tuo caso:<br>
-        1. <strong>La cassa di riserva (breve termine):</strong> per le spese impreviste, tieni 3-6 mesi di spese su un <em>Conto Deposito</em> svincolabile, non sul conto corrente dove l'inflazione le consuma.<br>
-        2. <strong>L'obiettivo casa (${detectedHorizon}):</strong> non è un orizzonte abbastanza lungo per rischiare oscillazioni forti sull'azionario. Qui si usano strumenti a capitale protetto o obbligazioni a scadenza prefissata (es. BTP o BOT) che scadono esattamente quando ti servirà l'anticipo.<br>
-        3. <strong>Il futuro a lungo termine (> 10 anni):</strong> la parte che non ti serve per la casa può iniziare a sfruttare l'interesse composto con un PAC su ETF globali.<br><br>
-        Vuoi approfondire il primo pilastro (il Fondo di Emergenza) o capire come funzionano le scadenze obbligazionarie?`,
-        brainNote: `Profilo aggiornato: età ${detectedAge}, orizzonte ${detectedHorizon}, obiettivo ${detectedGoal}. Soul adattata.`
-      };
-    }
-
-    // 4. REGOLA ZERO: No Investment Advice
-    if (p.includes('in cosa dovrei investire') || p.includes('dove investire') || p.includes('consigliami') || p.includes('comprare') || p.includes('crypto')) {
-      await invokeBrain({
-        action: 'update_memory',
-        add_note: 'Richiesta di consigli di acquisto diretti: applicata Regola Zero (educazione finanziaria pura)',
-        summary: 'Chiarita la differenza tra educazione concettuale e consulenza finanziaria autorizzata.'
-      });
-
-      return {
-        text: `🛡️ <strong>Regola etica fondamentale:</strong> Come tuo mentore didattico, <em>non fornisco consigli personalizzati su quali singoli titoli azionari o crypto comprare</em>.<br><br>
-        Il mio compito è darti gli occhiali per capire i meccanismi:<br>
-        • La differenza tra prestare denaro (obbligazioni) o diventare socio (azioni).<br>
-        • Come i costi di gestione (TER) possono mangiarsi fino al 30% del tuo rendimento a 20 anni.<br>
-        • Come proteggerti dai bias emotivi.<br><br>
-        Per decisioni di investimento specifiche sul tuo patrimonio, è fondamentale rivolgersi a un consulente finanziario indipendente abilitato. Vuoi che vediamo insieme come funziona l'impatto dei costi o la diversificazione?`,
-        brainNote: 'Trigger No-Advice rispettato. Principi pedagogici illustrati.'
-      };
-    }
-
-    // 5. INTERESSE COMPOSTO
+    // 4. INTERESSE COMPOSTO (Trigger badge Effetto Valanga)
     if (p.includes('interesse composto') || p.includes('compounding')) {
-      await invokeBrain({
+      const upd = await invokeBrain({
         action: 'update_memory',
         add_concepts: ['interesse composto'],
         new_level: 'intermediate',
-        summary: 'Appreso il concetto di interesse composto attraverso la metafora della palla di neve.'
+        summary: 'Appreso il concetto di interesse composto con la metafora della palla di neve.'
       });
+      const parsedUpd = JSON.parse(upd.result);
 
       return {
         text: `⛄ <strong>L'Interesse Composto: l'effetto valanga</strong><br><br>
-        Immagina di lanciare una piccola palla di neve dalla cima di una montagna. All'inizio cresce lentamente. Ma rotolando, la neve si attacca a quella già accumulata: più diventa grande, più neve raccoglie ad ogni giro.<br><br>
-        In finanza accade lo stesso: se hai 1.000€ e guadagni il 5% (50€), l'anno successivo il 5% lo guadagni su 1.050€. Dopo 20 o 30 anni, i rendimenti generati dai rendimenti precedenti superano di gran lunga i soldi versati di tasca tua!<br><br>
-        Ho segnato <strong>Interesse Composto</strong> come concetto assimilato nella tua roadmap!`,
-        brainNote: 'Concetto "interesse composto" memorizzato. Livello aggiornato.'
+        Immagina di lanciare una piccola palla di neve da una cima innevata. All'inizio è minuscola. Ma rotolando raccoglie altra neve: più superficie ha, più neve attacca a ogni giro.<br><br>
+        In finanza funziona allo stesso modo: se investi 1.000€ e guadagni il 5% (50€), l'anno dopo il 5% non lo calcoli su 1.000€, ma su 1.050€. All'inizio la differenza sembra trascurabile, ma dopo 15, 20 o 30 anni, i rendimenti generati dai vecchi rendimenti superano di gran lunga i soldi versati di tasca tua!<br><br>
+        <em>— Leo: "Il tempo è la leva più democratica e potente che esista. Usiamolo a nostro favore!"</em>`,
+        newBadges: parsedUpd.newly_unlocked_badges || [],
+        brainNote: 'Concetto "interesse composto" registrato. Badge Effetto Valanga verificato.'
       };
     }
 
-    // 6. ETF
+    // 5. ETF (Trigger badge Carrello Globale)
     if (p.includes('etf')) {
-      await invokeBrain({
+      const upd = await invokeBrain({
         action: 'update_memory',
         add_concepts: ['etf', 'costi e ter'],
-        summary: 'Spiegata la struttura degli ETF come carrello della spesa diversificato e la gestione passiva.'
+        summary: 'Spiegati gli ETF come carrello della spesa diversificato e la replica passiva.'
       });
+      const parsedUpd = JSON.parse(upd.result);
 
       return {
         text: `🛒 <strong>Cos'è un ETF? L'analogia del carrello della spesa</strong><br><br>
-        Comprare l'azione di una singola azienda è come andare al mercato e comprare una sola cassetta di mele: se sono ammaccate, hai perso tutto.<br><br>
-        Un <strong>ETF (Exchange Traded Fund)</strong> è invece un cesto preconfezionato che contiene frazioni di 3.000 aziende di tutto il mondo. Se una va male, hai tutte le altre a sostenere il cesto.<br><br>
-        I vantaggi chiave:<br>
-        • <strong>Diversificazione automatica</strong> con poche decine di euro.<br>
-        • <strong>Costi piccolissimi (TER):</strong> spesso meno dello 0,2% all'anno contro il 2% dei fondi tradizionali venduti dalle banche.`,
-        brainNote: 'Concetti "etf" e "costi e ter" registrati nella mappa delle competenze.'
+        Pensa a un ETF come a un carrello della spesa che contiene automaticamente una piccola porzione di 3.000 grandi aziende di tutto il pianeta.<br><br>
+        Perché è rivoluzionario per noi piccoli risparmiatori?<br>
+        1. <strong>Diversificazione istantanea:</strong> se un'azienda fallisce, il tuo carrello non se ne accorge nemmeno.<br>
+        2. <strong>Costi microscopici (TER):</strong> spesso meno dello 0,2% all'anno, contro il 2%-3% dei fondi attivi tradizionali proposti dalle banche che erodono il tuo capitale.<br>
+        3. <strong>Semplicità:</strong> non devi passare le giornate a guardare grafici in borsa. Compri l'economia globale e lasci fare al tempo.<br><br>
+        <em>— Leo: "Non cercare l'ago nel pagliaio: compra tutto il pagliaio!"</em>`,
+        newBadges: parsedUpd.newly_unlocked_badges || [],
+        brainNote: 'Concetti "etf" e "costi e ter" registrati. Badge Carrello Globale sbloccato.'
       };
     }
 
-    // 7. DASHBOARD
+    // 6. CROLLO DEI MERCATI / PANICO (Trigger badge Mente Zen)
+    if (p.includes('crollo') || p.includes('crollando') || p.includes('vendere') || p.includes('paura') || p.includes('rosso')) {
+      const upd = await invokeBrain({
+        action: 'update_memory',
+        volatility_discussed: true,
+        add_note: 'Gestita ansia da volatilità di mercato: ricordata la natura ciclica dei mercati',
+        summary: 'Educazione alla gestione delle perdite non realizzate e alla disciplina del PAC.'
+      });
+      const parsedUpd = JSON.parse(upd.result);
+
+      return {
+        text: `🧘 <strong>Frena, respira con me e guardiamo il quadro d'insieme</strong><br><br>
+        Vedere i mercati scendere fa paura. È una reazione umana istintiva chiamata <em>Loss Aversion</em>. Ma ricorda tre insegnamenti fondamentali:<br><br>
+        1. <strong>Una perdita è reale solo se vendi:</strong> finché non vendi le tue quote, possiedi esattamente lo stesso pezzo di aziende mondiali.<br>
+        2. <strong>La volatilità è il pedaggio dell'autostrada:</strong> non esiste crescita nel lungo periodo senza oscillazioni nel breve. Nei decenni passati i mercati hanno superato pandemie, guerre e crisi tornando sempre a crescere.<br>
+        3. <strong>I saldi del supermercato:</strong> se hai un PAC mensile, quando i mercati scendono stai acquistando quote a prezzo di sconto!<br><br>
+        <em>— Leo: "Il tuo compito non è prevedere il meteo, ma costruire un tetto solido. Stai sereno."</em>`,
+        newBadges: parsedUpd.newly_unlocked_badges || [],
+        brainNote: 'Attivato scudo psicologico anti-panico. Badge Mente Zen verificato.'
+      };
+    }
+
+    // 7. PROFILAZIONE: OBIETTIVO CASA / ETÀ (Trigger badge Bussola Accesa)
+    if (p.includes('anni') || p.includes('casa') || p.includes('fondo') || p.includes('orizzonte') || p.includes('stipendio')) {
+      let detectedGoal = p.includes('casa') ? 'Acquisto prima casa' : 'Sicurezza personale';
+      let detectedHorizon = p.includes('casa') ? 'Medio termine (5-7 anni)' : 'Lungo termine (> 10 anni)';
+      let detectedAge = p.match(/\b\d{2}\b/) ? p.match(/\b\d{2}\b/)[0] + ' anni' : '30 circa';
+
+      const upd = await invokeBrain({
+        action: 'update_memory',
+        profile_update: {
+          age_range: detectedAge,
+          goals: ['Fondo emergenza', detectedGoal],
+          time_horizon: detectedHorizon
+        },
+        add_note: `Profilo condiviso: età ${detectedAge}, obiettivo ${detectedGoal}, orizzonte ${detectedHorizon}`,
+        summary: `Impostata pianificazione per ${detectedGoal} con orizzonte ${detectedHorizon}.`
+      });
+      const parsedUpd = JSON.parse(upd.result);
+
+      return {
+        text: `🎯 <strong>Che bello conoscerti meglio! Ho registrato tutto nel mio Brain.</strong><br><br>
+        Avere un obiettivo chiaro come l'<strong>${detectedGoal}</strong> con un orizzonte di <strong>${detectedHorizon}</strong> ci permette di fare una pianificazione su misura:<br><br>
+        1. <strong>Per l'anticipo della casa (${detectedHorizon}):</strong> non possiamo rischiare scossoni sul mercato azionario. Servono strumenti sicuri a scadenza fissa (come BTP o conti deposito vincolati) che scadano esattamente quando ti serviranno i soldi.<br>
+        2. <strong>Per la serenità quotidiana:</strong> 3-6 mesi di spese vive liquide nel Fondo di Emergenza.<br>
+        3. <strong>Per il futuro a lungo termine:</strong> la quota eccedente può iniziare a lavorare sui mercati globali.<br><br>
+        <em>— Leo: "Chi ha un obiettivo e un piano non teme le onde."</em>`,
+        newBadges: parsedUpd.newly_unlocked_badges || [],
+        brainNote: `Profilo salvato: ${detectedGoal}, orizzonte ${detectedHorizon}. Badge Bussola Accesa sbloccato.`
+      };
+    }
+
+    // 8. REGOLA ZERO: No Investment Advice (Trigger badge Scudo Anti-FOMO)
+    if (p.includes('in cosa dovrei investire') || p.includes('dove investire') || p.includes('consigliami') || p.includes('comprare') || p.includes('crypto')) {
+      const upd = await invokeBrain({
+        action: 'update_memory',
+        fomo_triggered: true,
+        add_note: 'Richiesta di consigli di acquisto diretti: ricordata la Regola Zero (educazione finanziaria pura)',
+        summary: 'Chiarita la differenza tra educazione concettuale e consulenza finanziaria autorizzata.'
+      });
+      const parsedUpd = JSON.parse(upd.result);
+
+      return {
+        text: `🛡️ <strong>Regola Zero di Leo:</strong> Non ti dirò mai "compra questo titolo" o "investi in questa crypto".<br><br>
+        I consulenti che vendono prodotti hanno spesso conflitti d'interesse nascosti. Il mio valore per te è renderti <strong>completamente autonomo e consapevole</strong>:<br>
+        • Capire la differenza tra prestare denaro (obbligazioni) o partecipare alla crescita (azioni).<br>
+        • Riconoscere i costi nascosti che impoveriscono il rendimento.<br>
+        • Difenderti dall'illusione dei soldi facili.<br><br>
+        <em>— Leo: "Imparare a pescare vale mille volte più che farsi regalare un pesce."</em>`,
+        newBadges: parsedUpd.newly_unlocked_badges || [],
+        brainNote: 'Regola Zero applicata. Badge Scudo Anti-FOMO sbloccato.'
+      };
+    }
+
+    // 9. DASHBOARD COMPLETA
     if (p.includes('progress') || p.includes('mostra') || p.includes('dashboard') || p.includes('hub')) {
       const hubRes = await invokeBrain({ action: 'view_hub' });
       const webviewUrl = 'skills/financial-advisor/assets/' + hubRes.webview.url.replace(/^..\//, '').replace(/^assets\//, '');
       return {
-        text: `Ecco la panoramica completa: pillola odierna, roadmap dei moduli e profilo aggiornato!`,
+        text: `Ecco la tua dashboard completa: pillola del giorno, bacheca dei badge conquistati e roadmap dei moduli!`,
         webviewUrl: webviewUrl,
-        brainNote: 'Dashboard sincronizzata con il Brain.'
+        brainNote: 'Dashboard sincronizzata con il Brain di Leo.'
       };
     }
 
-    // 8. RESET
+    // 10. RESET
     if (p.includes('reset') || p.includes('azzera')) {
       const res = await invokeBrain({ action: 'reset_memory' });
       return {
-        text: res.result || 'Memoria azzerata con successo!',
-        brainNote: 'localStorage resettato'
+        text: res.result || 'Memoria azzerata. Ripartiamo da zero insieme!',
+        brainNote: 'Stato resettato'
       };
     }
 
-    // Fallback didattico
+    // Risposta generica di Leo
     await invokeBrain({
       action: 'update_memory',
       summary: `Domanda spot: "${prompt.slice(0, 45)}..."`
     });
 
     return {
-      text: `Ottimo spunto! Questa domanda tocca uno dei punti importanti per il tuo livello (<strong>${(brainState.current_level || 'beginner').toUpperCase()}</strong>).<br><br>
+      text: `Ottimo spunto di riflessione! Questa domanda tocca uno dei punti importanti per il tuo livello (<strong>${(brainState.current_level || 'beginner').toUpperCase()}</strong>).<br><br>
       Possiamo approfondirla insieme, oppure puoi chiedermi:<br>
-      • <em>"Dammi la pillola del giorno"</em> per una nozione veloce con notizia correlata.<br>
-      • <em>"Qual è il mio percorso?"</em> per vedere quale modulo affrontare dopo.<br>
-      • <em>"Mostrami la dashboard"</em> per vedere tutte le tappe.`,
-      brainNote: 'Interazione spot registrata nel diario delle sessioni.'
+      • <em>"Quali badge ho guadagnato?"</em> per vedere i tuoi trofei.<br>
+      • <em>"Dammi la pillola del giorno"</em> per una nozione veloce con notizia economica correlata.<br>
+      • <em>"Mostrami la dashboard"</em> per vedere tutte le tappe.<br><br>
+      <em>— Leo: "Ogni domanda che fai è un mattoncino in più per la tua sicurezza."</em>`,
+      brainNote: 'Domanda spot registrata nel diario delle sessioni.'
     };
   }
 
