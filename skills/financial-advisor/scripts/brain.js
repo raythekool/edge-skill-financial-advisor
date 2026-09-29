@@ -60,7 +60,7 @@
   }
 
 
-  function calculateLearningPath(learnedConcepts) {
+    function calculateLearningPath(learnedConcepts, lang = "en") {
     const list = learnedConcepts.map(c => String(c).toLowerCase().trim());
     let currentFound = false;
 
@@ -73,7 +73,10 @@
         status = "current";
         currentFound = true;
       }
-      return { ...mod, status };
+      const title = (lang === "en" && mod.title_en) ? mod.title_en : mod.title;
+      const desc = (lang === "en" && mod.desc_en) ? mod.desc_en : mod.desc;
+      const pillar = (lang === "en" && mod.pillar_en) ? mod.pillar_en : mod.pillar;
+      return { ...mod, title, desc, pillar, status };
     });
   }
 
@@ -112,14 +115,20 @@
     return newlyUnlocked;
   }
 
-  function getBadgesStatus(state) {
+    function getBadgesStatus(state, lang = "en") {
     const earnedMap = new Map();
     (state.badges_earned || []).forEach(b => earnedMap.set(b.id, b.unlocked_at));
 
     const allBadges = BADGES_CATALOG.map(b => {
       const isUnlocked = earnedMap.has(b.id);
+      const title = (lang === "en" && b.title_en) ? b.title_en : b.title;
+      const desc = (lang === "en" && b.desc_en) ? b.desc_en : b.desc;
+      const criteria = (lang === "en" && b.criteria_en) ? b.criteria_en : b.criteria;
       return {
         ...b,
+        title,
+        desc,
+        criteria,
         unlocked: isUnlocked,
         unlocked_at: isUnlocked ? earnedMap.get(b.id) : null
       };
@@ -133,21 +142,29 @@
   }
 
   
-  function getDailyPillData(state, context) {
-    const path = calculateLearningPath(state.concepts_learned || []);
+    function getDailyPillData(state, context, lang = "en") {
+    const path = calculateLearningPath(state.concepts_learned || [], lang);
     const nextMod = path.find(m => m.status === "current") || CURRICULUM[0];
     
-    // Generato da LLM se fornito nel context
+    const userLevel = state.level || "beginner";
+    const defaultImpact = lang === "en"
+      ? "Lower interest rates reduce borrowing costs for mortgages, but lower yields on basic savings accounts."
+      : "Se i tassi scendono, i nuovi mutui costano meno ma i conti deposito renderanno leggermente meno.";
+
     const llmNews = context && context.llm_news ? context.llm_news : {
-      topic: "Attesa Dati LLM",
-      headline: "Generazione Notizia in corso...",
-      tailored_impact: "L'intelligenza artificiale sta preparando la notizia economica per te."
+      topic: lang === "en" ? "Central Bank Rates (ECB/Fed)" : "Tassi delle Banche Centrali (BCE)",
+      headline: lang === "en" ? "Central banks review economic trends and interest rates" : "La BCE valuta l'andamento dei tassi guida",
+      tailored_impact: defaultImpact
     };
 
-    const userLevel = state.level || "beginner";
+    const profileNotice = lang === "en"
+      ? `Calibrated for ${userLevel.toUpperCase()} profile with horizon: ${state.user_profile.time_horizon}`
+      : `Calibrato per profilo ${userLevel.toUpperCase()} con orizzonte ${state.user_profile.time_horizon}`;
+
+    const dateStr = new Date().toLocaleDateString(lang === "en" ? "en-US" : "it-IT", { weekday: "long", day: "numeric", month: "long" });
 
     return {
-      date: new Date().toLocaleDateString("it-IT", { weekday: "long", day: "numeric", month: "long" }),
+      date: dateStr,
       concept_pill: {
         title: nextMod.title,
         concept: nextMod.concept,
@@ -159,7 +176,7 @@
         topic: llmNews.topic,
         headline: llmNews.headline,
         tailored_impact: llmNews.tailored_impact,
-        for_profile: `Calibrato per profilo ${userLevel.toUpperCase()} con orizzonte ${state.user_profile.time_horizon}`
+        for_profile: profileNotice
       }
     };
   }
@@ -169,12 +186,13 @@
     try {
       const request = typeof data === "string" ? JSON.parse(data || "{}") : (data || {});
       const action = request.action || "load_memory";
+      const lang = request.lang || "en";
       let { globalState, state } = initializeOrGetState();
 
       if (action === "load_memory") {
-        const path = calculateLearningPath(state.concepts_learned);
+        const path = calculateLearningPath(state.concepts_learned, lang);
         const currentStep = path.find(m => m.status === "current");
-        const badgesStatus = getBadgesStatus(state);
+        const badgesStatus = getBadgesStatus(state, lang);
 
         const payload = {
           mentor: "Leo",
@@ -246,7 +264,7 @@
       }
 
       if (action === "get_badges") {
-        const badgesStatus = getBadgesStatus(state);
+        const badgesStatus = getBadgesStatus(state, lang);
         return JSON.stringify({
           result: JSON.stringify(badgesStatus)
         });
@@ -256,7 +274,7 @@
         evaluateBadges(state, { roadmap_viewed: true });
         saveStoredState(globalState);
 
-        const path = calculateLearningPath(state.concepts_learned || []);
+        const path = calculateLearningPath(state.concepts_learned || [], lang);
         const completed = path.filter(p => p.status === "mastered").length;
         const progressPct = Math.round((completed / path.length) * 100);
 
@@ -276,7 +294,7 @@
         const newlyUnlocked = evaluateBadges(state, { daily_pill_called: true });
         saveStoredState(globalState);
 
-        const pillData = getDailyPillData(state, request);
+        const pillData = getDailyPillData(state, request, lang);
         return JSON.stringify({
           result: JSON.stringify({
             ...pillData,
@@ -286,9 +304,9 @@
       }
 
       if (action === "view_hub") {
-        const path = calculateLearningPath(state.concepts_learned || []);
-        const pill = getDailyPillData(state, request);
-        const badgesStatus = getBadgesStatus(state);
+        const path = calculateLearningPath(state.concepts_learned || [], lang);
+        const pill = getDailyPillData(state, request, lang);
+        const badgesStatus = getBadgesStatus(state, lang);
 
         const webviewPayload = {
           mentor: "Leo",
@@ -305,7 +323,7 @@
           activeProfile: globalState.activeId
         };
 
-        const webviewUrl = `../assets/webview.html?payload=${encodeURIComponent(JSON.stringify(webviewPayload))}`;
+        const webviewUrl = `../assets/webview.html?payload=${encodeURIComponent(JSON.stringify(webviewPayload))}&lang=${lang}`;
 
         return JSON.stringify({
           result: `Ecco la dashboard completa di Leo: pillola odierna, percorso, bacheca dei badge e profilo.`,
