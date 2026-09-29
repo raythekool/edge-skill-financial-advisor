@@ -1,6 +1,6 @@
 const STORAGE_KEY = "financial_advisor_leo_brain_v3";
 
-  // Catalogo Ufficiale dei Badge Guadagnabili
+  // Official Catalog of Unlockable Badges
     const BADGES_CATALOG = [
     {
       id: "first_step",
@@ -104,7 +104,7 @@ const STORAGE_KEY = "financial_advisor_leo_brain_v3";
     }
   ];
 
-  // Curriculum di apprendimento a 13 moduli
+  // 13-Module Learning Curriculum
     const CURRICULUM = [
     { id: "mod_1", pillar: "Fondamenta", pillar_en: "Foundations", level: "beginner", title: "Budgeting & Regola 50/30/20", title_en: "Budgeting & The 50/30/20 Rule", concept: "budgeting", desc: "Gestire entrate e uscite separando necessità (50%), desideri (30%) e risparmio (20%).", desc_en: "Manage income and expenses: needs (50%), wants (30%), and savings (20%)." },
     { id: "mod_2", pillar: "Fondamenta", pillar_en: "Foundations", level: "beginner", title: "L'Inflazione & Potere d'Acquisto", title_en: "Inflation & Purchasing Power", concept: "inflazione", desc: "Capire perché lasciare tutti i soldi fermi sul conto corrente li svaluta nel tempo.", desc_en: "Understand why leaving all money idle in checking accounts erodes wealth over time." },
@@ -127,11 +127,11 @@ const STORAGE_KEY = "financial_advisor_leo_brain_v3";
     mentor_name: "Leo",
     level: "beginner",
     user_profile: {
-      goals: ["Creare fondo di emergenza", "Acquisire sicurezza economica"],
-      age_range: "non specificata",
-      time_horizon: "medio-lungo termine (> 5 anni)",
-      risk_attitude: "prudente / equilibrata",
-      tone_preference: "analogie quotidiane e calore empatico"
+      goals: ["Build emergency fund", "Achieve financial peace of mind"],
+      age_range: "not specified",
+      time_horizon: "medium-long term (> 5 years)",
+      risk_attitude: "prudent / balanced",
+      tone_preference: "everyday analogies and empathetic warmth"
     },
     concepts_learned: ["inflazione", "fondo di emergenza"],
     badges_earned: [
@@ -139,11 +139,11 @@ const STORAGE_KEY = "financial_advisor_leo_brain_v3";
       { id: "safety_belt", unlocked_at: new Date().toISOString() }
     ],
     user_notes: [
-      "Profilo orientato alla serenità e alla comprensione del rischio",
-      "Ha iniziato il percorso dalle fondamenta della finanza personale con Leo"
+      "Profile oriented towards peace of mind and risk awareness",
+      "Started personal finance fundamentals journey with Leo"
     ],
     history_summaries: [
-      { date: "2026-09-28", summary: "Inaugurato il percorso con Leo: discussi i primi concetti su inflazione e fondo emergenza." }
+      { date: "2026-09-28", summary: "Inaugurated pathway with Leo: explored inflation and emergency fund concepts." }
     ],
     last_updated: new Date().toISOString(),
     streak: 0,

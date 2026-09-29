@@ -12,7 +12,7 @@
         return parsed;
       }
     } catch (e) {
-      console.warn("Lettura localStorage fallita:", e);
+      console.warn("localStorage read failed:", e);
     }
     return null;
   }
@@ -21,7 +21,7 @@
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(globalState));
     } catch (e) {
-      console.error("Salvataggio fallito:", e);
+      console.error("Storage save failed:", e);
     }
   }
 
@@ -80,7 +80,7 @@
     });
   }
 
-  // Verifica e sblocca badge in base a concetti, azioni o profilo
+  // Check and unlock badges based on concepts, actions, or profile
   function evaluateBadges(state, context) {
     const newlyUnlocked = [];
     const earnedIds = (state.badges_earned || []).map(b => b.id);
@@ -96,7 +96,7 @@
       }
     };
 
-    // Controllo criteri
+    // Criteria evaluation
     checkAndAward("first_step");
 
     if (concepts.includes("interesse composto")) checkAndAward("snowball");
@@ -201,7 +201,7 @@
           user_profile: state.user_profile,
           concepts_already_learned: state.concepts_learned || [],
           concepts_count: (state.concepts_learned || []).length,
-          current_learning_step: currentStep ? currentStep.title : "Tutti i moduli completati!",
+          current_learning_step: currentStep ? currentStep.title : lang === "en" ? "All modules completed!" : "Tutti i moduli completati!",
           badges: badgesStatus,
           user_notes: (state.user_notes || []).slice(-5),
           recent_topics: (state.history_summaries || []).slice(-3),
@@ -242,7 +242,7 @@
           if (state.history_summaries.length > 20) state.history_summaries.shift();
         }
 
-        // Valutazione nuovi badge sbloccati
+        // Evaluate newly unlocked badges
         const context = {
           fomo_triggered: request.fomo_triggered || false,
           volatility_discussed: request.volatility_discussed || false,
@@ -256,7 +256,7 @@
 
         return JSON.stringify({
           result: JSON.stringify({
-            message: `Memoria di Leo aggiornata: livello=${state.level}, concetti=${state.concepts_learned.length}.`,
+            message: lang === "en" ? `Leo Brain updated: level=${state.level}, concepts=${state.concepts_learned.length}.` : `Memoria di Leo aggiornata: livello=${state.level}, concetti=${state.concepts_learned.length}.`,
             newly_unlocked_badges: newlyUnlocked,
             total_badges_earned: state.badges_earned.length
           })
@@ -326,7 +326,7 @@
         const webviewUrl = `../assets/webview.html?payload=${encodeURIComponent(JSON.stringify(webviewPayload))}&lang=${lang}`;
 
         return JSON.stringify({
-          result: `Ecco la dashboard completa di Leo: pillola odierna, percorso, bacheca dei badge e profilo.`,
+          result: lang === "en" ? `Here is Leo full dashboard: daily pill, pathway, badge showcase, and profile.` : `Ecco la dashboard completa di Leo: pillola odierna, percorso, bacheca dei badge e profilo.`,
           webview: {
             url: webviewUrl,
             aspectRatio: 1.25
@@ -341,7 +341,7 @@
         }
         globalState.activeId = newProfileId;
         saveStoredState(globalState);
-        return JSON.stringify({ result: `Profilo cambiato a ${newProfileId}` });
+        return JSON.stringify({ result: `Switched profile to ${newProfileId}` });
       }
 
       if (action === "reset_memory") {
@@ -349,14 +349,14 @@
         state = JSON.parse(JSON.stringify(DEFAULT_STATE));
         saveStoredState(globalState);
         return JSON.stringify({
-          result: "Memoria e trofei ripristinati. Leo è pronto per iniziare un nuovo viaggio didattico con te!"
+          result: lang === "en" ? "Memory and trophies reset. Leo is ready to begin a new learning journey with you!" : "Memoria e trofei ripristinati. Leo è pronto per iniziare un nuovo viaggio didattico con te!"
         });
       }
 
-      throw new Error(`Azione non riconosciuta: ${action}`);
+      throw new Error(`Unrecognized action: ${action}`);
 
     } catch (err) {
-      console.error("Errore nel Brain di Leo:", err);
+      console.error("Error in Leo Brain:", err);
       return JSON.stringify({
         error: `Leo Brain Error: ${err.message}`
       });

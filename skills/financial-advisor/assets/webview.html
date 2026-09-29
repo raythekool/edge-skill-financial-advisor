@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,7 +14,7 @@
         <img src="icon.svg" class="icon" alt="Icona">
         <div>
           <h1>Leo — Financial Mentor</h1>
-          <div class="subtitle" id="lastSyncLabel">Il tuo compagno di alfabetizzazione finanziaria</div>
+          <div class="subtitle" id="lastSyncLabel">Your Personal Financial Literacy Mentor</div>
         </div>
       </div>
       <div style="display:flex; gap:8px; align-items:center;"><div id="streakBadge" style="font-size:12px; font-weight:bold; color:var(--gold);">🔥 <span id="streakCount">0</span></div><div id="levelBadge" class="badge-level beginner">Beginner</div></div>
@@ -23,7 +23,7 @@
     <!-- Progress bar -->
     <div class="progress-container">
       <div class="progress-label">
-        <span>Progresso Roadmap a Tappe</span>
+        <span>Learning Roadmap Progress</span>
         <span id="progressPercent">0%</span>
       </div>
       <div class="progress-bar-bg">
@@ -33,10 +33,10 @@
 
     <!-- Tabs -->
     <div class="tabs" role="tablist" aria-label="Sezioni Dashboard">
-      <button class="tab active" role="tab" aria-selected="true" aria-controls="tab-pill" onclick="switchTab('pill')">☀️ Pillola Oggi</button>
-      <button class="tab" role="tab" aria-selected="false" onclick="switchTab('path')">🗺️ Percorso</button>
-      <button class="tab" role="tab" aria-selected="false" onclick="switchTab('badges')">🏆 Badge (<span id="tabBadgeCount">0</span>)</button>
-      <button class="tab" role="tab" aria-selected="false" onclick="switchTab('profile')">👤 Profilo</button>
+      <button class="tab active" role="tab" aria-selected="true" aria-controls="tab-pill" onclick="switchTab('pill')">☀️ Daily Pill</button>
+      <button class="tab" role="tab" aria-selected="false" onclick="switchTab('path')">🗺️ Pathway</button>
+      <button class="tab" role="tab" aria-selected="false" onclick="switchTab('badges')">🏆 Badges (<span id="tabBadgeCount">0</span>)</button>
+      <button class="tab" role="tab" aria-selected="false" onclick="switchTab('profile')">👤 Profile</button>
       <button class="tab" role="tab" aria-selected="false" onclick="switchTab('mindset')">🧠 Mindset</button>
     </div>
 
@@ -44,15 +44,15 @@
     <div id="tab-pill" role="tabpanel" class="tab-content active">
       <div class="pill-card">
         <div class="pill-header">
-          <span>💡 Concetto del Giorno con Leo</span>
+          <span>💡 Concept of the Day with Leo</span>
           <span id="pillLevelTag" style="font-weight:700;">LIVELLO</span>
         </div>
-        <div class="pill-title" id="pillTitle">Caricamento...</div>
+        <div class="pill-title" id="pillTitle">Loading...</div>
         <div class="pill-desc" id="pillDesc">...</div>
       </div>
 
       <div class="news-card">
-        <div class="news-topic" id="newsTopic">ATTUALITÀ ECONOMICA</div>
+        <div class="news-topic" id="newsTopic">ECONOMIC CONTEXT</div>
         <div class="news-headline" id="newsHeadline">...</div>
         <div class="news-impact" id="newsImpact">...</div>
       </div>
@@ -61,7 +61,7 @@
     <!-- Tab 2: Percorso di Apprendimento -->
     <div id="tab-path" role="tabpanel" class="tab-content">
       <div style="font-size: 11.5px; color: var(--muted); margin-bottom: 6px;">
-        Roadmap a 13 moduli con Leo:
+        13-module learning roadmap with Leo:
       </div>
       <div class="timeline" id="timelineList"></div>
     </div>
@@ -69,8 +69,8 @@
     <!-- Tab 3: Badge & Trofei -->
     <div id="tab-badges" role="tabpanel" class="tab-content">
       <div class="badges-header">
-        <span style="font-size: 11.5px; color: var(--muted);">Trofei sbloccati dialogando con Leo:</span>
-        <span class="badges-count" id="badgesRatio">0 / 10 Sbloccati</span>
+        <span style="font-size: 11.5px; color: var(--muted);">Trophies unlocked chatting with Leo:</span>
+        <span class="badges-count" id="badgesRatio">0 / 10 Unlocked</span>
       </div>
       <div class="badges-grid" id="badgesGrid"></div>
     </div>
@@ -78,29 +78,29 @@
     <!-- Tab 4: Profilo Utente -->
     <div id="tab-profile" role="tabpanel" class="tab-content">
       <div style="font-size: 11.5px; color: var(--muted); margin-bottom: 6px;">
-        Profilo memorizzato da Leo in base alle tue domande:
+        Profile memorized by Leo based on your conversations:
       </div>
       <div class="profile-grid">
         <div class="profile-box">
-          <div class="profile-box-label">Livello Attuale</div>
+          <div class="profile-box-label">Current Level</div>
           <div class="profile-box-val" id="profLevel">Beginner</div>
         </div>
         <div class="profile-box">
-          <div class="profile-box-label">Orizzonte Temporale</div>
-          <div class="profile-box-val" id="profHorizon">Medio-Lungo (> 5 anni)</div>
+          <div class="profile-box-label">Time Horizon</div>
+          <div class="profile-box-val" id="profHorizon">Medium-Long Term (> 5 years)</div>
         </div>
         <div class="profile-box">
-          <div class="profile-box-label">Attitudine al Rischio</div>
-          <div class="profile-box-val" id="profRisk">Prudente / Equilibrata</div>
+          <div class="profile-box-label">Risk Attitude</div>
+          <div class="profile-box-val" id="profRisk">Prudent / Balanced</div>
         </div>
         <div class="profile-box">
-          <div class="profile-box-label">Stile Comunicativo</div>
-          <div class="profile-box-val" id="profTone">Analogie e metafore</div>
+          <div class="profile-box-label">Communication Style</div>
+          <div class="profile-box-val" id="profTone">Everyday analogies and empathy</div>
         </div>
       </div>
 
       <div style="margin-top: 10px;">
-        <div style="font-size: 11px; font-weight:700; color:var(--muted); text-transform:uppercase;">Obiettivi Dichiarati</div>
+        <div style="font-size: 11px; font-weight:700; color:var(--muted); text-transform:uppercase;">Declared Goals</div>
         <div id="goalsList" style="margin-top:4px;"></div>
       </div>
     </div>
@@ -108,21 +108,21 @@
     <!-- Tab 5: Mindset & Bias -->
     <div id="tab-mindset" role="tabpanel" class="tab-content">
       <div style="font-size: 11.5px; color: var(--muted); margin-bottom: 6px;">
-        Igiene mentale e protezione dai bias cognitivi con Leo:
+        Mental clarity & cognitive bias protection with Leo:
       </div>
       <div style="background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:9px 12px; margin-top:6px; font-size:12px;">
-        <strong>🛡️ Regola Zero:</strong> Leo educa e orienta, non consiglia singoli investimenti speculativi.
+        <strong>🛡️ Rule Zero:</strong> Leo educates and guides, never advising on speculative investments.
       </div>
       <div style="background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:9px 12px; margin-top:6px; font-size:12px;">
-        <strong>🌊 Volatilità vs Rischio:</strong> Le oscillazioni temporanee sono il prezzo della crescita a lungo termine.
+        <strong>🌊 Volatility vs Risk:</strong> Temporary fluctuations are the toll for long-term real growth.
       </div>
       <div style="background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:9px 12px; margin-top:6px; font-size:12px;">
-        <strong>🚫 No FOMO:</strong> Il tempo batte sempre il timing, e la calma batte sempre la fretta.
+        <strong>🚫 No FOMO:</strong> Time always beats timing, and calmness always beats rush.
       </div>
     </div>
 
     <div class="disclaimer">
-      ⚠️ Leo è un educatore finanziario digitale. Non fornisce consulenza personalizzata agli investimenti.
+      ⚠️ Leo is a digital financial educator. He does not provide personalized investment advice.
     </div>
   </div>
 </main>
