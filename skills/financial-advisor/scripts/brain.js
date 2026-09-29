@@ -206,7 +206,7 @@
 
     return {
       url: webviewUrl,
-      aspectRatio: 1.05
+      aspectRatio: 0.85
     };
   }
 
