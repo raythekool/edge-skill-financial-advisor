@@ -3,132 +3,351 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Simulatore Skill — Financial Advisor (Google AI Edge Gallery)</title>
+  <title>Google AI Edge Gallery — Financial Advisor Chat Simulator</title>
   <style>
+    :root {
+      --bg: #eef2f6;
+      --card: #ffffff;
+      --primary: #0066cc;
+      --primary-hover: #0052a3;
+      --bubble-user: #0066cc;
+      --bubble-ai: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       margin: 0;
-      padding: 20px;
-      background: #f0f2f5;
-      color: #1a1a1a;
+      padding: 16px;
+      background: var(--bg);
+      color: var(--text);
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      justify-content: center;
     }
-    .container {
-      max-width: 540px;
+    .wrapper {
+      max-width: 600px;
       width: 100%;
-    }
-    .panel {
-      background: #fff;
-      padding: 18px;
-      border-radius: 16px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-      margin-bottom: 20px;
-    }
-    h1 {
-      font-size: 19px;
-      margin-top: 0;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .controls {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      height: calc(100vh - 32px);
+      max-height: 900px;
     }
-    .row {
+    /* Phone frame header */
+    .app-header {
+      background: var(--card);
+      border-radius: 20px 20px 0 0;
+      padding: 14px 18px;
+      border: 1px solid var(--border);
+      border-bottom: none;
       display: flex;
-      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
-    input, select, button {
-      font-size: 14px;
-      padding: 9px 12px;
+    .mentor-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .mentor-info img {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+    }
+    .mentor-info h2 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .mentor-info .status {
+      font-size: 11px;
+      color: #16a34a;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .mentor-info .status::before {
+      content: "";
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #16a34a;
+    }
+    .level-chip {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 12px;
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    /* Tab switcher for Chat vs Brain Debugger */
+    .view-tabs {
+      background: var(--card);
+      display: flex;
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 4px 14px;
+      gap: 6px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 7px 10px;
       border-radius: 8px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
-    input { flex: 1; }
-    button {
-      background: #0066cc;
-      color: #fff;
-      font-weight: 600;
       border: none;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: #f1f5f9;
+      color: var(--primary);
+    }
+
+    /* Chat Area */
+    .chat-box {
+      flex: 1;
+      background: #f8fafc;
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .msg {
+      max-width: 85%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.5;
+      word-break: break-word;
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .msg.user {
+      align-self: flex-end;
+      background: var(--bubble-user);
+      color: #ffffff;
+      border-bottom-right-radius: 4px;
+    }
+    .msg.ai {
+      align-self: flex-start;
+      background: var(--bubble-ai);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+    .msg .badge-note {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--primary);
+      background: #eff6ff;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-top: 8px;
+    }
+    .msg-webview-container {
+      margin-top: 10px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    }
+    .msg-webview {
+      width: 100%;
+      height: 440px;
+      border: none;
+      display: block;
+      background: #ffffff;
+    }
+
+    /* Suggestions chips */
+    .chips-bar {
+      background: var(--card);
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      padding: 8px 14px;
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .chips-bar::-webkit-scrollbar { display: none; }
+    .chip {
+      white-space: nowrap;
+      font-size: 12px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 6px 12px;
+      border-radius: 16px;
+      cursor: pointer;
+      color: #334155;
+      transition: all 0.15s;
+    }
+    .chip:hover {
+      background: #e2e8f0;
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Input area */
+    .input-bar {
+      background: var(--card);
+      border-radius: 0 0 20px 20px;
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+    }
+    .prompt-input {
+      flex: 1;
+      border: 1px solid #cbd5e1;
+      border-radius: 24px;
+      padding: 12px 18px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .prompt-input:focus {
+      border-color: var(--primary);
+    }
+    .send-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       transition: background 0.2s;
+      flex-shrink: 0;
     }
-    button:hover { background: #0052a3; }
-    button.secondary { background: #555; }
-    button.secondary:hover { background: #333; }
-    button.danger { background: #c1121f; }
-    button.danger:hover { background: #9b0f19; }
-    button:disabled { background: #aaa; cursor: not-allowed; }
+    .send-btn:hover { background: var(--primary-hover); }
+    .send-btn svg { width: 18px; height: 18px; fill: white; }
 
-    .preview-frame {
-      width: 100%;
-      height: 640px;
-      border: none;
-      border-radius: 18px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-      background: #fff;
+    /* Debugger view */
+    .debug-view {
+      display: none;
+      flex: 1;
+      background: #ffffff;
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      padding: 16px;
+      overflow-y: auto;
+      font-size: 13px;
     }
-    .log-box {
+    .debug-actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .debug-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      cursor: pointer;
+    }
+    .debug-btn:hover { background: #e2e8f0; }
+    .debug-log {
+      background: #1e293b;
+      color: #f1f5f9;
+      padding: 12px;
+      border-radius: 8px;
       font-family: Consolas, monospace;
       font-size: 11px;
-      background: #222;
-      color: #eee;
-      padding: 10px;
-      border-radius: 8px;
-      margin-top: 10px;
-      max-height: 120px;
-      overflow-y: auto;
       white-space: pre-wrap;
+      max-height: 250px;
+      overflow-y: auto;
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="panel">
-    <h1>
-      <img src="skills/financial-advisor/assets/icon.svg" width="28" height="28" alt="Icona">
-      <span>Simulatore AI Edge Gallery</span>
-    </h1>
-    <p style="margin: 0 0 12px; font-size: 13px; color: #666;">
-      Testa la logica del <strong>Brain</strong> (memoria persistente) e della <strong>Dashboard</strong> della skill <em>financial-advisor</em>.
-    </p>
-
-    <div class="controls">
-      <div class="row">
-        <select id="actionSelect" onchange="toggleInputs()">
-          <option value="load_memory">1. load_memory (Carica Profilo)</option>
-          <option value="update_memory">2. update_memory (Aggiungi Concetti/Note)</option>
-          <option value="view_hub" selected>3. view_hub (Mostra Dashboard)</option>
-          <option value="reset_memory">4. reset_memory (Azzera Memoria)</option>
-        </select>
-        <button id="runBtn" onclick="runSimulation()">Esegui</button>
+<div class="wrapper">
+  <!-- Header -->
+  <div class="app-header">
+    <div class="mentor-info">
+      <img src="skills/financial-advisor/assets/icon.svg" alt="Icona">
+      <div>
+        <h2>Financial Mentor</h2>
+        <div class="status">AI Edge Gallery On-Device Skill</div>
       </div>
-
-      <div id="updateInputs" style="display:none; flex-direction:column; gap:8px;">
-        <div class="row">
-          <select id="newLevel" style="width:140px;">
-            <option value="beginner">Beginner</option>
-            <option value="intermediate" selected>Intermediate</option>
-            <option value="advanced">Advanced</option>
-          </select>
-          <input type="text" id="conceptInput" placeholder="Nuovi concetti (es. PAC, TER, ETF azionario)">
-        </div>
-        <input type="text" id="noteInput" placeholder="Nuova nota utente (es. Obiettivo: fondo emergenza)">
-        <input type="text" id="summaryInput" placeholder="Sintesi sessione (es. Discussa la differenza tra azioni e bond)">
-      </div>
-
-      <div id="log" class="log-box" style="display:none;"></div>
     </div>
+    <div id="levelBadge" class="level-chip">Beginner</div>
   </div>
 
-  <iframe id="phoneView" class="preview-frame" src="skills/financial-advisor/assets/webview.html"></iframe>
+  <!-- Tabs: Chat vs Debug -->
+  <div class="view-tabs">
+    <button class="tab-btn active" id="tabChatBtn" onclick="switchView('chat')">💬 Chat & Prompt</button>
+    <button class="tab-btn" id="tabDebugBtn" onclick="switchView('debug')">🧠 Ispezione Brain (Memoria)</button>
+  </div>
+
+  <!-- CHAT VIEW -->
+  <div id="chatView" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
+    <div class="chat-box" id="chatBox">
+      <div class="msg ai">
+        👋 Ciao! Sono il tuo <strong>Financial Mentor</strong> con memoria persistente (Brain) e guida empatica (Soul).<br><br>
+        Il mio compito è spiegarti i meccanismi del denaro, gli investimenti e la pianificazione personale al tuo ritmo, senza gergo incomprensibile e <em>senza mai darti consigli speculativi di acquisto/vendita</em>.<br><br>
+        Dimmi: di cosa vorresti parlare oggi?
+      </div>
+    </div>
+
+    <!-- Quick Prompt Chips -->
+    <div class="chips-bar">
+      <div class="chip" onclick="usePrompt('Cos\'è l\'interesse composto?')">💡 Interesse composto</div>
+      <div class="chip" onclick="usePrompt('Spiegami cosa sono gli ETF come se avessi 10 anni')">🛒 Cos'è un ETF</div>
+      <div class="chip" onclick="usePrompt('In cosa dovrei investire i miei 10.000€?')">⚠️ In cosa investire? (Test No-Advice)</div>
+      <div class="chip" onclick="usePrompt('I mercati stanno crollando, devo vendere tutto?')">📉 Crollo mercati (Mindset)</div>
+      <div class="chip" onclick="usePrompt('Mostrami i miei progressi')">📊 Mostra Progressi</div>
+      <div class="chip" onclick="usePrompt('Azzera la mia memoria')">🔄 Azzera Memoria</div>
+    </div>
+
+    <!-- Prompt Input Form -->
+    <form class="input-bar" id="promptForm" onsubmit="handleSend(event)">
+      <input type="text" id="promptInput" class="prompt-input" placeholder="Scrivi un prompt o fai una domanda..." autocomplete="off">
+      <button type="submit" class="send-btn" title="Invia prompt">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </form>
+  </div>
+
+  <!-- DEBUG VIEW -->
+  <div id="debugView" class="debug-view">
+    <h3 style="margin-top:0;">🧠 Ispezione Stato Brain (`localStorage`)</h3>
+    <p style="color:var(--muted); font-size:12px;">
+      Questo pannello mostra le chiamate dirette al file <code>scripts/index.html</code> e lo stato della memoria a lungo termine.
+    </p>
+    <div class="debug-actions">
+      <button class="debug-btn" onclick="callBrainRaw('load_memory')">🔄 Ricarica Memoria</button>
+      <button class="debug-btn" onclick="callBrainRaw('view_hub')">📊 Genera Payload Dashboard</button>
+      <button class="debug-btn" onclick="callBrainRaw('reset_memory')">🗑️ Resetta Memoria</button>
+    </div>
+    <div class="debug-log" id="debugLog">Inizializzazione sandbox Brain in corso...</div>
+  </div>
 </div>
 
 <!-- Headless sandbox della skill -->
@@ -136,75 +355,235 @@
 
 <script>
   let sandboxReady = false;
+  let brainState = { level: 'beginner', concepts_already_learned: [], user_notes: [] };
+
   function onSandboxReady() {
     sandboxReady = true;
-    const log = document.getElementById('log');
-    log.style.display = 'block';
-    log.textContent = 'Brain inizializzato. Pronto all\'uso.';
-    // Esegui visualizzazione iniziale
-    runSimulation();
+    syncBrain();
   }
 
-  function toggleInputs() {
-    const action = document.getElementById('actionSelect').value;
-    document.getElementById('updateInputs').style.display = (action === 'update_memory') ? 'flex' : 'none';
+  async function invokeBrain(payload) {
+    const sandbox = document.getElementById('skillSandbox').contentWindow;
+    if (!sandbox || !sandbox.ai_edge_gallery_get_result) {
+      throw new Error('Runtime della skill non pronto.');
+    }
+    const raw = await sandbox.ai_edge_gallery_get_result(JSON.stringify(payload));
+    return JSON.parse(raw);
   }
 
-  async function runSimulation() {
-    const action = document.getElementById('actionSelect').value;
-    const btn = document.getElementById('runBtn');
-    const log = document.getElementById('log');
-    const iframe = document.getElementById('phoneView');
+  async function syncBrain() {
+    try {
+      const res = await invokeBrain({ action: 'load_memory' });
+      if (res && res.result) {
+        brainState = JSON.parse(res.result);
+        const badge = document.getElementById('levelBadge');
+        badge.textContent = brainState.current_level || 'beginner';
+        badge.className = `level-chip ${brainState.current_level || 'beginner'}`;
+        document.getElementById('debugLog').textContent = JSON.stringify(brainState, null, 2);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
-    log.style.display = 'block';
-    log.textContent = `Esecuzione azione "${action}" nel Brain...`;
-    btn.disabled = true;
+  function switchView(view) {
+    document.getElementById('tabChatBtn').classList.toggle('active', view === 'chat');
+    document.getElementById('tabDebugBtn').classList.toggle('active', view === 'debug');
+    document.getElementById('chatView').style.display = view === 'chat' ? 'flex' : 'none';
+    document.getElementById('debugView').style.display = view === 'debug' ? 'block' : 'none';
+    if (view === 'debug') syncBrain();
+  }
+
+  function usePrompt(text) {
+    document.getElementById('promptInput').value = text;
+    handleSend(new Event('submit'));
+  }
+
+  async function handleSend(e) {
+    e.preventDefault();
+    const input = document.getElementById('promptInput');
+    const prompt = input.value.trim();
+    if (!prompt) return;
+
+    input.value = '';
+    appendMessage(prompt, 'user');
+
+    // Mostra indicatore di digitazione / thinking
+    const thinkingId = appendMessage('<em>Il Financial Mentor sta consultando il Brain e formulando la risposta...</em>', 'ai');
 
     try {
-      const sandbox = document.getElementById('skillSandbox').contentWindow;
-      if (!sandbox || !sandbox.ai_edge_gallery_get_result) {
-        throw new Error('Runtime della skill non ancora inizializzato.');
-      }
+      // 1. Il modello esegue la Soul e interpella il Brain
+      const replyObj = await simulateMentorSoul(prompt);
 
-      let payload = { action: action };
+      // Rimuovi thinking
+      document.getElementById(thinkingId).remove();
 
-      if (action === 'update_memory') {
-        payload.new_level = document.getElementById('newLevel').value;
-        const concepts = document.getElementById('conceptInput').value.split(',').map(s => s.trim()).filter(Boolean);
-        if (concepts.length > 0) payload.add_concepts = concepts;
-        const note = document.getElementById('noteInput').value.trim();
-        if (note) payload.add_note = note;
-        const summary = document.getElementById('summaryInput').value.trim();
-        if (summary) payload.summary = summary;
-      }
+      // Mostra risposta dell'assistente
+      appendAiResponse(replyObj);
 
-      const rawResponse = await sandbox.ai_edge_gallery_get_result(JSON.stringify(payload));
-      const parsed = JSON.parse(rawResponse);
-
-      if (parsed.error) {
-        log.textContent = `Errore: ${parsed.error}`;
-      } else {
-        log.textContent = `✅ Risultato Brain:\n${parsed.result}`;
-        
-        if (parsed.webview && parsed.webview.url) {
-          // Risolvi il path relativo rispetto alla cartella scripts
-          const webviewUrl = 'skills/financial-advisor/assets/' + parsed.webview.url.replace(/^..\//, '').replace(/^assets\//, '');
-          iframe.src = webviewUrl;
-        } else if (action === 'update_memory' || action === 'reset_memory') {
-          // Ricarica la vista dopo l'aggiornamento
-          const viewRaw = await sandbox.ai_edge_gallery_get_result(JSON.stringify({ action: 'view_hub' }));
-          const viewParsed = JSON.parse(viewRaw);
-          if (viewParsed.webview) {
-            const webviewUrl = 'skills/financial-advisor/assets/' + viewParsed.webview.url.replace(/^..\//, '').replace(/^assets\//, '');
-            iframe.src = webviewUrl;
-          }
-        }
-      }
+      // Aggiorna badge di livello
+      syncBrain();
     } catch (err) {
-      log.textContent = `Errore durante il test: ${err.message}`;
-    } finally {
-      btn.disabled = false;
+      document.getElementById(thinkingId).remove();
+      appendMessage('⚠️ Si è verificato un errore: ' + err.message, 'ai');
     }
+  }
+
+  function appendMessage(text, sender) {
+    const box = document.getElementById('chatBox');
+    const msg = document.createElement('div');
+    const id = 'msg_' + Date.now() + Math.random().toString(36).substr(2, 4);
+    msg.id = id;
+    msg.className = `msg ${sender}`;
+    msg.innerHTML = text;
+    box.appendChild(msg);
+    box.scrollTop = box.scrollHeight;
+    return id;
+  }
+
+  function appendAiResponse(response) {
+    const box = document.getElementById('chatBox');
+    const msg = document.createElement('div');
+    msg.className = 'msg ai';
+
+    let content = `<div>${response.text}</div>`;
+
+    if (response.brainNote) {
+      content += `<div class="badge-note">🧠 Brain: ${response.brainNote}</div>`;
+    }
+
+    if (response.webviewUrl) {
+      content += `
+        <div class="msg-webview-container">
+          <iframe class="msg-webview" src="${response.webviewUrl}"></iframe>
+        </div>
+      `;
+    }
+
+    msg.innerHTML = content;
+    box.appendChild(msg);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  // Motore di simulazione Soul & Brain (riflette esattamente le regole di SKILL.md)
+  async function simulateMentorSoul(prompt) {
+    const p = prompt.toLowerCase();
+
+    // Azione Progressi / Dashboard
+    if (p.includes('progress') || p.includes('mostra') || p.includes('dashboard') || p.includes('livello') || p.includes('competenze')) {
+      const hubRes = await invokeBrain({ action: 'view_hub' });
+      const webviewUrl = 'skills/financial-advisor/assets/' + hubRes.webview.url.replace(/^..\//, '').replace(/^assets\//, '');
+      return {
+        text: `Ecco la mappa visiva del tuo percorso di apprendimento finanziario! Come puoi vedere, teniamo traccia dei concetti assimilati e del tuo livello di alfabetizzazione.`,
+        webviewUrl: webviewUrl,
+        brainNote: 'Dashboard visualizzata dal Brain'
+      };
+    }
+
+    // Azione Reset
+    if (p.includes('reset') || p.includes('azzera')) {
+      const resetRes = await invokeBrain({ action: 'reset_memory' });
+      return {
+        text: resetRes.result || 'Memoria azzerata. Ripartiamo dalle basi insieme!',
+        brainNote: 'Stato localStorage resettato'
+      };
+    }
+
+    // REGOLA ZERO: No Investment Advice (Richiesta di consigli specifici d'investimento)
+    if (p.includes('in cosa dovrei investire') || p.includes('dove investire') || p.includes('consigliami un titolo') || p.includes('comprare') || p.includes('10.000') || p.includes('crypto')) {
+      await invokeBrain({
+        action: 'update_memory',
+        add_note: 'Ha chiesto consigli di investimento diretti: ricordata la Regola Zero (solo didattica e concetti)',
+        summary: 'Richiesta di consigli d\'investimento: spiegata la differenza tra educazione finanziaria e consulenza personalizzata.'
+      });
+
+      return {
+        text: `🛡️ <strong>Nota etica fondamentale:</strong> Come tuo mentore finanziario didattico, <em>non posso e non devo darti consigli personalizzati su dove investire i tuoi soldi</em> (es. quali azioni o crypto acquistare). Chi ti promette rendimenti o ricette facili senza conoscere la tua vita sta violando la legge o cercando di venderti qualcosa.<br><br>
+        Quello che <strong>possiamo fare insieme</strong> è capire i mattoncini fondamentali:<br>
+        1. <strong>Fondo di emergenza:</strong> hai già da parte da 3 a 6 mesi di spese vive su un conto sicuro prima di pensare a investire?<br>
+        2. <strong>Orizzonte temporale:</strong> questi soldi ti serviranno tra 1 anno, 5 anni o 20 anni?<br>
+        3. <strong>Tolleranza al rischio:</strong> come ti sentiresti se vedessi oscillare il valore del 15% nel breve termine?<br><br>
+        Se vuoi, possiamo partire proprio dall'esplorare il concetto di <em>Fondo di Emergenza</em> o di <em>Orizzonte Temporale</em>!`,
+        brainNote: 'Riconosciuto trigger No-Advice. Obiettivo utente memorizzato.'
+      };
+    }
+
+    // Argomento: Interesse Composto
+    if (p.includes('interesse composto') || p.includes('compounding')) {
+      await invokeBrain({
+        action: 'update_memory',
+        new_level: brainState.current_level === 'beginner' ? 'intermediate' : brainState.current_level,
+        add_concepts: ['interesse composto'],
+        summary: 'Appreso il concetto di interesse composto attraverso l\'analogia della valanga e della palla di neve.'
+      });
+
+      return {
+        text: `⛄ <strong>L'Interesse Composto: l'effetto palla di neve</strong><br><br>
+        Immagina di lanciare una piccola palla di neve dalla cima di una montagna. All'inizio è minuscola. Ma rotolando, la neve si attacca a quella già accumulata: più diventa grande, più neve raccoglie ad ogni giro.<br><br>
+        Nel mondo finanziario funziona uguale: se investi 100€ e guadagni il 5% (5€), l'anno dopo il 5% non lo calcoli più solo sui 100€ iniziali, ma su 105€! Con il passare degli anni (10, 20 o 30 anni), il rendimento generato dai rendimenti precedenti supera di gran lunga il capitale che avevi versato di tasca tua.<br><br>
+        È il motivo per cui <em>il tempo</em> è l'alleato più potente dell'investitore a lungo termine. Ti è chiaro questo passaggio o vuoi fare una prova con numeri concreti?`,
+        brainNote: 'Aggiunto concetto "interesse composto". Avanzamento livello registrato.'
+      };
+    }
+
+    // Argomento: ETF
+    if (p.includes('etf')) {
+      await invokeBrain({
+        action: 'update_memory',
+        add_concepts: ['etf', 'diversificazione'],
+        summary: 'Spiegati gli ETF come carrello della spesa diversificato e il concetto di gestione passiva.'
+      });
+
+      return {
+        text: `🛒 <strong>Cos'è un ETF? L'analogia del carrello della spesa</strong><br><br>
+        Immagina di andare al mercato. Puoi comprare una singola mela da un solo contadino: se quella mela è marcia, hai perso tutto il pranzo (questo è comprare l'azione di una singola azienda).<br><br>
+        Oppure puoi prendere un <strong>cestino preconfezionato</strong> che contiene 3.000 frutti diversi provenienti da tutto il mondo: qualche mela, arance, banane, pere. Se una mela marcisce, il tuo pranzo è comunque salvo perché hai tantissimi altri frutti.<br><br>
+        Un <strong>ETF (Exchange Traded Fund)</strong> è esattamente questo cestino: con una sola quota (spesso da 30€ a 100€) compri automaticamente una frazione di migliaia delle più grandi aziende del mondo, replicando l'andamento dell'intera economia globale a costi piccolissimi (spesso sotto lo 0,2% all'anno).`,
+        brainNote: 'Aggiunti concetti "etf" e "diversificazione" alla mappa del Brain.'
+      };
+    }
+
+    // Argomento: Panico da Crollo di Mercato / Volatilità
+    if (p.includes('crollo') || p.includes('crollando') || p.includes('vendere') || p.includes('paura') || p.includes('rosso')) {
+      await invokeBrain({
+        action: 'update_memory',
+        add_note: 'Mostrata ansia per la volatilità: attivato scudo psicologico e spiegata la natura ciclica dei mercati.',
+        summary: 'Gestione del panico da discesa dei mercati ed educazione alla volatilità fisiologica.'
+      });
+
+      return {
+        text: `🌊 <strong>Frena un secondo e respira: guardiamo le cose con lucidità</strong><br><br>
+        Vedere numeri rossi fa scattare nel nostro cervello primordiale la reazione di fuga ("vendi tutto prima che scenda ancora!"). È una trappola psicologica notissima chiamata <em>Loss Aversion</em> (la paura della perdita fa il doppio più male del piacere del guadagno).<br><br>
+        Ricorda tre regole d'oro del nostro Brain:<br>
+        1. <strong>La perdita è reale solo se vendi:</strong> finché non vendi, possiedi sempre lo stesso numero di quote delle aziende nel tuo cestino.<br>
+        2. <strong>La volatilità è il pedaggio dell'autostrada:</strong> non esiste rendimento a lungo termine senza oscillazioni nel breve. Nei 100 anni di storia economica, i mercati globali hanno superato guerre, pandemie e crisi, tornando sempre a crescere.<br>
+        3. <strong>I saldi:</strong> se fai un PAC (Piano di Accumulo), quando il mercato scende stai comprando nuove quote a prezzo di sconto!<br><br>
+        I tuoi soldi investiti sono legati a un obiettivo di lungo termine (> 10 anni)? Se sì, il segreto migliore è non guardare il saldo ogni giorno.`,
+        brainNote: 'Attivato scudo psicologico anti-panico nel Brain.'
+      };
+    }
+
+    // Risposta generica didattica con adattamento al livello
+    await invokeBrain({
+      action: 'update_memory',
+      summary: `Domanda esplorativa: "${prompt.slice(0, 50)}..."`
+    });
+
+    return {
+      text: `Ottima domanda! Quando parliamo di questo argomento, è importante considerare il tuo livello attuale (<strong>${(brainState.current_level || 'beginner').toUpperCase()}</strong>).<br><br>
+      In finanza, ogni grande decisione si basa su tre pilastri:<br>
+      • <strong>La liquidità:</strong> i soldi per vivere mese per mese.<br>
+      • <strong>La sicurezza:</strong> il fondo per gli imprevisti.<br>
+      • <strong>La crescita:</strong> ciò che puoi permetterti di lasciare investito per molti anni.<br><br>
+      Vuoi che approfondiamo uno di questi aspetti in particolare, oppure vuoi digitare <em>"Mostrami i miei progressi"</em> per vedere la tua dashboard?`,
+      brainNote: 'Interazione registrata nel diario delle sessioni.'
+    };
+  }
+
+  async function callBrainRaw(action) {
+    const res = await invokeBrain({ action });
+    document.getElementById('debugLog').textContent = JSON.stringify(res, null, 2);
+    syncBrain();
   }
 </script>
 
