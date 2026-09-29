@@ -7,21 +7,84 @@
 </head>
 <body>
 <script>
-  const STORAGE_KEY = "financial_advisor_brain_state_v1";
-  const DEMO_FIXTURE_URL = "../assets/demo-profile.json";
+  const STORAGE_KEY = "financial_advisor_brain_state_v2";
+
+  // Curriculum di apprendimento strutturato in 3 pilastri
+  const CURRICULUM = [
+    // Pilastro 1: Fondamenta (Beginner)
+    { id: "mod_1", pillar: "Fondamenta", level: "beginner", title: "Budgeting & Regola 50/30/20", concept: "budgeting", desc: "Gestire entrate e uscite separando necessità (50%), desideri (30%) e risparmio (20%)." },
+    { id: "mod_2", pillar: "Fondamenta", level: "beginner", title: "L'Inflazione & Potere d'Acquisto", concept: "inflazione", desc: "Capire perché lasciare tutti i soldi fermi sul conto corrente li svaluta nel tempo." },
+    { id: "mod_3", pillar: "Fondamenta", level: "beginner", title: "Fondo di Emergenza", concept: "fondo di emergenza", desc: "La cintura di sicurezza: 3-6 mesi di spese vive liquide prima di qualsiasi investimento." },
+    { id: "mod_4", pillar: "Fondamenta", level: "beginner", title: "Conto Corrente vs Conto Deposito", concept: "conto deposito", desc: "Distinguere lo strumento per le spese quotidiane da quello per remunerare la liquidità." },
+
+    // Pilastro 2: Investimenti & Crescita (Intermediate)
+    { id: "mod_5", pillar: "Investimenti", level: "intermediate", title: "Interesse Composto & Tempo", concept: "interesse composto", desc: "L'effetto valanga: generare rendimenti sui rendimenti passati grazie alla leva degli anni." },
+    { id: "mod_6", pillar: "Investimenti", level: "intermediate", title: "Azioni vs Obbligazioni", concept: "differenza tra azioni e obbligazioni", desc: "La differenza tra diventare socio di un'azienda (azioni) o prestarle del denaro (obbligazioni/bond)." },
+    { id: "mod_7", pillar: "Investimenti", level: "intermediate", title: "ETF & Diversificazione Globale", concept: "etf", desc: "Il carrello della spesa: comprare migliaia di titoli mondiali con un'unica quota a bassissimo costo." },
+    { id: "mod_8", pillar: "Investimenti", level: "intermediate", title: "Il PAC (Piano di Accumulo)", concept: "pac", desc: "Investire una somma fissa ogni mese per non farsi condizionare dall'ansia del market timing." },
+    { id: "mod_9", pillar: "Investimenti", level: "intermediate", title: "Costi e Fisco (TER e Tassazione)", concept: "costi e ter", desc: "Impatto devastante dei costi di gestione attivi a 20 anni e tassazione sulle rendite (26% vs 12.5%)." },
+
+    // Pilastro 3: Strategia & Previdenza (Advanced)
+    { id: "mod_10", pillar: "Previdenza & Strategia", level: "advanced", title: "Previdenza Integrativa & Vantaggi Fiscali", concept: "fondo pensione", desc: "Costruire il secondo pilastro pensionistico sfruttando la deduzione fiscale annuale fino a 5.164€." },
+    { id: "mod_11", pillar: "Previdenza & Strategia", level: "advanced", title: "Volatilità, Rischio & Drawdown", concept: "volatilita e rischio", desc: "Capire che le oscillazioni di breve periodo sono il prezzo pagato per il rendimento a lungo termine." },
+    { id: "mod_12", pillar: "Previdenza & Strategia", level: "advanced", title: "Asset Allocation & Ribilanciamento", concept: "asset allocation", desc: "Calibrare pesi tra azioni e bond nel ciclo di vita e ripristinarli una volta all'anno." },
+    { id: "mod_13", pillar: "Previdenza & Strategia", level: "advanced", title: "Finanza Comportamentale & Bias", concept: "finanza comportamentale", desc: "Difendersi da FOMO, overconfidence e dalla paura paralizzante dei crolli di borsa." }
+  ];
+
+  // Notizie e scenari economici a rotazione per le Pillole del Giorno
+  const NEWS_SCENARIOS = [
+    {
+      id: "bce_rates",
+      topic: "Tassi delle Banche Centrali (BCE)",
+      headline: "La BCE valuta l'andamento dei tassi di interesse guida",
+      beginner_impact: "Cosa significa per te: se i tassi scendono, i nuovi mutui costano un po' meno, ma anche i conti deposito renderanno leggermente meno.",
+      intermediate_impact: "Cosa significa per te: quando i tassi scendono, il prezzo delle obbligazioni già emesse tende a salire. Per le azioni significa costi di finanziamento minori per le imprese.",
+      advanced_impact: "Cosa significa per te: impatto sulla duration della componente obbligazionaria in portafoglio e sul premio per il rischio azionario (Equity Risk Premium)."
+    },
+    {
+      id: "inflation_data",
+      topic: "Dati sull'Inflazione ISTAT / Eurostat",
+      headline: "L'inflazione frena la corsa: aggiornati i dati sui prezzi al consumo",
+      beginner_impact: "Cosa significa per te: l'aumento dei prezzi della spesa e delle bollette sta rallentando, ma i prezzi non tornano indietro: i soldi fermi sul conto continuano a perdere valore reale.",
+      intermediate_impact: "Cosa significa per te: per battere l'inflazione serve un rendimento reale positivo, motivo per cui il fondo d'emergenza va tenuto su conti remunerati e la quota a lungo termine su ETF azionari.",
+      advanced_impact: "Cosa significa per te: monitoraggio del break-even inflation rate e valutazione di strumenti inflation-linked per la parte difensiva del patrimonio."
+    },
+    {
+      id: "btp_auctions",
+      topic: "Rendimenti Titoli di Stato (BTP e Bund)",
+      headline: "Aste del Tesoro: forte domanda per i titoli di stato italiani",
+      beginner_impact: "Cosa significa per te: lo Stato offre rendimenti garantiti a chi gli presta denaro per qualche anno, con una tassazione agevolata al 12,5% (rispetto al 26% consueto).",
+      intermediate_impact: "Cosa significa per te: ottima soluzione per obiettivi a scadenza prefissata (es. acquisto auto o casa tra 3-5 anni), evitando il rischio di oscillazione azionaria.",
+      advanced_impact: "Cosa significa per te: analisi della pendenza della curva dei rendimenti e spread BTP-Bund come termometro del rischio sovrano."
+    },
+    {
+      id: "market_rally",
+      topic: "Mercati Azionari Globali & Volatilità",
+      headline: "Gli indici mondiali (MSCI World / S&P 500) riflettono la crescita tecnologica",
+      beginner_impact: "Cosa significa per te: l'economia mondiale nel complesso continua a innovare. Con un ETF globale possiedi automaticamente le più grandi aziende del pianeta.",
+      intermediate_impact: "Cosa significa per te: chi investe con un PAC mensile non deve cercare di indovinare i massimi o i minimi: la costanza batte sempre il market timing.",
+      advanced_impact: "Cosa significa per te: concentrazione delle 'Magnificent 7' nella capitalizzazione e opportunità di ribilanciamento con indici Equal-Weight o mercati emergenti."
+    }
+  ];
 
   const DEFAULT_STATE = {
     level: "beginner", // beginner | intermediate | advanced
-    concepts_learned: [],
-    user_notes: [],
-    history_summaries: [],
-    goals: [],
-    bias_guardrails: [
-      { id: "fomo", name: "FOMO (Fear Of Missing Out)", alert: "Ricorda: rendimenti passati elevati non garantiscono guadagni futuri." },
-      { id: "panic", name: "Panico da Crollo di Mercato", alert: "La volatilità a breve termine è il prezzo pagato per il rendimento a lungo termine." },
-      { id: "overconfidence", name: "Overconfidence & Concentrazione", alert: "Non scommettere su singoli titoli: diversifica ampiamente." }
+    user_profile: {
+      goals: ["Creare fondo di emergenza", "Comprendere gli investimenti senza rischi eccessivi"],
+      age_range: "non specificata",
+      time_horizon: "medio-lungo termine (> 5 anni)",
+      risk_attitude: "equilibrata / prudente",
+      tone_preference: "analogie quotidiane e spiegazioni chiare"
+    },
+    concepts_learned: ["inflazione", "fondo di emergenza"],
+    user_notes: [
+      "Profilo orientato alla serenità e alla comprensione del rischio",
+      "Ha iniziato il percorso dalle fondamenta della finanza personale"
     ],
-    last_updated: null
+    history_summaries: [
+      { date: "2026-09-28", summary: "Inaugurato il percorso di alfabetizzazione finanziaria: discussi i primi concetti su inflazione e risparmio." }
+    ],
+    last_updated: new Date().toISOString()
   };
 
   function getStoredState() {
@@ -39,60 +102,105 @@
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch (e) {
-      console.error("Salvataggio localStorage fallito:", e);
+      console.error("Salvataggio fallito:", e);
     }
   }
 
-  async function initializeOrGetState() {
+  function initializeOrGetState() {
     let state = getStoredState();
     if (!state) {
-      // Se non esiste ancora uno stato salvato, prova a caricare i valori base dal fixture o da default
-      try {
-        const res = await fetch(DEMO_FIXTURE_URL, { cache: "no-store" });
-        if (res.ok) {
-          const fixture = await res.json();
-          state = { ...DEFAULT_STATE, ...fixture };
-        }
-      } catch (_) {
-        // Fallback su stato vuoto predefinito
-        state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-      }
-      if (!state) state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+      state = JSON.parse(JSON.stringify(DEFAULT_STATE));
       saveStoredState(state);
     }
+    if (!state.user_profile) state.user_profile = { ...DEFAULT_STATE.user_profile };
     return state;
   }
 
+  function calculateLearningPath(learnedConcepts) {
+    const list = learnedConcepts.map(c => String(c).toLowerCase().trim());
+    let currentFound = false;
+
+    return CURRICULUM.map(mod => {
+      const isMastered = list.includes(mod.concept.toLowerCase());
+      let status = "upcoming";
+      if (isMastered) {
+        status = "mastered";
+      } else if (!currentFound) {
+        status = "current";
+        currentFound = true;
+      }
+      return {
+        ...mod,
+        status: status
+      };
+    });
+  }
+
+  function getDailyPillData(state) {
+    const path = calculateLearningPath(state.concepts_learned || []);
+    const nextMod = path.find(m => m.status === "current") || CURRICULUM[0];
+
+    // Seleziona notizia basata sul giorno dell'anno
+    const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+    const newsItem = NEWS_SCENARIOS[dayOfYear % NEWS_SCENARIOS.length];
+
+    const userLevel = state.level || "beginner";
+    let contextualImpact = newsItem.beginner_impact;
+    if (userLevel === "intermediate") contextualImpact = newsItem.intermediate_impact;
+    if (userLevel === "advanced") contextualImpact = newsItem.advanced_impact;
+
+    return {
+      date: new Date().toLocaleDateString("it-IT", { weekday: "long", day: "numeric", month: "long" }),
+      concept_pill: {
+        title: nextMod.title,
+        concept: nextMod.concept,
+        pillar: nextMod.pillar,
+        level: nextMod.level,
+        explanation: nextMod.desc
+      },
+      market_news_context: {
+        topic: newsItem.topic,
+        headline: newsItem.headline,
+        tailored_impact: contextualImpact,
+        for_profile: `Calibrato per profilo ${userLevel.toUpperCase()} con orizzonte ${state.user_profile.time_horizon}`
+      }
+    };
+  }
+
+  // Entry point standard di Google AI Edge Gallery
   window["ai_edge_gallery_get_result"] = async (data) => {
     try {
       const request = typeof data === "string" ? JSON.parse(data || "{}") : (data || {});
       const action = request.action || "load_memory";
-      let state = await initializeOrGetState();
+      let state = initializeOrGetState();
 
       if (action === "load_memory") {
+        const path = calculateLearningPath(state.concepts_learned);
+        const currentStep = path.find(m => m.status === "current");
+
         const payload = {
           status: "ready",
           current_level: state.level || "beginner",
+          user_profile: state.user_profile,
           concepts_already_learned: state.concepts_learned || [],
           concepts_count: (state.concepts_learned || []).length,
+          current_learning_step: currentStep ? currentStep.title : "Tutti i moduli completati!",
           user_notes: (state.user_notes || []).slice(-5),
           recent_topics: (state.history_summaries || []).slice(-3),
-          bias_guardrails: state.bias_guardrails || [],
           last_updated: state.last_updated
         };
 
-        return JSON.stringify({
-          result: JSON.stringify(payload)
-        });
+        return JSON.stringify({ result: JSON.stringify(payload) });
       }
 
       if (action === "update_memory") {
+        // Aggiorna livello se richiesto
         if (request.new_level && ["beginner", "intermediate", "advanced"].includes(request.new_level)) {
           state.level = request.new_level;
         }
 
+        // Aggiungi concetti senza duplicati
         if (Array.isArray(request.add_concepts)) {
-          if (!state.concepts_learned) state.concepts_learned = [];
           for (const c of request.add_concepts) {
             const clean = String(c).trim().toLowerCase();
             if (clean && !state.concepts_learned.includes(clean)) {
@@ -101,45 +209,86 @@
           }
         }
 
-        if (request.add_note && typeof request.add_note === "string") {
-          if (!state.user_notes) state.user_notes = [];
-          state.user_notes.push(request.add_note.trim());
-          if (state.user_notes.length > 25) state.user_notes.shift();
+        // Aggiorna dettagli profilo utente
+        if (request.profile_update && typeof request.profile_update === "object") {
+          state.user_profile = { ...state.user_profile, ...request.profile_update };
         }
 
+        // Aggiungi note
+        if (request.add_note && typeof request.add_note === "string") {
+          state.user_notes.push(request.add_note.trim());
+          if (state.user_notes.length > 30) state.user_notes.shift();
+        }
+
+        // Aggiungi sintesi storico
         if (request.summary && typeof request.summary === "string") {
-          if (!state.history_summaries) state.history_summaries = [];
           state.history_summaries.push({
             date: new Date().toISOString().split("T")[0],
             summary: request.summary.trim()
           });
-          if (state.history_summaries.length > 15) state.history_summaries.shift();
+          if (state.history_summaries.length > 20) state.history_summaries.shift();
+        }
+
+        // Ricalcola livello automatico se sono stati appresi molti concetti
+        if (state.concepts_learned.length >= 8 && state.level === "beginner") {
+          state.level = "intermediate";
+        } else if (state.concepts_learned.length >= 12 && state.level === "intermediate") {
+          state.level = "advanced";
         }
 
         saveStoredState(state);
 
         return JSON.stringify({
-          result: `Memoria aggiornata. Livello attuale: ${state.level}. Concetti padroneggiati: ${state.concepts_learned.length}.`
+          result: `Memoria aggiornata: livello=${state.level}, concetti=${state.concepts_learned.length}, profilo sincronizzato.`
+        });
+      }
+
+      if (action === "get_learning_path") {
+        const path = calculateLearningPath(state.concepts_learned || []);
+        const total = path.length;
+        const completed = path.filter(p => p.status === "mastered").length;
+        const progressPct = Math.round((completed / total) * 100);
+
+        return JSON.stringify({
+          result: JSON.stringify({
+            progress_percent: progressPct,
+            completed_modules: completed,
+            total_modules: total,
+            current_level: state.level,
+            modules: path
+          })
+        });
+      }
+
+      if (action === "get_daily_pill") {
+        const pillData = getDailyPillData(state);
+        return JSON.stringify({
+          result: JSON.stringify(pillData)
         });
       }
 
       if (action === "view_hub") {
+        const path = calculateLearningPath(state.concepts_learned || []);
+        const pill = getDailyPillData(state);
+
         const webviewPayload = {
           level: state.level || "beginner",
+          profile: state.user_profile || {},
           concepts: state.concepts_learned || [],
+          modules: path,
+          daily_pill: pill,
           notes: (state.user_notes || []).slice(-4),
           summaries: (state.history_summaries || []).slice(-4),
-          guardrails: state.bias_guardrails || [],
-          updatedAt: state.last_updated || new Date().toISOString()
+          updatedAt: state.last_updated
         };
 
         const webviewUrl = `../assets/webview.html?payload=${encodeURIComponent(JSON.stringify(webviewPayload))}`;
 
         return JSON.stringify({
-          result: `Ecco la mappa dei tuoi progressi finanziari (Livello: ${state.level.toUpperCase()}, ${state.concepts_learned.length} concetti assimilati).`,
+          result: `Ecco la dashboard del tuo percorso formativo (Livello: ${state.level.toUpperCase()}).`,
           webview: {
             url: webviewUrl,
-            aspectRatio: 1.15
+            aspectRatio: 1.2
           }
         });
       }
@@ -149,7 +298,7 @@
         state = JSON.parse(JSON.stringify(DEFAULT_STATE));
         saveStoredState(state);
         return JSON.stringify({
-          result: "Memoria del mentore azzerata con successo. Pronto per un nuovo percorso."
+          result: "Memoria e profilo utente ripristinati con successo. Si riparte da zero!"
         });
       }
 

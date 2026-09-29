@@ -8,11 +8,11 @@
     :root {
       --bg: #eef2f6;
       --card: #ffffff;
-      --primary: #0066cc;
-      --primary-hover: #0052a3;
-      --bubble-user: #0066cc;
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --bubble-user: #0284c7;
       --bubble-ai: #ffffff;
-      --text: #1e293b;
+      --text: #0f172a;
       --muted: #64748b;
       --border: #e2e8f0;
     }
@@ -27,14 +27,13 @@
       justify-content: center;
     }
     .wrapper {
-      max-width: 600px;
+      max-width: 620px;
       width: 100%;
       display: flex;
       flex-direction: column;
       height: calc(100vh - 32px);
-      max-height: 900px;
+      max-height: 920px;
     }
-    /* Phone frame header */
     .app-header {
       background: var(--card);
       border-radius: 20px 20px 0 0;
@@ -86,7 +85,6 @@
       color: #1e40af;
     }
 
-    /* Tab switcher for Chat vs Brain Debugger */
     .view-tabs {
       background: var(--card);
       display: flex;
@@ -113,7 +111,6 @@
       color: var(--primary);
     }
 
-    /* Chat Area */
     .chat-box {
       flex: 1;
       background: #f8fafc;
@@ -126,10 +123,10 @@
       gap: 14px;
     }
     .msg {
-      max-width: 85%;
+      max-width: 88%;
       padding: 12px 16px;
       border-radius: 16px;
-      font-size: 14px;
+      font-size: 13.5px;
       line-height: 1.5;
       word-break: break-word;
       animation: fadeIn 0.2s ease;
@@ -171,13 +168,12 @@
     }
     .msg-webview {
       width: 100%;
-      height: 440px;
+      height: 480px;
       border: none;
       display: block;
       background: #ffffff;
     }
 
-    /* Suggestions chips */
     .chips-bar {
       background: var(--card);
       border-left: 1px solid var(--border);
@@ -206,7 +202,6 @@
       color: var(--primary);
     }
 
-    /* Input area */
     .input-bar {
       background: var(--card);
       border-radius: 0 0 20px 20px;
@@ -246,7 +241,6 @@
     .send-btn:hover { background: var(--primary-hover); }
     .send-btn svg { width: 18px; height: 18px; fill: white; }
 
-    /* Debugger view */
     .debug-view {
       display: none;
       flex: 1;
@@ -273,14 +267,14 @@
     }
     .debug-btn:hover { background: #e2e8f0; }
     .debug-log {
-      background: #1e293b;
+      background: #0f172a;
       color: #f1f5f9;
       padding: 12px;
       border-radius: 8px;
       font-family: Consolas, monospace;
       font-size: 11px;
       white-space: pre-wrap;
-      max-height: 250px;
+      max-height: 350px;
       overflow-y: auto;
     }
   </style>
@@ -303,7 +297,7 @@
   <!-- Tabs: Chat vs Debug -->
   <div class="view-tabs">
     <button class="tab-btn active" id="tabChatBtn" onclick="switchView('chat')">💬 Chat & Prompt</button>
-    <button class="tab-btn" id="tabDebugBtn" onclick="switchView('debug')">🧠 Ispezione Brain (Memoria)</button>
+    <button class="tab-btn" id="tabDebugBtn" onclick="switchView('debug')">🧠 Ispezione Brain & Profilo</button>
   </div>
 
   <!-- CHAT VIEW -->
@@ -311,24 +305,29 @@
     <div class="chat-box" id="chatBox">
       <div class="msg ai">
         👋 Ciao! Sono il tuo <strong>Financial Mentor</strong> con memoria persistente (Brain) e guida empatica (Soul).<br><br>
-        Il mio compito è spiegarti i meccanismi del denaro, gli investimenti e la pianificazione personale al tuo ritmo, senza gergo incomprensibile e <em>senza mai darti consigli speculativi di acquisto/vendita</em>.<br><br>
-        Dimmi: di cosa vorresti parlare oggi?
+        Puoi usarmi per:<br>
+        1. <strong>Domande spot</strong>: chiedimi qualsiasi cosa (aggiornerò il tuo profilo e adatterò il mio linguaggio).<br>
+        2. <strong>Percorso formativo a tappe</strong>: segui la roadmap su misura per passare da principiante ad avanzato.<br>
+        3. <strong>Pillole del giorno</strong>: micro-concetto quotidiano e notizie economiche spiegate con l'impatto sul tuo profilo.<br><br>
+        Di cosa vorresti parlare oggi?
       </div>
     </div>
 
     <!-- Quick Prompt Chips -->
     <div class="chips-bar">
-      <div class="chip" onclick="usePrompt('Cos\'è l\'interesse composto?')">💡 Interesse composto</div>
-      <div class="chip" onclick="usePrompt('Spiegami cosa sono gli ETF come se avessi 10 anni')">🛒 Cos'è un ETF</div>
+      <div class="chip" onclick="usePrompt('Dammi la pillola del giorno e spiegami le notizie economiche rilevanti per me')">☀️ Pillola & Notizie del Giorno</div>
+      <div class="chip" onclick="usePrompt('Mostrami il mio percorso di apprendimento a tappe')">🗺️ Percorso a Tappe</div>
+      <div class="chip" onclick="usePrompt('Ho 30 anni, vorrei comprare casa tra 7 anni e creare un fondo emergenza. Come inizio?')">🎯 Profilazione: Obiettivo Casa</div>
+      <div class="chip" onclick="usePrompt('Spiegami cos\'è l\'interesse composto con un\'analogia')">💡 Interesse Composto</div>
+      <div class="chip" onclick="usePrompt('Cosa sono gli ETF e perché tutti ne parlano?')">🛒 Cos'è un ETF</div>
       <div class="chip" onclick="usePrompt('In cosa dovrei investire i miei 10.000€?')">⚠️ In cosa investire? (Test No-Advice)</div>
-      <div class="chip" onclick="usePrompt('I mercati stanno crollando, devo vendere tutto?')">📉 Crollo mercati (Mindset)</div>
-      <div class="chip" onclick="usePrompt('Mostrami i miei progressi')">📊 Mostra Progressi</div>
+      <div class="chip" onclick="usePrompt('Mostrami i miei progressi')">📊 Dashboard Completa</div>
       <div class="chip" onclick="usePrompt('Azzera la mia memoria')">🔄 Azzera Memoria</div>
     </div>
 
     <!-- Prompt Input Form -->
     <form class="input-bar" id="promptForm" onsubmit="handleSend(event)">
-      <input type="text" id="promptInput" class="prompt-input" placeholder="Scrivi un prompt o fai una domanda..." autocomplete="off">
+      <input type="text" id="promptInput" class="prompt-input" placeholder="Fai una domanda, chiedi la pillola del giorno o il tuo percorso..." autocomplete="off">
       <button type="submit" class="send-btn" title="Invia prompt">
         <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
       </button>
@@ -339,12 +338,13 @@
   <div id="debugView" class="debug-view">
     <h3 style="margin-top:0;">🧠 Ispezione Stato Brain (`localStorage`)</h3>
     <p style="color:var(--muted); font-size:12px;">
-      Questo pannello mostra le chiamate dirette al file <code>scripts/index.html</code> e lo stato della memoria a lungo termine.
+      Stato del Brain a lungo termine sincronizzato tramite <code>scripts/index.html</code>.
     </p>
     <div class="debug-actions">
       <button class="debug-btn" onclick="callBrainRaw('load_memory')">🔄 Ricarica Memoria</button>
-      <button class="debug-btn" onclick="callBrainRaw('view_hub')">📊 Genera Payload Dashboard</button>
-      <button class="debug-btn" onclick="callBrainRaw('reset_memory')">🗑️ Resetta Memoria</button>
+      <button class="debug-btn" onclick="callBrainRaw('get_learning_path')">🗺️ Ispeziona Percorso</button>
+      <button class="debug-btn" onclick="callBrainRaw('get_daily_pill')">☀️ Ispeziona Pillola Oggi</button>
+      <button class="debug-btn" onclick="callBrainRaw('reset_memory')">🗑️ Resetta Tutto</button>
     </div>
     <div class="debug-log" id="debugLog">Inizializzazione sandbox Brain in corso...</div>
   </div>
@@ -355,7 +355,7 @@
 
 <script>
   let sandboxReady = false;
-  let brainState = { level: 'beginner', concepts_already_learned: [], user_notes: [] };
+  let brainState = { current_level: 'beginner', user_profile: {}, concepts_already_learned: [] };
 
   function onSandboxReady() {
     sandboxReady = true;
@@ -408,20 +408,12 @@
     input.value = '';
     appendMessage(prompt, 'user');
 
-    // Mostra indicatore di digitazione / thinking
     const thinkingId = appendMessage('<em>Il Financial Mentor sta consultando il Brain e formulando la risposta...</em>', 'ai');
 
     try {
-      // 1. Il modello esegue la Soul e interpella il Brain
       const replyObj = await simulateMentorSoul(prompt);
-
-      // Rimuovi thinking
       document.getElementById(thinkingId).remove();
-
-      // Mostra risposta dell'assistente
       appendAiResponse(replyObj);
-
-      // Aggiorna badge di livello
       syncBrain();
     } catch (err) {
       document.getElementById(thinkingId).remove();
@@ -449,7 +441,7 @@
     let content = `<div>${response.text}</div>`;
 
     if (response.brainNote) {
-      content += `<div class="badge-note">🧠 Brain: ${response.brainNote}</div>`;
+      content += `<div class="badge-note">🧠 Brain & Soul: ${response.brainNote}</div>`;
     }
 
     if (response.webviewUrl) {
@@ -465,118 +457,167 @@
     box.scrollTop = box.scrollHeight;
   }
 
-  // Motore di simulazione Soul & Brain (riflette esattamente le regole di SKILL.md)
+  // Motore di simulazione Soul & Brain conforme a SKILL.md
   async function simulateMentorSoul(prompt) {
     const p = prompt.toLowerCase();
 
-    // Azione Progressi / Dashboard
-    if (p.includes('progress') || p.includes('mostra') || p.includes('dashboard') || p.includes('livello') || p.includes('competenze')) {
+    // 1. PILLOLA DEL GIORNO & NOTIZIA ECONOMICA
+    if (p.includes('pillola') || p.includes('notizi') || p.includes('oggi') && (p.includes('giorno') || p.includes('imparare'))) {
+      const pillRes = await invokeBrain({ action: 'get_daily_pill' });
+      const pillData = JSON.parse(pillRes.result);
       const hubRes = await invokeBrain({ action: 'view_hub' });
       const webviewUrl = 'skills/financial-advisor/assets/' + hubRes.webview.url.replace(/^..\//, '').replace(/^assets\//, '');
+
       return {
-        text: `Ecco la mappa visiva del tuo percorso di apprendimento finanziario! Come puoi vedere, teniamo traccia dei concetti assimilati e del tuo livello di alfabetizzazione.`,
+        text: `☀️ <strong>Pillola del Giorno — ${pillData.date}</strong><br><br>
+        💡 <strong>Concetto Chiave: ${pillData.concept_pill.title}</strong><br>
+        ${pillData.concept_pill.explanation}<br><br>
+        📰 <strong>Attualità Economica: ${pillData.market_news_context.headline}</strong><br>
+        ${pillData.market_news_context.tailored_impact}<br><br>
+        <span style="font-size:12px; color:var(--muted);">${pillData.market_news_context.for_profile}</span>`,
         webviewUrl: webviewUrl,
-        brainNote: 'Dashboard visualizzata dal Brain'
+        brainNote: 'Pillola del giorno generata e calibrata sul tuo profilo.'
       };
     }
 
-    // Azione Reset
-    if (p.includes('reset') || p.includes('azzera')) {
-      const resetRes = await invokeBrain({ action: 'reset_memory' });
+    // 2. PERCORSO DI APPRENDIMENTO (Learning Path)
+    if (p.includes('percorso') || p.includes('tappe') || p.includes('roadmap') || p.includes('modul')) {
+      const pathRes = await invokeBrain({ action: 'get_learning_path' });
+      const pathData = JSON.parse(pathRes.result);
+      const currentMod = pathData.modules.find(m => m.status === 'current');
+      const hubRes = await invokeBrain({ action: 'view_hub' });
+      const webviewUrl = 'skills/financial-advisor/assets/' + hubRes.webview.url.replace(/^..\//, '').replace(/^assets\//, '');
+
       return {
-        text: resetRes.result || 'Memoria azzerata. Ripartiamo dalle basi insieme!',
-        brainNote: 'Stato localStorage resettato'
+        text: `🗺️ <strong>Il Tuo Percorso di Apprendimento</strong> (Progresso: ${pathData.progress_percent}%)<br><br>
+        Sei al livello <strong>${pathData.current_level.toUpperCase()}</strong>. Hai padroneggiato <strong>${pathData.completed_modules}</strong> moduli su ${pathData.total_modules}.<br><br>
+        🎯 <strong>Tappa attuale suggerita per te:</strong><br>
+        <strong>${currentMod ? currentMod.title : 'Ottimo lavoro!'}</strong>: ${currentMod ? currentMod.desc : 'Hai completato tutti i moduli!'}<br><br>
+        Ecco la tua mappa interattiva con tutti i moduli sbloccati e futuri:`,
+        webviewUrl: webviewUrl,
+        brainNote: `Curriculum interrogato: modulo corrente "${currentMod ? currentMod.title : 'Done'}"`
       };
     }
 
-    // REGOLA ZERO: No Investment Advice (Richiesta di consigli specifici d'investimento)
-    if (p.includes('in cosa dovrei investire') || p.includes('dove investire') || p.includes('consigliami un titolo') || p.includes('comprare') || p.includes('10.000') || p.includes('crypto')) {
+    // 3. DOMANDA SPOT CON PROFILAZIONE (Es. età, casa, orizzonte temporale)
+    if (p.includes('anni') || p.includes('casa') || p.includes('fondo') || p.includes('orizzonte') || p.includes('stipendio') || p.includes('risparmiare')) {
+      // Estrai dettagli per aggiornare il profilo
+      let detectedGoal = p.includes('casa') ? 'Acquisto casa' : 'Pianificazione personale';
+      let detectedHorizon = p.includes('casa') ? 'Medio termine (5-7 anni)' : 'Lungo termine (> 10 anni)';
+      let detectedAge = p.match(/\b\d{2}\b/) ? p.match(/\b\d{2}\b/)[0] + ' anni' : '30 circa';
+
       await invokeBrain({
         action: 'update_memory',
-        add_note: 'Ha chiesto consigli di investimento diretti: ricordata la Regola Zero (solo didattica e concetti)',
-        summary: 'Richiesta di consigli d\'investimento: spiegata la differenza tra educazione finanziaria e consulenza personalizzata.'
+        profile_update: {
+          age_range: detectedAge,
+          goals: ['Creare fondo emergenza', detectedGoal],
+          time_horizon: detectedHorizon
+        },
+        add_note: `Utente ha condiviso: età ${detectedAge}, obiettivo ${detectedGoal}, orizzonte ${detectedHorizon}.`,
+        summary: `Condiviso profilo personale per pianificazione verso ${detectedGoal}.`
       });
 
       return {
-        text: `🛡️ <strong>Nota etica fondamentale:</strong> Come tuo mentore finanziario didattico, <em>non posso e non devo darti consigli personalizzati su dove investire i tuoi soldi</em> (es. quali azioni o crypto acquistare). Chi ti promette rendimenti o ricette facili senza conoscere la tua vita sta violando la legge o cercando di venderti qualcosa.<br><br>
-        Quello che <strong>possiamo fare insieme</strong> è capire i mattoncini fondamentali:<br>
-        1. <strong>Fondo di emergenza:</strong> hai già da parte da 3 a 6 mesi di spese vive su un conto sicuro prima di pensare a investire?<br>
-        2. <strong>Orizzonte temporale:</strong> questi soldi ti serviranno tra 1 anno, 5 anni o 20 anni?<br>
-        3. <strong>Tolleranza al rischio:</strong> come ti sentiresti se vedessi oscillare il valore del 15% nel breve termine?<br><br>
-        Se vuoi, possiamo partire proprio dall'esplorare il concetto di <em>Fondo di Emergenza</em> o di <em>Orizzonte Temporale</em>!`,
-        brainNote: 'Riconosciuto trigger No-Advice. Obiettivo utente memorizzato.'
+        text: `🎯 <strong>Ho aggiornato il tuo profilo nel Brain!</strong><br><br>
+        Pianificare con un orizzonte di <strong>${detectedHorizon}</strong> e l'obiettivo di <strong>${detectedGoal}</strong> è fantastico perché ci dà una bussola precisa.<br><br>
+        Ecco la strategia metodologica a 3 pilastri adatta al tuo caso:<br>
+        1. <strong>La cassa di riserva (breve termine):</strong> per le spese impreviste, tieni 3-6 mesi di spese su un <em>Conto Deposito</em> svincolabile, non sul conto corrente dove l'inflazione le consuma.<br>
+        2. <strong>L'obiettivo casa (${detectedHorizon}):</strong> non è un orizzonte abbastanza lungo per rischiare oscillazioni forti sull'azionario. Qui si usano strumenti a capitale protetto o obbligazioni a scadenza prefissata (es. BTP o BOT) che scadono esattamente quando ti servirà l'anticipo.<br>
+        3. <strong>Il futuro a lungo termine (> 10 anni):</strong> la parte che non ti serve per la casa può iniziare a sfruttare l'interesse composto con un PAC su ETF globali.<br><br>
+        Vuoi approfondire il primo pilastro (il Fondo di Emergenza) o capire come funzionano le scadenze obbligazionarie?`,
+        brainNote: `Profilo aggiornato: età ${detectedAge}, orizzonte ${detectedHorizon}, obiettivo ${detectedGoal}. Soul adattata.`
       };
     }
 
-    // Argomento: Interesse Composto
+    // 4. REGOLA ZERO: No Investment Advice
+    if (p.includes('in cosa dovrei investire') || p.includes('dove investire') || p.includes('consigliami') || p.includes('comprare') || p.includes('crypto')) {
+      await invokeBrain({
+        action: 'update_memory',
+        add_note: 'Richiesta di consigli di acquisto diretti: applicata Regola Zero (educazione finanziaria pura)',
+        summary: 'Chiarita la differenza tra educazione concettuale e consulenza finanziaria autorizzata.'
+      });
+
+      return {
+        text: `🛡️ <strong>Regola etica fondamentale:</strong> Come tuo mentore didattico, <em>non fornisco consigli personalizzati su quali singoli titoli azionari o crypto comprare</em>.<br><br>
+        Il mio compito è darti gli occhiali per capire i meccanismi:<br>
+        • La differenza tra prestare denaro (obbligazioni) o diventare socio (azioni).<br>
+        • Come i costi di gestione (TER) possono mangiarsi fino al 30% del tuo rendimento a 20 anni.<br>
+        • Come proteggerti dai bias emotivi.<br><br>
+        Per decisioni di investimento specifiche sul tuo patrimonio, è fondamentale rivolgersi a un consulente finanziario indipendente abilitato. Vuoi che vediamo insieme come funziona l'impatto dei costi o la diversificazione?`,
+        brainNote: 'Trigger No-Advice rispettato. Principi pedagogici illustrati.'
+      };
+    }
+
+    // 5. INTERESSE COMPOSTO
     if (p.includes('interesse composto') || p.includes('compounding')) {
       await invokeBrain({
         action: 'update_memory',
-        new_level: brainState.current_level === 'beginner' ? 'intermediate' : brainState.current_level,
         add_concepts: ['interesse composto'],
-        summary: 'Appreso il concetto di interesse composto attraverso l\'analogia della valanga e della palla di neve.'
+        new_level: 'intermediate',
+        summary: 'Appreso il concetto di interesse composto attraverso la metafora della palla di neve.'
       });
 
       return {
-        text: `⛄ <strong>L'Interesse Composto: l'effetto palla di neve</strong><br><br>
-        Immagina di lanciare una piccola palla di neve dalla cima di una montagna. All'inizio è minuscola. Ma rotolando, la neve si attacca a quella già accumulata: più diventa grande, più neve raccoglie ad ogni giro.<br><br>
-        Nel mondo finanziario funziona uguale: se investi 100€ e guadagni il 5% (5€), l'anno dopo il 5% non lo calcoli più solo sui 100€ iniziali, ma su 105€! Con il passare degli anni (10, 20 o 30 anni), il rendimento generato dai rendimenti precedenti supera di gran lunga il capitale che avevi versato di tasca tua.<br><br>
-        È il motivo per cui <em>il tempo</em> è l'alleato più potente dell'investitore a lungo termine. Ti è chiaro questo passaggio o vuoi fare una prova con numeri concreti?`,
-        brainNote: 'Aggiunto concetto "interesse composto". Avanzamento livello registrato.'
+        text: `⛄ <strong>L'Interesse Composto: l'effetto valanga</strong><br><br>
+        Immagina di lanciare una piccola palla di neve dalla cima di una montagna. All'inizio cresce lentamente. Ma rotolando, la neve si attacca a quella già accumulata: più diventa grande, più neve raccoglie ad ogni giro.<br><br>
+        In finanza accade lo stesso: se hai 1.000€ e guadagni il 5% (50€), l'anno successivo il 5% lo guadagni su 1.050€. Dopo 20 o 30 anni, i rendimenti generati dai rendimenti precedenti superano di gran lunga i soldi versati di tasca tua!<br><br>
+        Ho segnato <strong>Interesse Composto</strong> come concetto assimilato nella tua roadmap!`,
+        brainNote: 'Concetto "interesse composto" memorizzato. Livello aggiornato.'
       };
     }
 
-    // Argomento: ETF
+    // 6. ETF
     if (p.includes('etf')) {
       await invokeBrain({
         action: 'update_memory',
-        add_concepts: ['etf', 'diversificazione'],
-        summary: 'Spiegati gli ETF come carrello della spesa diversificato e il concetto di gestione passiva.'
+        add_concepts: ['etf', 'costi e ter'],
+        summary: 'Spiegata la struttura degli ETF come carrello della spesa diversificato e la gestione passiva.'
       });
 
       return {
         text: `🛒 <strong>Cos'è un ETF? L'analogia del carrello della spesa</strong><br><br>
-        Immagina di andare al mercato. Puoi comprare una singola mela da un solo contadino: se quella mela è marcia, hai perso tutto il pranzo (questo è comprare l'azione di una singola azienda).<br><br>
-        Oppure puoi prendere un <strong>cestino preconfezionato</strong> che contiene 3.000 frutti diversi provenienti da tutto il mondo: qualche mela, arance, banane, pere. Se una mela marcisce, il tuo pranzo è comunque salvo perché hai tantissimi altri frutti.<br><br>
-        Un <strong>ETF (Exchange Traded Fund)</strong> è esattamente questo cestino: con una sola quota (spesso da 30€ a 100€) compri automaticamente una frazione di migliaia delle più grandi aziende del mondo, replicando l'andamento dell'intera economia globale a costi piccolissimi (spesso sotto lo 0,2% all'anno).`,
-        brainNote: 'Aggiunti concetti "etf" e "diversificazione" alla mappa del Brain.'
+        Comprare l'azione di una singola azienda è come andare al mercato e comprare una sola cassetta di mele: se sono ammaccate, hai perso tutto.<br><br>
+        Un <strong>ETF (Exchange Traded Fund)</strong> è invece un cesto preconfezionato che contiene frazioni di 3.000 aziende di tutto il mondo. Se una va male, hai tutte le altre a sostenere il cesto.<br><br>
+        I vantaggi chiave:<br>
+        • <strong>Diversificazione automatica</strong> con poche decine di euro.<br>
+        • <strong>Costi piccolissimi (TER):</strong> spesso meno dello 0,2% all'anno contro il 2% dei fondi tradizionali venduti dalle banche.`,
+        brainNote: 'Concetti "etf" e "costi e ter" registrati nella mappa delle competenze.'
       };
     }
 
-    // Argomento: Panico da Crollo di Mercato / Volatilità
-    if (p.includes('crollo') || p.includes('crollando') || p.includes('vendere') || p.includes('paura') || p.includes('rosso')) {
-      await invokeBrain({
-        action: 'update_memory',
-        add_note: 'Mostrata ansia per la volatilità: attivato scudo psicologico e spiegata la natura ciclica dei mercati.',
-        summary: 'Gestione del panico da discesa dei mercati ed educazione alla volatilità fisiologica.'
-      });
-
+    // 7. DASHBOARD
+    if (p.includes('progress') || p.includes('mostra') || p.includes('dashboard') || p.includes('hub')) {
+      const hubRes = await invokeBrain({ action: 'view_hub' });
+      const webviewUrl = 'skills/financial-advisor/assets/' + hubRes.webview.url.replace(/^..\//, '').replace(/^assets\//, '');
       return {
-        text: `🌊 <strong>Frena un secondo e respira: guardiamo le cose con lucidità</strong><br><br>
-        Vedere numeri rossi fa scattare nel nostro cervello primordiale la reazione di fuga ("vendi tutto prima che scenda ancora!"). È una trappola psicologica notissima chiamata <em>Loss Aversion</em> (la paura della perdita fa il doppio più male del piacere del guadagno).<br><br>
-        Ricorda tre regole d'oro del nostro Brain:<br>
-        1. <strong>La perdita è reale solo se vendi:</strong> finché non vendi, possiedi sempre lo stesso numero di quote delle aziende nel tuo cestino.<br>
-        2. <strong>La volatilità è il pedaggio dell'autostrada:</strong> non esiste rendimento a lungo termine senza oscillazioni nel breve. Nei 100 anni di storia economica, i mercati globali hanno superato guerre, pandemie e crisi, tornando sempre a crescere.<br>
-        3. <strong>I saldi:</strong> se fai un PAC (Piano di Accumulo), quando il mercato scende stai comprando nuove quote a prezzo di sconto!<br><br>
-        I tuoi soldi investiti sono legati a un obiettivo di lungo termine (> 10 anni)? Se sì, il segreto migliore è non guardare il saldo ogni giorno.`,
-        brainNote: 'Attivato scudo psicologico anti-panico nel Brain.'
+        text: `Ecco la panoramica completa: pillola odierna, roadmap dei moduli e profilo aggiornato!`,
+        webviewUrl: webviewUrl,
+        brainNote: 'Dashboard sincronizzata con il Brain.'
       };
     }
 
-    // Risposta generica didattica con adattamento al livello
+    // 8. RESET
+    if (p.includes('reset') || p.includes('azzera')) {
+      const res = await invokeBrain({ action: 'reset_memory' });
+      return {
+        text: res.result || 'Memoria azzerata con successo!',
+        brainNote: 'localStorage resettato'
+      };
+    }
+
+    // Fallback didattico
     await invokeBrain({
       action: 'update_memory',
-      summary: `Domanda esplorativa: "${prompt.slice(0, 50)}..."`
+      summary: `Domanda spot: "${prompt.slice(0, 45)}..."`
     });
 
     return {
-      text: `Ottima domanda! Quando parliamo di questo argomento, è importante considerare il tuo livello attuale (<strong>${(brainState.current_level || 'beginner').toUpperCase()}</strong>).<br><br>
-      In finanza, ogni grande decisione si basa su tre pilastri:<br>
-      • <strong>La liquidità:</strong> i soldi per vivere mese per mese.<br>
-      • <strong>La sicurezza:</strong> il fondo per gli imprevisti.<br>
-      • <strong>La crescita:</strong> ciò che puoi permetterti di lasciare investito per molti anni.<br><br>
-      Vuoi che approfondiamo uno di questi aspetti in particolare, oppure vuoi digitare <em>"Mostrami i miei progressi"</em> per vedere la tua dashboard?`,
-      brainNote: 'Interazione registrata nel diario delle sessioni.'
+      text: `Ottimo spunto! Questa domanda tocca uno dei punti importanti per il tuo livello (<strong>${(brainState.current_level || 'beginner').toUpperCase()}</strong>).<br><br>
+      Possiamo approfondirla insieme, oppure puoi chiedermi:<br>
+      • <em>"Dammi la pillola del giorno"</em> per una nozione veloce con notizia correlata.<br>
+      • <em>"Qual è il mio percorso?"</em> per vedere quale modulo affrontare dopo.<br>
+      • <em>"Mostrami la dashboard"</em> per vedere tutte le tappe.`,
+      brainNote: 'Interazione spot registrata nel diario delle sessioni.'
     };
   }
 

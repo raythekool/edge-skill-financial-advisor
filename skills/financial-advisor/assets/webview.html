@@ -7,23 +7,31 @@
 <style>
 :root {
   color-scheme: light dark;
-  --bg: #f5f5f7;
+  --bg: #f8fafc;
   --card: #ffffff;
-  --text: #151515;
-  --muted: #666666;
+  --text: #0f172a;
+  --muted: #64748b;
   --line: #e2e8f0;
-  --accent: #0066cc;
-  --accent-light: #e6f0fa;
+  --accent: #0284c7;
+  --accent-light: #e0f2fe;
+  --success: #16a34a;
+  --success-bg: #dcfce7;
+  --warning: #d97706;
+  --warning-bg: #fef3c7;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #141416;
-    --card: #202024;
-    --text: #f5f5f7;
-    --muted: #a0a0a8;
-    --line: #323238;
-    --accent: #3b82f6;
-    --accent-light: #1e293b;
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --line: #334155;
+    --accent: #38bdf8;
+    --accent-light: #082f49;
+    --success: #4ade80;
+    --success-bg: #052e16;
+    --warning: #fbbf24;
+    --warning-bg: #451a03;
   }
 }
 * { box-sizing: border-box; }
@@ -34,16 +42,15 @@ body {
   padding: 12px;
   background: var(--bg);
   color: var(--text);
-  font: 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font: 13.5px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
-main { max-width: 600px; margin: auto; }
+main { max-width: 620px; margin: auto; }
 .card {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 18px;
   padding: 16px;
-  margin: 10px 0;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
 }
 .header {
   display: flex;
@@ -62,19 +69,19 @@ main { max-width: 600px; margin: auto; }
   border-radius: 10px;
   flex-shrink: 0;
 }
-h1 { margin: 0; font-size: 17px; font-weight: 700; }
-.subtitle { margin: 2px 0 0; font-size: 12px; color: var(--muted); }
+h1 { margin: 0; font-size: 16px; font-weight: 700; }
+.subtitle { margin: 2px 0 0; font-size: 11px; color: var(--muted); }
 
 .badge {
   border-radius: 12px;
-  padding: 5px 10px;
+  padding: 4px 9px;
   font-weight: 700;
-  font-size: 11px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 .badge::before {
   content: "";
@@ -91,31 +98,32 @@ h1 { margin: 0; font-size: 17px; font-weight: 700; }
 .tabs {
   display: flex;
   background: var(--bg);
-  padding: 4px;
+  padding: 3px;
   border-radius: 12px;
-  gap: 4px;
-  margin: 14px 0 10px;
+  gap: 3px;
+  margin: 12px 0 10px;
   border: 1px solid var(--line);
 }
 .tab {
   flex: 1;
-  padding: 8px 10px;
+  padding: 7px 6px;
   border: none;
   background: transparent;
   color: var(--text);
   font-weight: 600;
-  font-size: 13px;
+  font-size: 12px;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 4px;
+  white-space: nowrap;
 }
 .tab.active {
   background: var(--card);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
   color: var(--accent);
 }
 
@@ -123,90 +131,159 @@ h1 { margin: 0; font-size: 17px; font-weight: 700; }
 .tab-content.active { display: block; }
 
 /* Progress bar */
-.progress-container { margin: 12px 0; }
+.progress-container { margin: 10px 0 14px; }
 .progress-label {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--muted);
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 .progress-bar-bg {
   background: var(--line);
-  height: 8px;
+  height: 7px;
   border-radius: 4px;
   overflow: hidden;
 }
 .progress-bar-fill {
-  background: linear-gradient(90deg, #0066cc, #00b4d8);
+  background: linear-gradient(90deg, #0284c7, #38bdf8);
   height: 100%;
   width: 0%;
   transition: width 0.4s ease;
 }
 
-/* Tag list */
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 10px;
-}
-.tag {
-  background: var(--bg);
-  border: 1px solid var(--line);
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.tag-check { color: #16a34a; font-weight: bold; }
-
-/* List item */
-.list-item {
-  border-left: 3px solid var(--accent);
-  background: var(--bg);
-  padding: 9px 12px;
-  border-radius: 6px;
-  margin-top: 8px;
-  font-size: 13px;
-  line-height: 1.4;
-}
-.list-item-date {
-  font-size: 11px;
-  color: var(--muted);
-  margin-bottom: 2px;
-}
-
-/* Guardrails & Bias */
-.bias-card {
-  background: #fffbeb;
-  color: #92400e;
-  border: 1px solid #fde68a;
-  border-radius: 10px;
-  padding: 10px 12px;
-  margin-top: 8px;
-  font-size: 12px;
-  line-height: 1.4;
+/* Daily Pill Card */
+.pill-card {
+  background: linear-gradient(135deg, #f0fdf4, #e0f2fe);
+  border: 1px solid #bae6fd;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  color: #0369a1;
 }
 @media (prefers-color-scheme: dark) {
-  .bias-card {
-    background: #2d2616;
-    color: #fde68a;
-    border-color: #59491d;
+  .pill-card {
+    background: linear-gradient(135deg, #064e3b22, #07598533);
+    border-color: #0369a1;
+    color: #bae6fd;
   }
 }
-.bias-title {
-  font-weight: 700;
+.pill-header {
   display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-bottom: 3px;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.pill-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+@media (prefers-color-scheme: dark) {
+  .pill-title { color: #f8fafc; }
+}
+.pill-desc {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #334155;
+}
+@media (prefers-color-scheme: dark) {
+  .pill-desc { color: #cbd5e1; }
 }
 
-.disclaimer {
+/* News Scenario Card */
+.news-card {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 10px;
+}
+.news-topic {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+.news-headline {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 3px 0 6px;
+}
+.news-impact {
+  background: var(--card);
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+
+/* Stepper / Timeline */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid transparent;
+}
+.step-item.current {
+  background: var(--card);
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(2,132,199,0.12);
+}
+.step-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-item.mastered .step-dot { background: var(--success-bg); color: var(--success); }
+.step-item.current .step-dot { background: var(--accent-light); color: var(--accent); border: 1.5px solid var(--accent); }
+.step-item.upcoming .step-dot { background: var(--line); color: var(--muted); }
+
+.step-content { flex: 1; }
+.step-title { font-size: 12.5px; font-weight: 700; }
+.step-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* Profile Box */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+.profile-box {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+.profile-box-label { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 600; }
+.profile-box-val { font-size: 12px; font-weight: 600; margin-top: 2px; }
+
+.disclaimer {
+  font-size: 10.5px;
   color: var(--muted);
   text-align: center;
   margin-top: 12px;
@@ -222,15 +299,16 @@ h1 { margin: 0; font-size: 17px; font-weight: 700; }
         <img src="icon.svg" class="icon" alt="Icona">
         <div>
           <h1>Financial Mentor</h1>
-          <div class="subtitle">Memoria & Percorso di Apprendimento</div>
+          <div class="subtitle" id="lastSyncLabel">Brain & Soul Sincronizzati</div>
         </div>
       </div>
       <div id="levelBadge" class="badge beginner">Beginner</div>
     </div>
 
+    <!-- Progress bar -->
     <div class="progress-container">
       <div class="progress-label">
-        <span>Alfabetizzazione Finanziaria</span>
+        <span>Progresso Percorso Didattico</span>
         <span id="progressPercent">0%</span>
       </div>
       <div class="progress-bar-bg">
@@ -238,54 +316,88 @@ h1 { margin: 0; font-size: 17px; font-weight: 700; }
       </div>
     </div>
 
+    <!-- Tabs -->
     <div class="tabs">
-      <button class="tab active" onclick="switchTab('concepts')">📚 Concetti</button>
-      <button class="tab" onclick="switchTab('journal')">📝 Diario</button>
-      <button class="tab" onclick="switchTab('bias')">🧠 Mindset</button>
+      <button class="tab active" onclick="switchTab('pill')">☀️ Pillola Oggi</button>
+      <button class="tab" onclick="switchTab('path')">🗺️ Percorso</button>
+      <button class="tab" onclick="switchTab('profile')">👤 Profilo</button>
+      <button class="tab" onclick="switchTab('mindset')">🧠 Mindset</button>
     </div>
 
-    <!-- Tab 1: Concetti -->
-    <div id="tab-concepts" class="tab-content active">
-      <div style="font-size: 12px; color: var(--muted); margin-bottom: 6px;">
-        Concetti assimilati e consolidati con il tuo mentore:
+    <!-- Tab 1: Pillola del Giorno -->
+    <div id="tab-pill" class="tab-content active">
+      <div class="pill-card">
+        <div class="pill-header">
+          <span>💡 Concetto del Giorno</span>
+          <span id="pillLevelTag" style="font-weight:700;">LIVELLO</span>
+        </div>
+        <div class="pill-title" id="pillTitle">Caricamento...</div>
+        <div class="pill-desc" id="pillDesc">...</div>
       </div>
-      <div class="tags" id="conceptsList">
-        <div style="color: var(--muted); font-size: 12px; font-style: italic;">
-          Nessun concetto registrato. Fai una domanda al mentore per iniziare!
+
+      <div class="news-card">
+        <div class="news-topic" id="newsTopic">ATTUALITÀ ECONOMICA</div>
+        <div class="news-headline" id="newsHeadline">...</div>
+        <div class="news-impact" id="newsImpact">...</div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Percorso di Apprendimento -->
+    <div id="tab-path" class="tab-content">
+      <div style="font-size: 11.5px; color: var(--muted); margin-bottom: 6px;">
+        Roadmap a moduli adattata al tuo livello:
+      </div>
+      <div class="timeline" id="timelineList"></div>
+    </div>
+
+    <!-- Tab 3: Profilo Utente -->
+    <div id="tab-profile" class="tab-content">
+      <div style="font-size: 11.5px; color: var(--muted); margin-bottom: 6px;">
+        Profilo dedotto e aggiornato dalle tue domande spot:
+      </div>
+      <div class="profile-grid">
+        <div class="profile-box">
+          <div class="profile-box-label">Livello Attuale</div>
+          <div class="profile-box-val" id="profLevel">Beginner</div>
+        </div>
+        <div class="profile-box">
+          <div class="profile-box-label">Orizzonte Temporale</div>
+          <div class="profile-box-val" id="profHorizon">Medio-Lungo (> 5 anni)</div>
+        </div>
+        <div class="profile-box">
+          <div class="profile-box-label">Attitudine al Rischio</div>
+          <div class="profile-box-val" id="profRisk">Prudente / Equilibrata</div>
+        </div>
+        <div class="profile-box">
+          <div class="profile-box-label">Stile Comunicativo</div>
+          <div class="profile-box-val" id="profTone">Analogie e metafore</div>
         </div>
       </div>
-    </div>
 
-    <!-- Tab 2: Diario e Note -->
-    <div id="tab-journal" class="tab-content">
-      <div style="font-size: 12px; color: var(--muted); margin-bottom: 6px;">
-        Note e sintesi delle sessioni passate:
+      <div style="margin-top: 10px;">
+        <div style="font-size: 11px; font-weight:700; color:var(--muted); text-transform:uppercase;">Obiettivi Dichiarati</div>
+        <div id="goalsList" style="margin-top:4px;"></div>
       </div>
-      <div id="notesContainer"></div>
-      <div id="summariesContainer" style="margin-top: 10px;"></div>
     </div>
 
-    <!-- Tab 3: Mindset & Bias -->
-    <div id="tab-bias" class="tab-content">
-      <div style="font-size: 12px; color: var(--muted); margin-bottom: 6px;">
+    <!-- Tab 4: Mindset & Bias -->
+    <div id="tab-mindset" class="tab-content">
+      <div style="font-size: 11.5px; color: var(--muted); margin-bottom: 6px;">
         Igiene mentale e protezione dai bias cognitivi:
       </div>
-      <div class="bias-card">
-        <div class="bias-title">🛡️ Regola Zero: No Advice</div>
-        Questo mentore educa e spiega, non raccomanda strumenti né consiglia acquisti o vendite.
+      <div style="background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:9px 12px; margin-top:6px; font-size:12px;">
+        <strong>🛡️ Regola Zero:</strong> Questo mentore non dà consigli personalizzati di acquisto/vendita (solo formazione).
       </div>
-      <div class="bias-card">
-        <div class="bias-title">🌊 Volatilità vs Rischio</div>
-        I mercati oscillano nel breve termine. Il vero rischio è l'inflazione e la mancata diversificazione nel lungo termine.
+      <div style="background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:9px 12px; margin-top:6px; font-size:12px;">
+        <strong>🌊 Volatilità vs Rischio:</strong> Le discese a breve termine non sono perdite finché non vendi quote.
       </div>
-      <div class="bias-card">
-        <div class="bias-title">🚫 Nessuna FOMO</div>
-        I presunti "guadagni facili e rapidi" nascondono quasi sempre rischi asimmetrici o truffe.
+      <div style="background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:9px 12px; margin-top:6px; font-size:12px;">
+        <strong>🚫 No FOMO:</strong> Il denaro si costruisce con metodo e tempo, non inseguendo mode speculative.
       </div>
     </div>
 
     <div class="disclaimer">
-      ⚠️ Strumento a solo scopo didattico. Non costituisce consulenza finanziaria personalizzata (MIFID II).
+      ⚠️ Strumento per educazione e consapevolezza finanziaria. Non costituisce consulenza agli investimenti.
     </div>
   </div>
 </main>
@@ -310,52 +422,67 @@ h1 { margin: 0; font-size: 17px; font-weight: 700; }
 
   function render() {
     const level = payload.level || "beginner";
-    const concepts = payload.concepts || [];
-    const notes = payload.notes || [];
-    const summaries = payload.summaries || [];
+    const profile = payload.profile || {};
+    const modules = payload.modules || [];
+    const dailyPill = payload.daily_pill || {};
 
     // Badge
     const badge = document.getElementById('levelBadge');
     badge.textContent = level;
     badge.className = `badge ${level}`;
 
-    // Progress estimation based on level and concept count
-    let baseScore = level === 'advanced' ? 70 : level === 'intermediate' ? 40 : 15;
-    let conceptScore = Math.min(30, concepts.length * 5);
-    let totalScore = Math.min(100, baseScore + conceptScore);
+    // Progress
+    const masteredCount = modules.filter(m => m.status === 'mastered').length;
+    const totalCount = modules.length || 13;
+    const pct = Math.round((masteredCount / totalCount) * 100);
+    document.getElementById('progressPercent').textContent = pct + '%';
+    document.getElementById('progressFill').style.width = pct + '%';
 
-    document.getElementById('progressPercent').textContent = totalScore + '%';
-    document.getElementById('progressFill').style.width = totalScore + '%';
-
-    // Concetti
-    const cContainer = document.getElementById('conceptsList');
-    if (concepts.length > 0) {
-      cContainer.innerHTML = '';
-      concepts.forEach(c => {
-        const item = document.createElement('div');
-        item.className = 'tag';
-        item.innerHTML = `<span class="tag-check">✓</span> <span>${c}</span>`;
-        cContainer.appendChild(item);
-      });
+    // Pillola del Giorno
+    if (dailyPill.concept_pill) {
+      document.getElementById('pillTitle').textContent = dailyPill.concept_pill.title;
+      document.getElementById('pillDesc').textContent = dailyPill.concept_pill.explanation;
+      document.getElementById('pillLevelTag').textContent = (dailyPill.concept_pill.level || 'Beginner').toUpperCase();
+    }
+    if (dailyPill.market_news_context) {
+      document.getElementById('newsTopic').textContent = dailyPill.market_news_context.topic || 'Attualità Economica';
+      document.getElementById('newsHeadline').textContent = dailyPill.market_news_context.headline || '';
+      document.getElementById('newsImpact').innerHTML = `<strong>💡 ${dailyPill.market_news_context.tailored_impact}</strong><br><span style="font-size:11px; color:var(--muted);">${dailyPill.market_news_context.for_profile || ''}</span>`;
     }
 
-    // Note
-    const notesContainer = document.getElementById('notesContainer');
-    if (notes.length > 0) {
-      notesContainer.innerHTML = notes.map(n => `
-        <div class="list-item">
-          <strong>Nota:</strong> ${n}
-        </div>
-      `).join('');
+    // Timeline Percorso
+    const timeline = document.getElementById('timelineList');
+    if (modules.length > 0) {
+      timeline.innerHTML = modules.map((m, idx) => {
+        let icon = m.status === 'mastered' ? '✓' : (m.status === 'current' ? '🎯' : (idx + 1));
+        let badgeLabel = m.status === 'mastered' ? 'Completato' : (m.status === 'current' ? 'Tappa Attuale' : 'In Programma');
+        return `
+          <div class="step-item ${m.status}">
+            <div class="step-dot">${icon}</div>
+            <div class="step-content">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="step-title">${m.title}</span>
+                <span style="font-size:9.5px; font-weight:700; text-transform:uppercase; color:${m.status==='mastered'?'var(--success)':(m.status==='current'?'var(--accent)':'var(--muted)')};">${badgeLabel}</span>
+              </div>
+              <div class="step-desc">${m.desc}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
-    // Summaries
-    const sumContainer = document.getElementById('summariesContainer');
-    if (summaries.length > 0) {
-      sumContainer.innerHTML = summaries.map(s => `
-        <div class="list-item">
-          <div class="list-item-date">📅 ${s.date || 'Sessione'}</div>
-          <div>${s.summary}</div>
+    // Profilo
+    document.getElementById('profLevel').textContent = level.toUpperCase();
+    document.getElementById('profHorizon').textContent = profile.time_horizon || 'Medio-Lungo Termine';
+    document.getElementById('profRisk').textContent = profile.risk_attitude || 'Equilibrata';
+    document.getElementById('profTone').textContent = profile.tone_preference || 'Analogie e metafore';
+
+    const goalsContainer = document.getElementById('goalsList');
+    const goals = profile.goals || [];
+    if (goals.length > 0) {
+      goalsContainer.innerHTML = goals.map(g => `
+        <div style="background:var(--bg); border:1px solid var(--line); border-radius:6px; padding:6px 10px; font-size:11.5px; margin-top:4px;">
+          🎯 ${g}
         </div>
       `).join('');
     }
